@@ -1,0 +1,45 @@
+- clean: ['~']
+
+- link:
+    ~/.profile:
+        path: profile
+        create: false
+        relink: false
+        force: false
+    ~/.bashrc:
+        path: bashrc
+        create: false
+        relink: false
+        force: false
+    ~/.bash_logout:
+        path: bash_logout
+        create: false
+        relink: false
+        force: false
+    ~/.bash_aliases:
+        path: bash_aliases
+        create: false
+        relink: false
+        force: false
+    ~/.gitconfig:
+        path: gitconfig
+        create: false
+        relink: false
+        force: false
+    ~/.tmux.conf:
+        path: tmux.conf
+        create: false
+        relink: false
+        force: false
+    ~/.vimrc:
+        path: vimrc
+        create: false
+        relink: false
+        force: false
+    ~/.zshrc:
+        path: zshrc
+        create: false
+        relink: false
+        force: false
+
+
