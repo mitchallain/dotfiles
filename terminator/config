@@ -1,0 +1,85 @@
+[global_config]
+  always_split_with_profile = True
+  enabled_plugins = LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
+  focus = system
+  title_transmit_bg_color = "#d30102"
+[keybindings]
+  broadcast_group = <Primary><Alt>g
+  group_all = <Alt>g
+  ungroup_all = <Shift><Alt>G
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      profile = solarized-dark
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+  [[quad]]
+    [[[child0]]]
+      order = 0
+      parent = ""
+      position = 632:270
+      size = 642, 427
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 213
+      type = VPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 321
+      type = HPaned
+    [[[child5]]]
+      order = 1
+      parent = child1
+      position = 321
+      type = HPaned
+    [[[terminal3]]]
+      order = 0
+      parent = child2
+      profile = solarized-dark
+      type = Terminal
+    [[[terminal4]]]
+      order = 1
+      parent = child2
+      profile = solarized-dark
+      type = Terminal
+    [[[terminal6]]]
+      order = 0
+      parent = child5
+      profile = solarized-dark
+      type = Terminal
+    [[[terminal7]]]
+      order = 1
+      parent = child5
+      profile = solarized-dark
+      type = Terminal
+[plugins]
+[profiles]
+  [[default]]
+    background_color = "#002b36"
+    cursor_color = "#eee8d5"
+    font = Menlo 13
+    foreground_color = "#eee8d5"
+    login_shell = True
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#586e75:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+    scrollback_infinite = True
+    scrollback_lines = 2000
+    use_system_font = False
+  [[solarized-dark]]
+    background_color = "#002b36"
+    cursor_color = "#eee8d5"
+    font = Monospace 9
+    foreground_color = "#eee8d5"
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#586e75:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+    scrollback_lines = 5000
+    use_system_font = False
+  [[solarized-light]]
+    background_color = "#eee8d5"
+    cursor_color = "#002b36"
+    foreground_color = "#002b36"
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"

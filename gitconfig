@@ -3,10 +3,12 @@
 	name = Mitchell Allain
 [push]
         default = simple
+[credential]
+  helper = cache --timeout=3600
 [log]
         date = relative
 [format]
         pretty = format:%C(yellow)%h %Cblue%>(12)%ad %Cgreen%<(7)%aN%Cred%d %Creset%s
 [core]
-        editor = nano
+        editor = vi
 
