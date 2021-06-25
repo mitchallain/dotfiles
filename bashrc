@@ -158,9 +158,9 @@ bind 'set show-all-if-ambiguous on'
 # GAZEBO ALL OF SUDDEN NEEDS THIS 03-25-2020
 export IGN_IP=127.0.0.1
 
-if [ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh ]; then
-    source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
-fi
+#if [[ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh && ! -n $SSH_CONNECTION ]]; then
+#    source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
+#fi
 
 export TERM=xterm-256color
 

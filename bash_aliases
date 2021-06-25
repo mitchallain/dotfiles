@@ -109,7 +109,7 @@
 #   colview: view formatted csv files from the console
 #   ------------------------------------------------------------
     colview () {
-        column -s, -t < $1 | less -#2 -N -S
+        column -s, -tn < $1 | less -#2 -N -S
     }
 
     if ! [ -x "$(command -v bat)" ]; then
@@ -126,9 +126,11 @@
     # #   ROS aliases
     alias rosenv='printenv | grep ROS'                              # rosenv:  print the ROS path variables
 
-    alias rosdebug="rosrun --prefix 'gdb -ex run --args' "
+    alias rosgdb="rosrun --prefix 'gdb -ex run --args' "
     alias rosprofile="rosrun --prefix 'valgrind --tool=callgrind' "
     alias rosmemcheck="rosrun --prefix 'valgrind --tool=memcheck' "
+
+    alias listbranches="find . -type d -name '.git' -exec echo {} \; -exec git -C {} branch \;"
 
     rosloglvl () {
         rosservice call $2/set_logger_level "logger='ros.$1'"$'\r'"level='$3'"
@@ -193,9 +195,55 @@
         rsync -avE $ULTRA_REPO bmr@$1:~/catkin_ws/src/
     }
 
+    # transfer_to: transfer working directory to the specified robot
+    # --------------------------------------------------------------
+    transfer_to ()
+    {
+      src_dir=$(pwd)
+      dest_dir="`echo ${src_dir%/*} | sed "s/${USER}/bmr/g"`"
+      rsync -avE $src_dir bmr@$1:$dest_dir
+    }
+
+    # transfer_from: transfer working directory from the specified robot to the local machine
+    # --------------------------------------------------------------
+    transfer_from ()
+    {
+      src_dir="`pwd | sed "s/${USER}/bmr/g"`/"
+      dest_dir="$(pwd)"
+      rsync -avE bmr@$1:$src_dir $dest_dir
+    }
+
 
     # Vision WS
     alias vissrc="source ~/vision_ws/devel/setup.bash"
+
+
+    # ros_start: starts the ros system
+    # --------------------------------------------------------------
+    # Note: The ros_start command assumes that there is only one configuration
+    # file located in the home directory
+    ros_start ()
+    {
+      ${ULTRA_WS}/src/ultra-2-BMR/utilities/launcher.sh $(find ~/ultra* -print -quit)
+    }
+
+    # ros_exit: shuts down the ros system
+    # --------------------------------------------------------------
+    ros_exit ()
+    {
+      echo 'Killing ROS Tmux session...'
+      tmux kill-session -t ROS
+      tmux kill-session -t VENV
+    }
+
+    # ros_restart: restarts the ros system
+    # --------------------------------------------------------------
+    ros_restart ()
+    {
+      ros_exit
+      ros_start
+    }
+
 
 #   rostopicw: update list every $1 seconds
 #   --------------------------------------------------------------
@@ -217,6 +265,10 @@
 
     rosgrep () {
         rospack list | grep "$1";
+    }
+
+    roseulerify () {
+        rosrun topic_tools transform $1 /eulerify$1 geometry_msgs/Vector3 'map(lambda x: x * 57.296, tf.transformations.euler_from_quaternion([m.x, m.y, m.z, m.w]))' --import tf
     }
 
 #   roswiki: parse ros wiki url from package.xml and open in chrome
