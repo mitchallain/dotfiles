@@ -126,8 +126,13 @@ source /opt/ros/melodic/setup.bash
 export ULTRA_WS=/home/mallain/catkin_ws
 export ULTRA_REPO=/home/mallain/catkin_ws/src/ultra-2-BMR
 
+export LMR_WS=/home/mallain/lmr_ws
+export LMR_REPO=/home/mallain/lmr_ws/src/lemur-BMR
+
 # Default workspace sourcing
 source $ULTRA_WS/devel/setup.bash
+#source $LMR_WS/devel/setup.bash
+
 # ---------------------------------------------------------
 
 
