@@ -16,6 +16,7 @@
     ~/.zshrc: zshrc
     ~/.config/matplotlib/stylelib: matplotlib/stylelib
     ~/.config/terminator/config: terminator/config
+    ~/rosconsole.config: ros/rosconsole.config
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]

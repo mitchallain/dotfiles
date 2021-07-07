@@ -133,6 +133,11 @@ export LMR_REPO=/home/mallain/lmr_ws/src/lemur-BMR
 source $ULTRA_WS/devel/setup.bash
 #source $LMR_WS/devel/setup.bash
 
+# set rosconsole config if exists
+if [ -f ~/rosconsole.config ]; then
+    export ROSCONSOLE_CONFIG_FILE=~/rosconsole.config
+fi
+
 # ---------------------------------------------------------
 
 
