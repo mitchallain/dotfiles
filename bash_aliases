@@ -95,9 +95,15 @@
         done
     }
 
-#   lr:  Full Recursive Directory Listing
+#   lrr:  Full Recursive Directory Listing
 #   ------------------------------------------
-    alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+#   alias lrr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+
+#   lr: List n most recently modified files in directory
+#   ----------------------------------------------------
+    lr() {
+        ll -t | head -n $1
+    }
 
 #   mans:   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
 #           displays paginated result with colored search terms and two lines surrounding each hit.            Example: mans mplayer codec
@@ -109,12 +115,17 @@
 #   colview: view formatted csv files from the console
 #   ------------------------------------------------------------
     colview () {
-        column -s, -tn < $1 | less -#2 -N -S
+        column -n -s, -tn < $1 | less -#2 -N -S
     }
 
     if ! [ -x "$(command -v bat)" ]; then
         alias cat="bat"
     fi
+
+    unmovegitmove () {
+        mv $1 $2
+        git mv $2 $1
+    }
 
 #   ----------------------------------------
 #   3. ROS AND ROBOTICS DEVELOPMENT
