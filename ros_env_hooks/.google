@@ -1,0 +1,6 @@
+if [ -f /home/$USER/google_ws/install_isolated/setup.bash ]; then
+    source /home/$USER/google_ws/install_isolated/setup.bash ]
+else
+    echo ".ros_env_hooks/.google: Google WS does not exist or is not built."
+fi
+

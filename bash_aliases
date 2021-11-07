@@ -193,11 +193,8 @@
 #   ULTRA
 #   -------------------
     alias ultranet="nmcli con up id 'ULTRA_2_Wireless Static'";
-    alias aualsrc="source /opt/ros/melodic/setup.bash && \
-                   source $ULTRA_WS/devel/setup.bash && \
-                   source $ULTRA_REPO/utilities/ultra_fc.sh && \
-                   export GAZEBO_RESOURCE_PATH=$GAZEBO_RESOURCE_PATH:$ULTRA_REPO/ultra_simulator/ultra_gazebo/worlds"
-
+    alias aualsrc="source /home/$USER/.ros_env_hooks/.ultra";
+    alias ultrasrc="aualsrc"
     alias ultravcs="wstool merge $ULTRA_REPO/utilities/ultra_$ROS_DISTRO.rosinstall -t $ULTRA_WS/src"
 
 #   ultrasync: rsync ultra repo to given hostname

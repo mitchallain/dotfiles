@@ -130,6 +130,7 @@ export LMR_WS=/home/mallain/lmr_ws
 export LMR_REPO=/home/mallain/lmr_ws/src/lemur-BMR
 
 # Default workspace sourcing
+#source /home/mallain/.ros_env_hooks/.google
 source $ULTRA_WS/devel/setup.bash
 #source $LMR_WS/devel/setup.bash
 
@@ -173,4 +174,9 @@ export IGN_IP=127.0.0.1
 #fi
 
 export TERM=xterm-256color
+
+# go path for building singularity from source
+if [ -d "/usr/local/go/bin" ]; then
+    export PATH=/usr/local/go/bin:$PATH
+fi
 
