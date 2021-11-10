@@ -77,6 +77,7 @@
 
     alias bnet="nmcli con up id 'Bastian_Internal'"
     alias xclipc="xclip -selection c"
+    alias xclipcr="tr -d '\n' | xclip -selection c"
     alias xclipv="xclip -selection clipboard -o"
 
     ## Git aliases

@@ -1,0 +1,16 @@
+
+{
+  "startOnLoad": true,
+  "flowchart": {
+    "useMaxWidth": false,
+    "htmlLabels": true
+  },
+  "sequence": {
+    "height": 40,
+    "actorMargin": 80,
+    "mirrorActors": false,
+    "bottomMarginAdj": 1
+  },
+  "themeCSS": ".label foreignObject { overflow: visible; }"
+}
+
