@@ -4,7 +4,7 @@ else
     echo ".ros_env_hooks/.ultra: ULTRA WS does not exist or is not built."
 fi
 
-if [ -f $ULTRA_WS/utilities/ultra_fc.sh ]; then
-    source $ULTRA_WS/utilities/ultra_fc.sh
+if [ -f $ULTRA_REPO/utilities/ultra_fc.sh ]; then
+    source $ULTRA_REPO/utilities/ultra_fc.sh
 fi
 
