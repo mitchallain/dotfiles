@@ -313,17 +313,30 @@
         source `catkin locate`/devel/setup.bash
     }
 
-#   catkin_vstidy: builds compile_commands translation db for clang-tidy VSCODE extension and links to src root
+#   catkin_tidy: uses compdb tool to collect all built packages translation dbs and links to src
+#                directory for editor or IDE to run clang-tidy against
 #   --------------------------------------------------------------
-    catkin_vstidy() {
+    catkin_tidy() {
         catkin build $1 --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
         local wspath=`catkin locate`
-        local translation_db=$wspath/build/$1/compile_commands.json
-        if [ -f $translation_db ]; then
-            ln -fs $wspath/build/$1/compile_commands.json $wspath/src/compile_commands.json
-        else
-            echo "$translation_db does not exist"
-        fi
+#        local translation_db=$wspath/build/$1/compile_commands.json
+        local packages=`catkin list -u`
+        local dbs=""
+        for pack in $packages
+        do
+            if [ -f $wspath/build/$pack/compile_commands.json ]; then
+                local db="-p $wspath/build/$pack "
+                dbs="$dbs$db"
+            fi
+        done
+        compdb $dbs list > $wspath/src/compile_commands.json
+        
+        # old, todo remove, linking individual packages, before I found compdb
+        #if [ -f $translation_db ]; then
+        #    ln -fs $wspath/build/$1/compile_commands.json $wspath/src/compile_commands.json
+        #else
+        #    echo "$translation_db does not exist"
+        #fi
     }
 
     rosbag_simtime() {
