@@ -75,7 +75,7 @@
     alias DT='tee /tmp/termout.txt'             # DT:           Pipe content to temporary file
     trash () { command mv "$@" ~/.local/share/Trash ; }     # trash:        Moves a file to the Ubuntu trash
 
-    alias bnet="nmcli con up id 'Bastian_Internal'"
+    alias bnet="nmcli con up id 'Bastian Guest'"
     alias xclipc="xclip -selection c"
     alias xclipcr="tr -d '\n' | xclip -selection c"
     alias xclipv="xclip -selection clipboard -o"
@@ -94,6 +94,12 @@
         for var in "$@"; do
             (xdg-open "$var" > /dev/null 2>&1 &)
         done
+    }
+
+    # tmux scrollback helper
+    savetmuxbuffer () {
+        /usr/bin/tmux send-keys -t $1:$2.$3 C-b ":capture-pane -e -S 10000" C-m
+        /usr/bin/tmux send-keys -t $1:$2.$3 C-b ":save-buffer ~/buffer.txt" C-m
     }
 
 #   lrr:  Full Recursive Directory Listing
@@ -119,9 +125,9 @@
         column -n -s, -tn < $1 | less -#2 -N -S
     }
 
-    if ! [ -x "$(command -v bat)" ]; then
-        alias cat="bat"
-    fi
+    #if ! [ -x "$(command -v bat)" ]; then
+    #    alias cat="bat"
+    #fi
 
     unmovegitmove () {
         mv $1 $2

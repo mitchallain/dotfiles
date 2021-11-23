@@ -1,12 +1,13 @@
 if [ -f $LMR_WS/devel/setup.bash ]; then
     source $LMR_WS/devel/setup.bash
 else
-    echo ".ros_env_hooks/.google: LMR WS does not exist or is not built."
+    echo ".ros_env_hooks/.lmr: LMR WS does not exist or is not built."
 fi
 
 if [ -f $LMR_REPO/utilities/.lemur_aliases ]; then
     source $LMR_REPO/utilities/.lemur_aliases
 fi 
 
-#export ROS_MASTER_URI=http://10.42.0.1:11311
+#export ROS_MASTER_URI=http://192.168.1.120:11311
+export ROS_MASTER_URI=http://10.42.0.1:11311
 
