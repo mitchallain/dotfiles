@@ -2,13 +2,13 @@
 	email = allain.mitch@gmail.com
 	name = Mitchell Allain
 [push]
-        default = simple
+    default = simple
 [credential]
-  helper = cache --timeout=3600
+    helper = cache --timeout=3600
 [log]
-        date = relative
+    date = relative
 [format]
-        pretty = format:%C(yellow)%h %Cblue%>(12)%ad %Cgreen%<(7)%aN%Cred%d %Creset%s
+    pretty = format:%C(yellow)%h %Cblue%>(12)%ad %Cgreen%<(7)%aN%Cred%d %Creset%s
 [core]
-        editor = vi
+    editor = vi
 

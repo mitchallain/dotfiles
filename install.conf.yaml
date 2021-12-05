@@ -12,6 +12,7 @@
     ~/.bash_aliases: bash_aliases
     ~/.gitconfig: gitconfig
     ~/.tmux.conf: tmux.conf
+    ~/.vim_runtime: vim-runtime
     ~/.vimrc: vimrc
     ~/.zshrc: zshrc
     ~/.config/matplotlib/stylelib: matplotlib/stylelib

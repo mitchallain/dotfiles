@@ -1,7 +1,7 @@
 " BEGIN SETTINGS INSERTED BY AWESOME VIM ON GITHUB
 set runtimepath+=~/.vim_runtime
 
-" source ~/.vim_runtime/vimrcs/basic.vim
+source ~/.vim_runtime/vimrcs/basic.vim
 " source ~/.vim_runtime/vimrcs/filetypes.vim
 " source ~/.vim_runtime/vimrcs/plugins_config.vim
 " source ~/.vim_runtime/vimrcs/extended.vim
@@ -24,6 +24,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'junegunn/fzf.vim'
 "Plug 'junegunn/limelight.vim'
 "Plug 'junegunn/goyo.vim'
+Plug 'preservim/nerdtree'
 call plug#end()
 
 " experiments below, I'll move these as appropriate once I figure out what I like
@@ -44,6 +45,10 @@ nnoremap <c-p> :FZF<cr>
 "always match tabsize with < and > commands
 :set shiftwidth=0
 :set expandtab
+
+" attempt to create vim backup at startup
+" https://stackoverflow.com/a/1549318
+silent !mkdir ~/.vim/tmp > /dev/null 2>&1
 
 " see https://stackoverflow.com/a/1625850/3885499
 " moves swap, backup, and undo files from working directory to ~/.vim/tmp/ -

@@ -1,13 +1,19 @@
-# Set up the prompt
+# 2021-12-05 - I'm not sure the source of this cfg or what it does - MA
+# not using zsh yet because it seems painfully different
 
-autoload -Uz promptinit
-promptinit
-prompt adam1
+# Set up the prompt
+# added by MA
+PROMPT='%n@%m:%1~$ '
+
+# I don't know what this does yet, so disabled to not conflict with above
+#autoload -Uz promptinit
+#promptinit
+#prompt adam1
 
 setopt histignorealldups sharehistory
 
 # Use emacs keybindings even if our EDITOR is set to vi
-bindkey -e
+#bindkey -e
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=1000
