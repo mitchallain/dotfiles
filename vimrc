@@ -27,8 +27,21 @@ Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
 call plug#end()
 
-" experiments below, I'll move these as appropriate once I figure out what I like
+" BEGIN PERSONAL CUSTOMIZATIONS AND EXPERIMENTS
 :set rnu
+:set nu
+:set mouse=a
+
+" see vim-runtime/vimrcs/filetypes.vim for ft specific tab size
+:set tabstop=4
+
+"always match tabsize with < and > commands
+:set shiftwidth=0
+:set expandtab
+
+" END PERSONAL CUSTOMIZATIONS
+
+
 
 " FUZZY FILE FINDER
 :set rtp+=~/.fzf
@@ -40,12 +53,8 @@ nnoremap <c-p> :FZF<cr>
 "     \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 " augroup END
 
-:set tabstop=4
 
-"always match tabsize with < and > commands
-:set shiftwidth=0
-:set expandtab
-
+" HIDE VIM SWAP, BKUP, UNDO FILES
 " attempt to create vim backup at startup
 " https://stackoverflow.com/a/1549318
 silent !mkdir ~/.vim/tmp > /dev/null 2>&1
