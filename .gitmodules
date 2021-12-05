@@ -7,4 +7,4 @@
 	url = https://github.com/tmux-plugins/tpm
 [submodule "vim-runtime"]
 	path = vim-runtime
-	url = https://github.com/MitchAllain/vimrc.git
+	url = git@github.com:MitchAllain/vimrc.git 
