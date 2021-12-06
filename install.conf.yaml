@@ -22,6 +22,7 @@
     ~/.ipython/profile_default/startup: ipython/profile_default/startup
     ~/.ros_env_hooks: ros_env_hooks
     ~/.mermaid.json: mermaid.json
+    ~/.clang-format: clang/.clang-format
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
