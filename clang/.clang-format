@@ -12,8 +12,8 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakTemplateDeclarations: true
 AlwaysBreakBeforeMultilineStrings: false
-BreakBeforeBinaryOperators: false
-BreakBeforeTernaryOperators: false
+BreakBeforeBinaryOperators: true
+BreakBeforeTernaryOperators: true
 #BreakConstructorInitializersBeforeComma: true
 BinPackParameters: true
 ColumnLimit:    100
