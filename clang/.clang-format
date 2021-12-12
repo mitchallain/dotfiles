@@ -1,29 +1,39 @@
-# Adapted from BastianSolutionsRandD/pick_and_place
+# Adapted from PickNikRobotics/roscpp_code_format
+# Removed all lines that already coincide with Google style
+# Less explicit, but more brief and maintainable
 ---
 BasedOnStyle:  Google
 AccessModifierOffset: -2
-ConstructorInitializerIndentWidth: 2
-AlignEscapedNewlinesLeft: false
-AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakTemplateDeclarations: true
 AlwaysBreakBeforeMultilineStrings: false
-BreakBeforeBinaryOperators: true
-BreakBeforeTernaryOperators: true
-#BreakConstructorInitializersBeforeComma: true
-BinPackParameters: true
+
+# Google Style Guide is impartial, this is more consistent with PEP8
+BreakBeforeBinaryOperators: NonAssignment
+
+# Configure each individual brace in BraceWrapping
+BreakBeforeBraces: Custom
+
+# Control of individual brace wrapping cases
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum : true
+  AfterFunction : true
+  AfterNamespace : true
+  AfterStruct : true
+  AfterUnion : true
+  BeforeCatch : true
+  BeforeElse : true
+  IndentBraces : false
+
+# ROS calls for 120, Google for 80, we compromise
 ColumnLimit:    100
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
-DerivePointerBinding: false
-PointerBindsToType: true
-ExperimentalAutoDetectBinPacking: false
-IndentCaseLabels: true
-MaxEmptyLinesToKeep: 1
-NamespaceIndentation: None
+
+ConstructorInitializerIndentWidth: 2
+
+# Google tries to auto-detect, we always want left PointerAlignment
+DerivePointerAlignment: false
+
 ObjCSpaceBeforeProtocolList: true
 PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 60
@@ -31,38 +41,8 @@ PenaltyBreakString: 100
 PenaltyBreakFirstLessLess: 1000
 PenaltyExcessCharacter: 1000
 PenaltyReturnTypeOnItsOwnLine: 70
-SpacesBeforeTrailingComments: 2
-Cpp11BracedListStyle: false
-Standard:        Auto
-IndentWidth:     2
-TabWidth:        2
-UseTab:          Never
-IndentFunctionDeclarationAfterType: false
-SpacesInParentheses: false
-SpacesInAngles:  false
-SpaceInEmptyParentheses: false
-SpacesInCStyleCastParentheses: false
 SpaceAfterControlStatementKeyword: true
-SpaceBeforeAssignmentOperators: true
-ContinuationIndentWidth: 4
 SortIncludes: false
-SpaceAfterCStyleCast: false
-
-# Configure each individual brace in BraceWrapping
-BreakBeforeBraces: Custom
-
-# Control of individual brace wrapping cases
-BraceWrapping: {
-    AfterClass: 'true'
-    AfterControlStatement: 'true'
-    AfterEnum : 'true'
-    AfterFunction : 'true'
-    AfterNamespace : 'true'
-    AfterStruct : 'true'
-    AfterUnion : 'true'
-    BeforeCatch : 'true'
-    BeforeElse : 'true'
-    IndentBraces : 'false'
-}
+TabWidth:        2
 ...
 
