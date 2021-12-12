@@ -3,7 +3,6 @@
 # Less explicit, but more brief and maintainable
 ---
 BasedOnStyle:  Google
-AccessModifierOffset: -2
 AllowAllParametersOfDeclarationOnNextLine: false
 AlwaysBreakBeforeMultilineStrings: false
 

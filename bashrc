@@ -131,8 +131,8 @@ export LMR_REPO=/home/mallain/lmr_ws/src/lemur-BMR
 
 # Default workspace sourcing
 #source /home/mallain/.ros_env_hooks/.google
-source $ULTRA_WS/devel/setup.bash
-#source $LMR_WS/devel/setup.bash
+#source $ULTRA_WS/devel/setup.bash
+source $LMR_WS/devel/setup.bash
 
 # set rosconsole config if exists
 if [ -f ~/rosconsole.config ]; then
@@ -165,6 +165,7 @@ unset __conda_setup
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 bind 'set show-all-if-ambiguous on'
 # bind 'TAB:menu-complete'
+bind Space:magic-space
 
 # GAZEBO ALL OF SUDDEN NEEDS THIS 03-25-2020
 export IGN_IP=127.0.0.1
