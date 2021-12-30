@@ -1,0 +1,98 @@
+%!TEX program = xelatex 
+% https://blog.hartleygroup.org/2015/08/01/a-pandoc-template-for-letterhead/
+% Scott's letterhead template. Adapted for use by me.
+
+% The "letter" class is used
+% because it allows for spacing between paragraphs, but properly line breaks at
+% the end of paragraphs (the articles class tends to avoid full lines at the
+% ends of paragraphs, for some reason).
+
+\documentclass[$size$]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+
+\usepackage{fixltx2e}
+\usepackage{amsmath}
+
+% Adds microtypography features: character protrusion, for XeTeX.
+\usepackage{microtype}
+
+% Allows links.
+\usepackage[usenames,dvipsnames]{color}
+\usepackage[xetex, bookmarks, colorlinks, breaklinks]{hyperref}
+\hypersetup{colorlinks=true, urlcolor=NavyBlue, linkcolor=NavyBlue}
+
+\urlstyle{rm}
+
+\frenchspacing{}        % Remove extra spaces after periods.
+\pagestyle{empty}       % Remove page numbers.
+
+\usepackage{fontspec}
+\defaultfontfeatures{Mapping=tex-text}  % Sets quotation marks.
+\setromanfont{Linux Libertine O}
+\setsansfont[BoldFont={Nimbus Sans L Bold}]{Nimbus Sans L}
+\setmonofont[Scale=MatchLowercase]{Menlo}
+
+% From default template
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\newcommand\shyp{\-}
+
+\newcommand{\header}[0]{
+    {\hypersetup{hidelinks}
+    \noindent
+    \parbox[b][0.625in][t]{6.5in}{
+        \vspace{-0.375in}
+        \parbox[b][0.625in][t]{3.74in}
+            {\href{https://www.bastiansolutions.com/}
+            {\includegraphics[width=1.5in]{/home/mallain/.pandoc/images/Bastian-Solutions-TAL.eps}}}\hfill
+        \parbox[b][0.625in][t]{1.72in}{
+            \setlength{\baselineskip}{9pt}
+            \fontsize{7pt}{7pt}{
+                \fontspec{Nimbus Sans L}
+                \textbf{MITCHELL ALLAIN}\\
+                Bastian Solutions R\&D, Dallas\\
+                1801 Royal Lane Suite 1006,\\
+                Farmers Branch, TX 75229\\
+                (337) 356-9946 Mobile\\
+                \href{mailto:mallain@bastiansolutions.com}{mallain@bastiansolutions.com}
+                }
+            }
+        }}
+    }
+
+$if(draft)$
+\usepackage{draftwatermark}
+\SetWatermarkLightness{0.9}
+$endif$
+
+\begin{document}
+
+\header
+
+$body$
+
+$if(sig.include)$
+    \begin{minipage}[t]{6.5in}
+    Sincerely,\\
+    $if(sig.sign)$
+        \vspace{-0.2in}\includegraphics{/home/mallain/.pandoc/images/sig}
+    $else$
+        \\
+    $endif$
+    \\
+    Mitchell Allain\\
+    $sig.post$
+    \end{minipage}
+$endif$
+
+$if(cc)$
+    cc: $for(cc)$$cc$$sep$, $endfor$
+$endif$
+
+$if(ps)$
+    $ps$
+$endif$
+
+\end{document}
+
