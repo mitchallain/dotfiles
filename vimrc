@@ -25,6 +25,7 @@ Plug 'junegunn/fzf.vim'
 "Plug 'junegunn/limelight.vim'
 "Plug 'junegunn/goyo.vim'
 Plug 'preservim/nerdtree'
+Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 
 " BEGIN PERSONAL CUSTOMIZATIONS AND EXPERIMENTS
