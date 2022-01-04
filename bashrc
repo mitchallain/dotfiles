@@ -131,8 +131,8 @@ export LMR_REPO=/home/mallain/lmr_ws/src/lemur-BMR
 
 # Default workspace sourcing
 #source /home/mallain/.ros_env_hooks/.google
-source /home/mallain/.ros_env_hooks/.lmr
-#source /home/mallain/.ros_env_hooks/.ultra
+#source /home/mallain/.ros_env_hooks/.lmr
+source /home/mallain/.ros_env_hooks/.ultra
 
 # set rosconsole config if exists
 if [ -f ~/rosconsole.config ]; then

@@ -23,6 +23,7 @@
     ~/.ros_env_hooks: ros_env_hooks
     ~/.mermaid.json: mermaid.json
     ~/.clang-format: clang/.clang-format
+    ~/.pandoc: pandoc
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]

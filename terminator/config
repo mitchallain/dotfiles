@@ -62,21 +62,14 @@
 [profiles]
   [[default]]
     background_color = "#002b36"
+    background_darkness = 0.95
+    background_type = transparent
     cursor_color = "#eee8d5"
-    font = Menlo 14
+    font = Menlo for Powerline 10
     foreground_color = "#eee8d5"
     login_shell = True
     palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#586e75:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
-    scrollback_infinite = True
-    scrollback_lines = 2000
-    use_system_font = False
-  [[solarized-dark]]
-    background_color = "#002b36"
-    cursor_color = "#eee8d5"
-    font = Monospace 9
-    foreground_color = "#eee8d5"
-    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#586e75:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
-    scrollback_lines = 5000
+    scrollback_lines = 100000
     use_system_font = False
   [[solarized-light]]
     background_color = "#eee8d5"
