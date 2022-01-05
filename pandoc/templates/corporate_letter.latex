@@ -12,6 +12,8 @@
 
 \usepackage{fixltx2e}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
 
 % Adds microtypography features: character protrusion, for XeTeX.
 \usepackage{microtype}
