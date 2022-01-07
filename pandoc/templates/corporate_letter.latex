@@ -14,6 +14,12 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}  % required from pandoc to provide inline
 
 % Adds microtypography features: character protrusion, for XeTeX.
 \usepackage{microtype}
@@ -53,6 +59,7 @@
             \fontsize{7pt}{7pt}{
                 \fontspec{Nimbus Sans L}
                 \textbf{MITCHELL ALLAIN}\\
+                Lead Robotics Software Engineer\\
                 Bastian Solutions R\&D, Dallas\\
                 1801 Royal Lane Suite 1006,\\
                 Farmers Branch, TX 75229\\
