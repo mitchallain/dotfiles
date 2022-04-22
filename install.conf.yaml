@@ -25,6 +25,7 @@
     ~/.clang-format: clang/.clang-format
     ~/.pandoc: pandoc
     ~/.config/yapf/style: yapf/style.yapf
+    ~/.pylintrc: pylintrc
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]

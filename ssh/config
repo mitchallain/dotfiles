@@ -20,6 +20,8 @@ Host hmi
     StrictHostKeyChecking no
 
 Host bulk
+    HostName 192.168.1.120
     User bmr
     StrictHostKeyChecking no
+    CheckHostIP no
 
