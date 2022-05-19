@@ -4,6 +4,7 @@
 # be loaded. Extensions are loading into the active Python interpreter and may
 # run arbitrary code
 extension-pkg-whitelist=
+      lxml
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
@@ -15,7 +16,7 @@ ignore-patterns=
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-#init-hook=
+init-hook="import imp, os; imp.load_source('pylint_init', '/home/mallain/.pylint_init.py')"
 
 # Use multiple processes to speed up Pylint.
 jobs=1
@@ -54,7 +55,8 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=apply-builtin,
+disable=
+        apply-builtin,
         backtick,
         bad-indentation,
         bad-inline-option,
@@ -134,7 +136,10 @@ disable=apply-builtin,
         using-cmp-argument,
         xrange-builtin,
         xreadlines-attribute,
-        zip-builtin-not-iterating
+        zip-builtin-not-iterating,
+        # end defaults
+        too-few-public-methods,  # requires 2 public methods, but a metaclass may only implement one abstractmethod
+        len-as-condition,  # 'if len(a) == 0' vs. 'if a', explicit is better than implicit
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
