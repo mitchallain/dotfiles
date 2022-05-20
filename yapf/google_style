@@ -1,3 +1,5 @@
+# $ yapf --style google --style-help > google_style
+
 [style]
 # Align closing bracket with visual indentation.
 align_closing_bracket_with_visual_indent=False
@@ -82,7 +84,7 @@ blank_line_before_nested_class_or_def=True
 coalesce_brackets=False
 
 # The column limit.
-column_limit=100
+column_limit=80
 
 # The style for continuation alignment. Possible values are:
 #

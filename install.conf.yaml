@@ -24,7 +24,7 @@
     ~/.mermaid.json: mermaid.json
     ~/.clang-format: clang/.clang-format
     ~/.pandoc: pandoc
-    ~/.config/yapf/style: yapf/style.yapf
+    ~/.config/yapf/style: yapf/style
     ~/.pylintrc: pylintrc
     ~/.ssh/config: ssh/config
 
