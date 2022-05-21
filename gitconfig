@@ -11,4 +11,11 @@
     pretty = format:%C(yellow)%h %Cblue%>(12)%ad %Cgreen%<(7)%aN%Cred%d %Creset%s
 [core]
     editor = vi
+[github]
+    user = MitchAllain
+[alias]
+    d = diff
+    co = checkout
+    st = status
+    br = branch
 
