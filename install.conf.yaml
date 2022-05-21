@@ -6,27 +6,30 @@
 - clean: ['~', '~/.config']
 
 - link:
-    ~/.profile: profile
-    ~/.bashrc: bashrc
-    ~/.bash_logout: bash_logout
     ~/.bash_aliases: bash_aliases
+    ~/.bash_logout: bash_logout
+    ~/.bashrc: bashrc
+    ~/.clang-format: clang/.clang-format
+    ~/.config/albert/albert.conf: albert/albert.conf
+    ~/.config/albert/org.albert.extension.snippets/snippets.db: albert/snippets.db
+    ~/.config/matplotlib/stylelib: matplotlib/stylelib
+    ~/.config/terminator/config: terminator/config
+    ~/.config/yapf/style: yapf/style
     ~/.gitconfig: gitconfig
+    ~/.ipython/profile_default/startup: ipython/profile_default/startup
+    ~/.mermaid.json: mermaid.json
+    ~/.pandoc: pandoc
+    ~/.profile: profile
+    ~/.pylintrc: pylintrc
+    ~/.ros_env_hooks: ros_env_hooks
+    ~/.ssh/config: ssh/config
     ~/.tmux.conf: tmux.conf
+    ~/.tmux.powerline.conf: tmux.powerline.conf
+    ~/.tmux/plugins/tpm: tpm
     ~/.vim_runtime: vim-runtime
     ~/.vimrc: vimrc
     ~/.zshrc: zshrc
-    ~/.config/matplotlib/stylelib: matplotlib/stylelib
-    ~/.config/terminator/config: terminator/config
     ~/rosconsole.config: ros/rosconsole.config
-    ~/.tmux/plugins/tpm: tpm
-    ~/.ipython/profile_default/startup: ipython/profile_default/startup
-    ~/.ros_env_hooks: ros_env_hooks
-    ~/.mermaid.json: mermaid.json
-    ~/.clang-format: clang/.clang-format
-    ~/.pandoc: pandoc
-    ~/.config/yapf/style: yapf/style
-    ~/.pylintrc: pylintrc
-    ~/.ssh/config: ssh/config
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
