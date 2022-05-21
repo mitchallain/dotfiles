@@ -6,6 +6,7 @@
 [keybindings]
   broadcast_group = <Primary><Alt>g
   group_all = <Alt>g
+  layout_launcher = None
   ungroup_all = <Shift><Alt>G
 [layouts]
   [[default]]
@@ -65,7 +66,7 @@
     background_darkness = 0.95
     background_type = transparent
     cursor_color = "#eee8d5"
-    font = Menlo 10
+    font = MesloLGMDZ Nerd Font Mono 10
     foreground_color = "#eee8d5"
     login_shell = True
     palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#586e75:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
