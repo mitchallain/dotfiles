@@ -6,7 +6,9 @@
 - clean: ['~', '~/.config']
 
 - link:
-    ~/.bash_aliases: bash_aliases
+    ~/.albertignore: albert/albertignore
+    ~/.bash_aliases: bash_aliases.sh
+    ~/.private_aliases: private/private_bash_aliases.sh
     ~/.bash_logout: bash_logout
     ~/.bashrc: bashrc
     ~/.clang-format: clang/.clang-format

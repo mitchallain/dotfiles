@@ -25,7 +25,7 @@
     parse_git_branch() {
         git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
     }
-    export PS1="\u@\h \[\033[32m\]\W\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ " 
+    export PS1="\u@\h \[\033[32m\]\W\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ "
     #export PS1="\u@\h:\W\\$ "
 
 #   Set Paths
@@ -53,307 +53,241 @@
 #   2. DEFAULT OPTIONS AND USEFUL ALIASES
 #   ----------------------------------------
 
-    alias cp='cp -iv'                           # Preferred 'cp' implementation
-    alias mv='mv -iv'                           # Preferred 'mv' implementation
-    alias nt='nautilus'                         # nautilus shortcut
-    alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
-    alias ll='ls -tFGlAhp'                       # Preferred 'ls' implementation
-    alias less='less -FSRXc'                    # Preferred 'less' implementation
-    cd() { builtin cd "$@"; ll; }               # Always list directory contents upon 'cd'
-    alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
-    alias ..='cd ../'                           # Go back 1 directory level
-    alias ...='cd ../../'                       # Go back 2 directory levels
-    alias .3='cd ../../../'                     # Go back 3 directory levels
-    alias .4='cd ../../../../'                  # Go back 4 directory levels
-    alias .5='cd ../../../../../'               # Go back 5 directory levels
-    alias .6='cd ../../../../../../'            # Go back 6 directory levels
-    alias ~="cd ~"                              # ~:            Go Home
-    alias c='clear'                             # c:            Clear terminal display
-    alias which='type -all'                     # which:        Find executables
-    alias path='echo -e ${PATH//:/\\n}'         # path:         Echo all executable Paths
-    alias show_options='shopt'                  # Show_options: display bash options settings
-    alias fix_stty='stty sane'                  # fix_stty:     Restore terminal settings when screwed up
-    alias cic='set completion-ignore-case On'   # cic:          Make tab-completion case-insensitive
-    mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and jumps inside
-    ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
-    alias DT='tee /tmp/termout.txt'             # DT:           Pipe content to temporary file
-    trash () { command mv "$@" ~/.local/share/Trash ; }     # trash:        Moves a file to the Ubuntu trash
+alias cp='cp -iv'                                   # prompt before overwrite (-i) and verbose (-v)
+alias mv='mv -iv'                                   # prompt before overwrite (-i) and verbose (-v)
+alias nt='nautilus'                                 # nautilus file browser shortcut
+alias mkdir='mkdir -pv'                             # make parents (-p) and verbose (-v)
 
-    alias bnet="nmcli con up id 'Bastian Guest'"
-    alias xclipc="xclip -selection c"
-    alias xclipcr="tr -d '\n' | xclip -selection c"
-    alias xclipv="xclip -selection clipboard -o"
+# show dotfiles (-A), classify (-F), no-group (-G), human readable sizes (-h)
+# long listing (-l), append / to directories (-p), sort by mtime newest first (-t)
+alias ll='ls -AFGhlpt'
 
-    ## Git aliases
-    alias gitl="git log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short"
-    alias gits="git status --porcelain"
+# clear screen (-c), exit if only one screen (-F), raw control chars (-R)
+# truncate long lines (-S), no termcap init (-X)
+alias less='less -cFRSX'
 
-    # Pipe to this, displays up to newline
-    alias wut="sed '/^\s*$/q'"
+alias cd..='cd ../'                                 # Go back 1 directory level (for fast typers)
+alias ..='cd ../'                                   # Go back 1 directory level
+alias ...='cd ../../'                               # Go back 2 directory levels
+alias .3='cd ../../../'                             # Go back 3 directory levels
+alias .4='cd ../../../../'                          # Go back 4 directory levels
+alias .5='cd ../../../../../'                       # Go back 5 directory levels
+alias .6='cd ../../../../../../'                    # Go back 6 directory levels
+alias ~="cd ~"                                      # ~:            Go Home
+alias c='clear'                                     # c:            Clear terminal display
 
-    # xopen
-    # -----
-    # xopen is my preferred xdg-open wrapper which supports multiple files/urls and runs in bg by default
-    xopen() {
-        for var in "$@"; do
-            (xdg-open "$var" > /dev/null 2>&1 &)
-        done
-    }
+alias which='type -a'                               # which:        Find executables
+alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
+alias fix_stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
+mcd () { mkdir -p "$1" && cd "$1"; }                # mcd:          Makes new Dir and jumps inside
+alias DT='tee /tmp/termout.txt'                     # DT:           Pipe content to temporary file
 
-    # tmux scrollback helper
-    savetmuxbuffer () {
-        /usr/bin/tmux send-keys -t $1:$2.$3 C-b ":capture-pane -e -S 10000" C-m
-        /usr/bin/tmux send-keys -t $1:$2.$3 C-b ":save-buffer ~/buffer.txt" C-m
-    }
+alias xclipc="xclip -selection c"
+alias xclipcr="tr -d '\n' | xclip -selection c"
+alias xclipv="xclip -selection clipboard -o"
 
-#   lrr:  Full Recursive Directory Listing
-#   ------------------------------------------
-#   alias lrr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
-
-#   lr: List n most recently modified files in directory
-#   ----------------------------------------------------
-    lr() {
-        ll -t | head -n $1
-    }
-
-#   mans:   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
-#           displays paginated result with colored search terms and two lines surrounding each hit.            Example: mans mplayer codec
-#   --------------------------------------------------------------------
-    mans () {
-        man $1 | grep -iC2 --color=always $2 | less
-    }
-
-#   colview: view formatted csv files from the console
-#   ------------------------------------------------------------
-    colview () {
-        column -n -s, -tn < $1 | less -#2 -N -S
-    }
-
-    #if ! [ -x "$(command -v bat)" ]; then
-    #    alias cat="bat"
-    #fi
-
-    unmovegitmove () {
-        mv $1 $2
-        git mv $2 $1
-    }
-
-#   ----------------------------------------
-#   3. ROS AND ROBOTICS DEVELOPMENT
-#   ----------------------------------------
-
-    # Preferred pylint config
-    alias pylint="pylint --rcfile=~/.pylintrc"
-
-    # #   ROS aliases
-    alias rosenv='printenv | grep ROS'                              # rosenv:  print the ROS path variables
-
-    alias rosgdb="rosrun --prefix 'gdb -ex run --args' "
-    alias rosprofile="rosrun --prefix 'valgrind --tool=callgrind' "
-    alias rosmemcheck="rosrun --prefix 'valgrind --tool=memcheck' "
-
-    alias listbranches="find . -type d -name '.git' -exec echo {} \; -exec git -C {} branch \;"
-
-    rosloglvl () {
-        rosservice call $2/set_logger_level "logger='ros.$1'"$'\r'"level='$3'"
-    }
-
-    # sws
-    # ---
-    # reset ROS environment, find containing workspace and source it
-    sws () {
-        source /opt/ros/$ROS_DISTRO/setup.bash;
-        local wspath=`catkin locate`;
-        source $wspath/devel/setup.bash;
-    }
-
-    # sitetime
-    # --------
-    # print time in various important locales
-    sitetime() {
-    : ${WORLDCLOCK_FORMAT:='+%Y-%m-%d %H:%M:%S %Z'}
-
-      LCL=`date "$WORLDCLOCK_FORMAT"`
-      FFC=`env TZ=US/Eastern date "$WORLDCLOCK_FORMAT"`
-      HTS=`env TZ=Asia/Tokyo date "$WORLDCLOCK_FORMAT"`
-
-      echo "Local                     $LCL"
-      echo "-------------------------------------------------"
-      echo "U3-1-FFC Frankfort, ID    $FFC"
-      echo "U3-2-HTS Kanda, JP        $HTS"
-    }
+## Git aliases
+# note git <alias> type commands can be defined in .gitconfig
+alias gitl="git log"
+alias gits="git status"
 
 
-#  TODO: the following do not belong in my bash_aliases, but to robot workspace specific alias files...
-#   -------------------
-#   MR - Mobile Robot
-#   -------------------
-    alias mrsrc="source ~/catkin_ws/devel/setup.bash"
+## COMMAND ALTERNATIVES
+## Replace some common commands with fancier alternatives from this century
 
+# bat - better cat
+if [ -x "$(command -v bat)" ]; then
+  alias cat="bat"
+fi
 
-#   -----------------------------
-#   LMR - Little Mobile Robot
-#   -----------------------------
-    alias lemurnet="nmcli con up id 'Lemur WiFi Static'";
-    alias lemurstate="rostopic echo /lmr/state | grep pack -A 23"
-    alias lemursrc="source /opt/ros/$ROS_DISTRO/setup.bash && \
-                    source ~/lmr_ws/devel/setup.bash && \
-                    export GAZEBO_RESOURCE_PATH=$GAZEBO_RESOURCE_PATH:~/lmr_ws/src/lemur-BMR/lemur_simulator/lemur_gazebo/worlds"
+# exa - better ls
+if [ -x "$(command -v exa)" ]; then
+  alias ls="exa"
+  alias ll="exa -lga --icons -s name"
+fi
 
-#   -------------------
-#   ULTRA
-#   -------------------
-    alias ultranet="nmcli con up id 'ULTRA_2_Wireless Static'";
-    alias aualsrc="source /home/$USER/.ros_env_hooks/.ultra";
-    alias ultrasrc="aualsrc"
-    alias ultravcs="wstool merge $ULTRA_REPO/utilities/ultra_$ROS_DISTRO.rosinstall -t $ULTRA_WS/src"
+## BASH FUNCTIONS
+## --------------
 
-#   ultrasync: rsync ultra repo to given hostname
-#   --------------------------------------------------------------
-    ultrasync () {
-        rsync -avE $ULTRA_REPO bmr@$1:~/catkin_ws/src/
-    }
+# trash       : alternative to rm which moves all arguments to the Ubuntu trash
+#             : TODO: platform-agnostic
+# ------------:-----------------------------------------------------------------
+trash () { command mv "$@" ~/.local/share/Trash ; }
 
-    # transfer_to: transfer working directory to the specified robot
-    # --------------------------------------------------------------
-    transfer_to ()
-    {
-      src_dir=$(pwd)
-      dest_dir="`echo ${src_dir%/*} | sed "s/${USER}/bmr/g"`"
-      rsync -avE $src_dir bmr@$1:$dest_dir
-    }
+# xopen       : xdg-open wrapper which supports multiple files/urls and runs in
+#             : bg by default
+# ------------:-----------------------------------------------------------------
+xopen() {
+  for var in "$@"; do
+    (xdg-open "$var" > /dev/null 2>&1 &)
+  done
+}
 
-    # transfer_from: transfer working directory from the specified robot to the local machine
-    # --------------------------------------------------------------
-    transfer_from ()
-    {
-      src_dir="`pwd | sed "s/${USER}/bmr/g"`/"
-      dest_dir="$(pwd)"
-      rsync -avE bmr@$1:$src_dir $dest_dir
-    }
+# savetmuxbuffer  : captures the last 10000 lines from tmux and saves to a file
+#                 : requires three args: session, window, and pane
+# ----------------:-------------------------------------------------------------
+# Example         : 'savetmuxbuffer ROS bringup 0'
+savetmuxbuffer () {
+  /usr/bin/tmux send-keys -t $1:$2.$3 C-b ":capture-pane -e -S 10000" C-m
+  /usr/bin/tmux send-keys -t $1:$2.$3 C-b ":save-buffer ~/buffer.txt" C-m
+}
 
+# lr          : List n most recently modified files in directory
+# ------------:-----------------------------------------------------------------
+# Example     : 'lr 5'
+lr() {
+  ll -t | head -n $1
+}
 
-    # Vision WS
-    alias vissrc="source ~/vision_ws/devel/setup.bash"
+# mans        : Search manpage given in arg 1 for term in arg 2 (case insensitive)
+#             : Displays paginated & colored result with two lines per hit
+# ------------:-----------------------------------------------------------------
+# Example     : 'mans mplayer codec'
+mans () {
+  man $1 | grep -iC2 --color=always $2 | less
+}
 
+# colview     : view argument as formatted csv file in the console
+# ------------:-----------------------------------------------------------------
+# Example     : 'colview test.csv'
+colview () {
+  column -n -s, -tn < $1 | less -#2 -N -S
+}
 
-    # ros_start: starts the ros system
-    # --------------------------------------------------------------
-    # Note: The ros_start command assumes that there is only one configuration
-    # file located in the home directory
-    ros_start ()
-    {
-      ${ULTRA_WS}/src/ultra-2-BMR/utilities/launcher.sh $(find ~/ultra* -print -quit)
-    }
+# unmvgitmv   : move a file at arg 1 back to path arg 2, then git mv from 2 to 1
+#             : for when you forget to git mv
+# ------------:-----------------------------------------------------------------
+unmvgitmv () {
+  mv $1 $2
+  git mv $2 $1
+}
 
-    # ros_exit: shuts down the ros system
-    # --------------------------------------------------------------
-    ros_exit ()
-    {
-      echo 'Killing ROS Tmux session...'
-      tmux kill-session -t ROS
-      tmux kill-session -t VENV
-    }
+# ----------------------------------------
+# 3. ROS AND ROBOTICS DEVELOPMENT
+# ----------------------------------------
 
-    # ros_restart: restarts the ros system
-    # --------------------------------------------------------------
-    ros_restart ()
-    {
-      ros_exit
-      ros_start
-    }
+# Preferred pylint config
+alias pylint="pylint --rcfile=~/.pylintrc"
 
+# #   ROS aliases
+alias rosenv='printenv | grep ROS'                              # rosenv:  print the ROS path variables
+alias rosgdb="rosrun --prefix 'gdb -ex run --args' "
+alias rosprofile="rosrun --prefix 'valgrind --tool=callgrind' "
+alias rosmemcheck="rosrun --prefix 'valgrind --tool=memcheck' "
 
-#   rostopicw: update list every $1 seconds
-#   --------------------------------------------------------------
-    rostopicw () {
-        watch -n $1 "rostopic list"
-    }
+# rosloglvl   : set logger in arg 1 at node in arg 2 to level in arg 3
+# ------------:-----------------------------------------------------------------
+# Example     : 'rosloglvl ultra_workspace_manager rospy debug' (confirm?)
+rosloglvl () {
+    rosservice call $2/set_logger_level "logger='ros.$1'"$'\r'"level='$3'"
+}
 
-#   rosnodew: update list every $1 seconds
-#   --------------------------------------------------------------
-    rosnodew () {
-        watch -n $1 "rosnode list"
-    }
+# sws         : reset ROS environment, find containing workspace and source it
+# ------------:-----------------------------------------------------------------
+sws () {
+    source /opt/ros/$ROS_DISTRO/setup.bash;
+    local wspath=`catkin locate`;
+    source $wspath/devel/setup.bash;
+}
 
-#   rosmaster: change master URI to machine name or IP in first arg
-#   --------------------------------------------------------------
-    rosmaster () {
-        export ROS_MASTER_URI=http://$1:11311
-    }
+# rostopicw   : update rostopic list every 1 second, or n seconds where n is arg 1
+# ------------:-----------------------------------------------------------------
+rostopicw () {
+  local period=${1:-1}
+  watch -n $period "rostopic list"
+}
 
-    rosgrep () {
-        rospack list | grep "$1";
-    }
+# rostopicw   : update rosnode list every 1 second, or n seconds where n is arg 1
+# ------------:-----------------------------------------------------------------
+rosnodew () {
+  local period=${1:-"1"}
+  watch -n $period "rosnode list"
+}
 
-    roseulerify () {
-        rosrun topic_tools transform $1 /eulerify$1 geometry_msgs/Vector3 'map(lambda x: x * 57.296, tf.transformations.euler_from_quaternion([m.x, m.y, m.z, m.w]))' --import tf
-    }
+# rosmaster   : replace rosmaster hostname with arg 1, assume default port
+# ------------:-----------------------------------------------------------------
+rosmaster () {
+  export ROS_MASTER_URI=http://$1:11311
+}
 
-#   roswiki: parse ros wiki url from package.xml and open in chrome
-#   --------------------------------------------------------------
-    roswiki () {
-        roscd $1; URL=$(cat package.xml | grep http | cut -d ">" -f 2 | cut -d "<" -f 1); /opt/google/chrome/chrome $URL
-    }
+# rosgrep     : find package
+#             : todo replace with fuzzy package finder
+# ------------:-----------------------------------------------------------------
+rosgrep () {
+  rospack list | grep "$1";
+}
 
-#   catkin_test: build package name from first arg and execute tests, printing results
-#   --------------------------------------------------------------
-    catkin_test() {
-        local wspath=`catkin locate`
-        catkin build --no-deps --catkin-make-args run_tests -- $1 > /dev/null && catkin_test_results $wspath/build/$1
-    #    catkin build --no-deps --catkin-make-args run_tests -- $1 && catkin_test_results $wspath/build/$1
-    }
+# roseulerify : republish a transform as Vector3 with rpy components
+#             : TODO better way?
+# ------------:-----------------------------------------------------------------
+roseulerify () {
+  rosrun topic_tools transform $1 /eulerify$1 geometry_msgs/Vector3 'map(lambda x: x * 57.296, tf.transformations.euler_from_quaternion([m.x, m.y, m.z, m.w]))' --import tf
+}
 
-#   catkin_test_this:
-#   --------------------------------------------------------------
-    catkin_test_this() {
-        local pkgname=`catkin list --this -u`
-        catkin_test $pkgname
-    }
+# roswiki     : parse ros wiki url from package.xml and open in chrome
+# ------------:-----------------------------------------------------------------
+roswiki () {
+  roscd $1; URL=$(cat package.xml | grep http | cut -d ">" -f 2 | cut -d "<" -f 1); /opt/google/chrome/chrome $URL
+}
 
-#   catkin_source: source containing ws *without* clearing ros env
-#   --------------------------------------------------------------
-    catkin_source() {
-        source `catkin locate`/devel/setup.bash
-    }
+# catkin_test : build package name from first arg and execute tests, printing results
+#             : results are printed ...
+#             : TODO is this redundant with 'catkin test --this'?
+# ------------:-----------------------------------------------------------------
+catkin_test() {
+  local wspath=`catkin locate`
+  catkin build --no-deps --catkin-make-args run_tests -- $1 > /dev/null && catkin_test_results $wspath/build/$1
+  #    catkin build --no-deps --catkin-make-args run_tests -- $1 && catkin_test_results $wspath/build/$1
+}
 
-#   catkin_tidy: uses compdb tool to collect all built packages translation dbs and links to src
-#                directory for editor or IDE to run clang-tidy against
-#   --------------------------------------------------------------
-    catkin_tidy() {
-        catkin build $1 --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-        local wspath=`catkin locate`
-#        local translation_db=$wspath/build/$1/compile_commands.json
-        local packages=`catkin list -u`
-        local dbs=""
-        for pack in $packages
-        do
-            if [ -f $wspath/build/$pack/compile_commands.json ]; then
-                local db="-p $wspath/build/$pack "
-                dbs="$dbs$db"
-            fi
-        done
-        compdb $dbs list > $wspath/src/compile_commands.json
-        
-        # old, todo remove, linking individual packages, before I found compdb
-        #if [ -f $translation_db ]; then
-        #    ln -fs $wspath/build/$1/compile_commands.json $wspath/src/compile_commands.json
-        #else
-        #    echo "$translation_db does not exist"
-        #fi
-    }
+# catkin_test_this : build current package and execute tests, printing results
+# -----------------:-----------------------------------------------------------------
+catkin_test_this() {
+  local pkgname=`catkin list --this -u`
+  catkin_test $pkgname
+}
 
-    rosbag_simtime() {
-        rosparam set /use_sim_time true
-        rosbag play $1 -l --clock
-    }
+# catkin_source    : source containing ws *without* clearing ros env
+#                  : i.e., this will overlay the current workspace
+# -----------------:-----------------------------------------------------------------
+catkin_source() {
+  source `catkin locate`/devel/setup.bash
+}
 
-#   bastian_jupyter: launch your jupyter workspace
-#   ------------------------------------------------------------
-    bastian_jupyter () {
-        cd /home/mallain/dev/ultra-jupyter-BMR && conda activate && jupyter notebook
-    }
+# catkin_tidy      : uses compdb tool to collect all built packages' translation dbs
+#                  : and links to src directory for editor to run clang-tidy against
+#                  : TODO check compdb installation first
+# -----------------:-----------------------------------------------------------------
+catkin_tidy() {
+  catkin build $1 --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  local wspath=`catkin locate`
+  # local translation_db=$wspath/build/$1/compile_commands.json
+  local packages=`catkin list -u`
+  local dbs=""
+  for pack in $packages
+  do
+    if [ -f $wspath/build/$pack/compile_commands.json ]; then
+      local db="-p $wspath/build/$pack "
+      dbs="$dbs$db"
+    fi
+  done
+  compdb $dbs list > $wspath/src/compile_commands.json
 
+  # old, todo remove, linking individual packages, before I found compdb
+  #if [ -f $translation_db ]; then
+  #    ln -fs $wspath/build/$1/compile_commands.json $wspath/src/compile_commands.json
+  #else
+  #    echo "$translation_db does not exist"
+  #fi
+}
+
+rosbag_simtime() {
+  rosparam set /use_sim_time true
+  rosbag play $1 -l --clock
+}
+
+# MAC OS X Aliases - TO DO
+# ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
 
 
 #   -------------------------------

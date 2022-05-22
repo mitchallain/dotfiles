@@ -1,4 +1,5 @@
 " BEGIN SETTINGS INSERTED BY AWESOME VIM ON GITHUB
+"
 set runtimepath+=~/.vim_runtime
 
 source ~/.vim_runtime/vimrcs/basic.vim
@@ -8,7 +9,7 @@ source ~/.vim_runtime/vimrcs/filetypes.vim
 source $VIMRUNTIME/vimrc_example.vim
 
 try
-source ~/.vim_runtime/my_configs.vim
+  source ~/.vim_runtime/my_configs.vim
 catch
 endtry
 " END SETTINGS INSERTED BY AWESOME VIM ON GITHUB
@@ -21,11 +22,11 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
-Plug 'junegunn/fzf.vim'
-"Plug 'junegunn/limelight.vim'
-"Plug 'junegunn/goyo.vim'
-Plug 'preservim/nerdtree'
-Plug 'christoomey/vim-tmux-navigator'
+  Plug 'junegunn/fzf.vim'
+  "Plug 'junegunn/limelight.vim'
+  "Plug 'junegunn/goyo.vim'
+  Plug 'preservim/nerdtree'
+  Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 
 " BEGIN PERSONAL CUSTOMIZATIONS AND EXPERIMENTS
@@ -39,6 +40,8 @@ call plug#end()
 "always match tabsize with < and > commands
 :set shiftwidth=0
 :set expandtab
+
+:set clipboard=unnamed
 
 " END PERSONAL CUSTOMIZATIONS
 
