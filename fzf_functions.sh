@@ -23,7 +23,7 @@ fwifi () {
       --inline-info \
       --header-lines=1 \
       | awk '{print $1}' ) || return
-  # echo $ssid
+  [[ -z "$ssid" ]] && return
   nmcli -a device wifi connect $ssid
 }
 
@@ -254,6 +254,8 @@ fedit () {
   fi
 }
 
+alias fe=fedit
+
 # fkill            : kill processes - list only the ones you can kill
 # -----------------:-----------------------------------------------------------------
 fkill() {
@@ -283,4 +285,24 @@ fvim() {
   fi
 }
 
+
+# ---------------------
+# FUZZY ROS
+# ---------------------
+frostopic() {
+  local topic=$(rostopic list | fzf --preview "rostopic info {}")
+  [[ -z "$topic" ]] && return
+  rostopic echo $@ $topic
+}
+
+frosnode() {
+  local node=$(rosnode list | fzf --preview "rosnode info {}")
+  [[ -z "$node" ]] && return
+  rosnode info -q $@ $node
+}
+
+frospack() {
+  local pack=$(rospack list | fzf --preview "cat {2}/package.xml" | awk '{print $2}')
+  cd $pack
+}
 
