@@ -7,7 +7,7 @@
 
 - link:
     ~/.albertignore: albert/albertignore
-    ~/.aliases/private_aliases.sh: private/private_bash_aliases.sh
+    ~/.aliases/bastian_aliases.sh: private/bastian_aliases.sh
     ~/.aliases/fzf_functions.sh: fzf_functions.sh
     ~/.bash_aliases: bash_aliases.sh
     ~/.bash_logout: bash_logout
@@ -23,7 +23,6 @@
     ~/.ipython/profile_default/startup: ipython/profile_default/startup
     ~/.mermaid.json: mermaid.json
     ~/.pandoc: pandoc
-    ~/.private_aliases: private/private_bash_aliases.sh
     ~/.profile: profile
     ~/.pylintrc: pylintrc
     ~/.ros_env_hooks: private/ros_env_hooks

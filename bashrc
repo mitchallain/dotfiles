@@ -97,13 +97,6 @@ for i in - {0..9} ; do
     bind -r '\e'$i
 done
 
-# Bastian-Specific Environment Variables
-# Currently needs to run prior to ~/.bash_aliases due to
-# nested sourcing of private aliases which use env variables
-if [ -f ~/.bastianrc ]; then
-    . ~/.bastianrc
-fi
-
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -111,6 +104,16 @@ fi
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
+
+# Bastian-Specific Environment Setup
+# Currently needs to run prior to ~/.bash_aliases due to
+# nested sourcing of private aliases which use env variables
+if [ -f ~/.bastianrc ] && [ -f ~/.aliases/bastian_aliases.sh ]; then
+    . ~/.bastianrc
+    . ~/.aliases/bastian_aliases.sh
+fi
+
+
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
