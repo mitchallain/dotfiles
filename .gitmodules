@@ -7,8 +7,7 @@
 	url = https://github.com/tmux-plugins/tpm
 [submodule "vim-runtime"]
 	path = vim-runtime
-	url = git@github.com:MitchAllain/vimrc.git 
-
+	url = git@github.com:MitchAllain/vimrc.git
 [submodule "private"]
 	path = private
 	url = git@github.com:MitchAllain/dotfiles_private.git

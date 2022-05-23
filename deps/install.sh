@@ -1,13 +1,12 @@
+#!/bin/bash
+
 sudo add-apt-repository ppa:zeal-developers/ppa
 
 sudo apt update
 
 sudo apt install \
-artha \             # dictionary / thesaurus
-git \               # git
 tmux \              # session-based terminal multiplexer
 zeal                # offline documentation browser
-
 
 # fzf - fuzzy command line finder
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -36,4 +35,15 @@ ln -s /usr/bin/batcat ~/.local/bin/bat
 
 # exa - ls alternative with extended attributes
 sudo apt install exa
+
+
+## NEOVIM
+sudo apt install neovim
+
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+
+
+
 
