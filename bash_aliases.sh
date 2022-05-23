@@ -106,8 +106,7 @@ fi
 
 # exa - better ls
 if [ -x "$(command -v exa)" ]; then
-  alias ls="exa"
-  alias ll="exa -lga --icons -s name"
+  alias lx="exa -lga --icons -s name"
 fi
 
 ## BASH FUNCTIONS
