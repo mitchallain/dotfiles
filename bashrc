@@ -87,11 +87,6 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -102,12 +97,17 @@ for i in - {0..9} ; do
     bind -r '\e'$i
 done
 
+# Bastian-Specific Environment Variables
+# Currently needs to run prior to ~/.bash_aliases due to
+# nested sourcing of private aliases which use env variables
+if [ -f ~/.bastianrc ]; then
+    . ~/.bastianrc
+fi
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
@@ -121,36 +121,6 @@ if ! shopt -oq posix; then
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
   fi
-fi
-
-
-# ---------------------------------------------------------
-#  ROS SETUP
-# ---------------------------------------------------------
-
-# ROS environment and ULTRA workspace path variables
-source /opt/ros/melodic/setup.bash
-export ULTRA_WS=/home/mallain/catkin_ws
-export ULTRA_REPO=/home/mallain/catkin_ws/src/ultra-2-BMR
-
-export LMR_WS=/home/mallain/lmr_ws
-export LMR_REPO=/home/mallain/lmr_ws/src/lemur-BMR
-
-# Default workspace sourcing
-#source /home/mallain/.ros_env_hooks/.google
-#source /home/mallain/.ros_env_hooks/.lmr
-source /home/mallain/.ros_env_hooks/.ultra
-
-# set rosconsole config if exists
-if [ -f ~/rosconsole.config ]; then
-    export ROSCONSOLE_CONFIG_FILE=~/rosconsole.config
-fi
-
-# ---------------------------------------------------------
-
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
 fi
 
 # >>> conda initialize >>>
@@ -174,9 +144,6 @@ bind 'set show-all-if-ambiguous on'
 # bind 'TAB:menu-complete'
 bind Space:magic-space
 
-# GAZEBO ALL OF SUDDEN NEEDS THIS 03-25-2020
-export IGN_IP=127.0.0.1
-
 #if [[ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh && ! -n $SSH_CONNECTION ]]; then
 #    source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 #fi
@@ -187,6 +154,11 @@ export TERM=xterm-256color
 if [ -d "/usr/local/go/bin" ]; then
     export PATH=/usr/local/go/bin:$PATH
 fi
+
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 #eval "$(starship init bash)"
 

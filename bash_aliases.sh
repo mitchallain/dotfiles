@@ -1,3 +1,4 @@
+#!/bin/bash
 #  ---------------------------------------------------------------------------
 #
 #  Description:  This file holds default arguments, aliases, and custom functions
@@ -30,7 +31,7 @@
 
 #   Set Paths
 #   ------------------------------------------------------------
-    export PATH="$PATH:/usr/local/bin/"
+#    export PATH="$PATH:/usr/local/bin/"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
@@ -91,6 +92,9 @@ alias xclipv="xclip -selection clipboard -o"
 alias gitl="git log"
 alias gits="git status"
 
+# bd - back to parent directory
+# https://github.com/vigneshwaranr/bd
+alias bd=". bd -si"
 
 ## COMMAND ALTERNATIVES
 ## Replace some common commands with fancier alternatives from this century
@@ -286,117 +290,96 @@ rosbag_simtime() {
   rosbag play $1 -l --clock
 }
 
+# Private alias definitions for work - stored separately
+if [ -f ~/.aliases/private_aliases.sh ]; then
+  . ~/.aliases/private_aliases.sh
+fi
+
+# fzf dependent functions and aliases
+if [ -x "$(command -v fzf)" ] && [ -f ~/.aliases/fzf_functions.sh ]; then
+  . ~/.aliases/fzf_functions.sh
+fi
+
 # MAC OS X Aliases - TO DO
+# ------------------------
 # ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
 
+# -------------------------------
+# 4. SPECIALIZED TOOLS
+# -------------------------------
 
-#   -------------------------------
-#   4. SPECIALIZED TOOLS
-#   -------------------------------
+# DOCKER ALIASES
+alias docker_clean_images='docker rmi $(docker images -a --filter=dangling=true -q)'
+alias docker_clean_ps='docker rm $(docker ps --filter=status=exited --filter=status=created -q)'
 
-    # DOCKER ALIASES
-    alias docker_clean_images='docker rmi $(docker images -a --filter=dangling=true -q)'
-    alias docker_clean_ps='docker rm $(docker ps --filter=status=exited --filter=status=created -q)'
+# MERMAID DIAGRAM GENERATION
+alias mmdc="/home/mallain/dev/node_modules/.bin/mmdc"
 
-    # MERMAID DIAGRAM GENERATION
-    alias mmdc="/home/mallain/dev/node_modules/.bin/mmdc"
-    # make mermaid diagram from clipboard selection
-    mmdclip() {
-        xclip -o | mmdc -i /dev/stdin -c ~/.mermaid.json $@
-    }
+# mmdclip          : use text in clipboard to generate mermaid diagrams
+#                  : need to provide at least output path (-o PATH)
+#                  : can provide any other args (see mmdc -h)
+# -----------------:-----------------------------------------------------------------
+# Example          : 'mmdclip -w 1000 -o test.svg'
+mmdclip() {
+  xclip -o | mmdc -i /dev/stdin -c ~/.mermaid.json $@
+}
 
-    # tm - create new tmux session, or switch to existing one. Works from within tmux too. (@bag-man)
-    # `tm` will allow you to select your tmux session via fzf.
-    # `tm irc` will attach to the irc session (if it exists), else it will create it.
+# extract:  Extract most know archives with one command
+# ---------------------------------------------------------
+extract () {
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1     ;;
+      *.tar.gz)    tar xzf $1     ;;
+      *.bz2)       bunzip2 $1     ;;
+      *.rar)       unrar e $1     ;;
+      *.gz)        gunzip $1      ;;
+      *.tar)       tar xf $1      ;;
+      *.tbz2)      tar xjf $1     ;;
+      *.tgz)       tar xzf $1     ;;
+      *.zip)       unzip $1       ;;
+      *.Z)         uncompress $1  ;;
+      *.7z)        7z x $1        ;;
+      *)     echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
 
-    tm() {
-      [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-      if [ $1 ]; then
-        tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
-      fi
-      session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
-    }
+# ---------------------------
+# 4. SEARCHING
+# ---------------------------
 
+alias qfind="find . -name "                 # qfind:    Quickly search for file
+ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
+ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
+ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 
-#   -------------------------------
-#   3. FILE AND FOLDER MANAGEMENT
-#   -------------------------------
+# ---------------------------
+# 5. PROCESS MANAGEMENT
+# ---------------------------
 
-# zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP archive of a folder
-# alias numFiles='echo $(ls -1 | wc -l)'      # numFiles:     Count of non-hidden files in current dir
-# alias make1mb='mkfile 1m ./1MB.dat'         # make1mb:      Creates a file of 1mb size (all zeros)
-# alias make5mb='mkfile 5m ./5MB.dat'         # make5mb:      Creates a file of 5mb size (all zeros)
-# alias make10mb='mkfile 10m ./10MB.dat'      # make10mb:     Creates a file of 10mb size (all zeros)
+# findPid: find out the pid of a specified process
+# -----------------------------------------------------
+#     Note that the command name can be specified via a regex
+#     E.g. findPid '/d$/' finds pids of all processes with names ending in 'd'
+#     Without the 'sudo' it will only find processes of the current user
+# -----------------------------------------------------
+find_pid () { lsof -t -c "$@" ; }
 
-#   extract:  Extract most know archives with one command
-#   ---------------------------------------------------------
-    extract () {
-        if [ -f $1 ] ; then
-          case $1 in
-            *.tar.bz2)   tar xjf $1     ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar e $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xf $1      ;;
-            *.tbz2)      tar xjf $1     ;;
-            *.tgz)       tar xzf $1     ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *)     echo "'$1' cannot be extracted via extract()" ;;
-             esac
-         else
-             echo "'$1' is not a valid file"
-         fi
-    }
-
-
-#   ---------------------------
-#   4. SEARCHING
-#   ---------------------------
-
-    alias qfind="find . -name "                 # qfind:    Quickly search for file
-    ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
-    ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
-    ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
-
-#   ---------------------------
-#   5. PROCESS MANAGEMENT
-#   ---------------------------
-
-#   findPid: find out the pid of a specified process
-#   -----------------------------------------------------
-#       Note that the command name can be specified via a regex
-#       E.g. findPid '/d$/' finds pids of all processes with names ending in 'd'
-#       Without the 'sudo' it will only find processes of the current user
-#   -----------------------------------------------------
-    find_pid () { lsof -t -c "$@" ; }
-
-#   memHogsTop, memHogsPs:  Find memory hogs
-#   -----------------------------------------------------
-    alias mem_hogs_top='top -l 1 -o rsize | head -20'
-    alias mem_hogs_ps='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
+# memHogsTop, memHogsPs:  Find memory hogs
+# -----------------------------------------------------
+alias mem_hogs_top='top -l 1 -o rsize | head -20'
+alias mem_hogs_ps='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
 
 #   cpuHogs:  Find CPU hogs
 #   -----------------------------------------------------
-    alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
+alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
 
-#   topForever:  Continual 'top' listing (every 10 seconds)
-#   -----------------------------------------------------
-    alias topForever='top -l 9999999 -s 10 -o cpu'
-
-#   ttop:  Recommended 'top' invocation to minimize resources
+#   #   my_ps: List processes owned by my user:
 #   ------------------------------------------------------------
-#       Taken from this macosxhints article
-#       http://www.macosxhints.com/article.php?story=20060816123853639
-#   ------------------------------------------------------------
-    alias ttop="top -R -F -s 10 -o rsize"
-
-#   my_ps: List processes owned by my user:
-#   ------------------------------------------------------------
-    my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
-
+my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 
 #   ---------------------------
 #   6. NETWORKING
@@ -431,239 +414,6 @@ rosbag_simtime() {
 #   9. FUZZY SEARCHING
 #   ---------------------------------------
 #   see https://github.com/junegunn/fzf/wiki/Examples#searching-file-contents
-
-#   --------------
-#   9.1 FUZZY GIT
-#   --------------
-
-    ### https://github.com/wfxr/forgit#custom-options
-    # ga:     interactive git add selector
-    # glo:    interactive git log viewer
-    # gi:     interactive .gitignore generator
-    # gd:     interactive git diff viewer
-    # grh:    interactive interactive git reset HEAD &lt;file> selector
-    # gcf:    interactive git checkout &lt;file> selector
-    # gss:    interactive git stash viewer
-    # gclean: interactive git clean selector
-    [ -f ~/.forgit/forgit.plugin.zsh ] && source ~/.forgit/forgit.plugin.zsh
-
-    # fbr: checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
-    # ----------------------------------------------------------------------------------------------------------
-    fbr() {
-      local branches branch
-      branches=$(git for-each-ref --count=30 --sort=-committerdate refs/ --format="%(refname:short)") &&
-      branch=$(echo "$branches" |
-               fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-      git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
-    }
-
-    # fco - checkout git branch/tag
-    # ----------------------------------------------------------------------------------------------------------
-    fco() {
-      local tags branches target
-      branches=$(
-        git --no-pager branch --all \
-          --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
-        | sed '/^$/d') || return
-      tags=$(
-        git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
-      target=$(
-        (echo "$branches"; echo "$tags") |
-        fzf --no-hscroll --no-multi -n 2 \
-            --ansi) || return
-      git checkout $(awk '{print $2}' <<<"$target" )
-    }
-
-
-    # fco_preview - checkout git branch/tag, with a preview showing the commits between the tag/branch and HEAD
-    # ----------------------------------------------------------------------------------------------------------
-    fco_preview() {
-      local tags branches target
-      branches=$(
-        git --no-pager branch --all \
-          --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
-        | sed '/^$/d') || return
-      tags=$(
-        git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
-      target=$(
-        (echo "$branches"; echo "$tags") |
-        fzf --no-hscroll --no-multi -n 2 \
-            --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
-      git checkout $(awk '{print $2}' <<<"$target" )
-    }
-
-    # fshow - git commit browser
-    # ----------------------------------------------------------------------------------------------------------
-    fshow() {
-      git log --graph --color=always \
-          --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
-      fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
-          --bind "ctrl-m:execute:
-                    (grep -o '[a-f0-9]\{7\}' | head -1 |
-                    xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
-                    {}
-    FZF-EOF"
-    }
-
-    alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" "$@"'
-    _gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
-    _viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
-
-    # fcoc_preview - checkout git commit with previews
-    # ----------------------------------------------------------------------------------------------------------
-    fcoc_preview() {
-      local commit
-      commit=$( glNoGraph |
-        fzf --no-sort --reverse --tiebreak=index --no-multi \
-            --ansi --preview="$_viewGitLogLine" ) &&
-      git checkout $(echo "$commit" | sed "s/ .*//")
-    }
-
-    # fshow_preview - git commit browser with previews
-    # ----------------------------------------------------------------------------------------------------------
-    fshow_preview() {
-        glNoGraph |
-            fzf --no-sort --reverse --tiebreak=index --no-multi \
-                --ansi --preview="$_viewGitLogLine" \
-                    --header "enter to view, alt-y to copy hash" \
-                    --bind "enter:execute:$_viewGitLogLine   | less -R" \
-                    --bind "alt-y:execute:$_gitLogLineToHash | xclip"
-    }
-
-
-#   ---------------------
-#   9.2 FUZZY CHROME
-#   ---------------------
-
-    # fbook - fuzzy browse chrome bookmarks
-    alias fbook="/home/mallain/bin/fbook.rb"
-
-    # fhist
-    # -------
-    # search chrome browser history
-    export -f xopen
-    fhist() {
-      local cols sep google_history open
-      cols=$(( COLUMNS / 3 ))
-      sep='{::}'
-
-      if [ "$(uname)" = "Darwin" ]; then
-        google_history="$HOME/Library/Application Support/Google/Chrome/Default/History"
-        open=open
-      else
-        google_history="$HOME/.config/google-chrome/Default/History"
-        open=xopen
-      fi
-      \cp -f "$google_history" /tmp/h
-      sqlite3 -separator $sep /tmp/h \
-        "select substr(title, 1, $cols), url
-         from urls order by last_visit_time desc" |
-      awk -F $sep '{printf "%-'$cols's  \x1b[36m%s\x1b[m\n", $1, $2}' |
-      fzf --ansi --multi | sed 's#.*\(https*://\)#\1#' | xargs bash -c 'xopen "$@"' _ {}
-    }
-
-
-    fman() {
-        man -k . | fzf --prompt='Man> ' | awk '{print $1}' | xargs -r man
-    }
-
-    # fnotes
-    # ------
-    # fuzzy full-text search markdown notes and open the exact line number match in sublime
-    fnotes() {
-      # rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
-      bdir=$pwd
-      ndir="/home/mallain/Dropbox/BMR-MA/Notable/notes"
-      cd $ndir > /dev/null 2>&1
-
-      # VSCODE DEFAULT
-      # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' code -g
-
-      # SUBLIME DEFAULT
-      ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' subl
-
-      # ag --nobreak --noheading . | fzf -m --delimiter=: --preview "echo {1} | cut -d':' -f1 | xargs -d '\n' -r cat" | cut -d':' -f1
-      # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "rg --pretty --context 10 -F "{3}" {1}" | cut -d':' -f1
-      # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "rg -n {2} --context 10 {1}" | cut -d':' -f1
-      # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1} | rg --context 10 --pretty {2} " | cut -d':' -f1
-      # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat {1} | tail -n +\$({2} + 10)" | cut -d':' -f1
-      # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && echo \"{3..}\" | xargs rg -F \"{3..}\" {1}"
-      # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && rg -F \"\$(echo {3..})\" {1}"
-      cd $bdir > /dev/null 2>&1
-    }
-
-    # using ripgrep combined with preview
-    # find-in-file - usage: fif <searchTerm>
-    fif() {
-        if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-        rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
-    }
-
-    fcd() {
-        local dir
-        dir=$(find ${1:-.} -path '*/\.*' -prune \
-                      -o -type d -print 2> /dev/null | fzf +m --preview="tree -L 2 {}") &&
-        cd "$dir"
-    }
-
-    fsubld() {
-        local dirs
-        dirs=$(find ${1:-.} -path '*/\.*' -prune \
-                      -o -type d -print 2> /dev/null | fzf -m --preview="tree -L 2 {}") &&
-        for var in $dirs; do
-            (subl "$var" > /dev/null 2>&1 &)
-        done
-    }
-
-    # fopen
-    # -----
-    # open one or more files with xdg-open
-    fopen() {
-        IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-        [[ -n "$files" ]] && xopen "${files[@]}"
-    }
-
-    # Modified version where you can press
-    #   - CTRL-O to open subl
-    #   - CTRL-E or Enter key to open with the $EDITOR
-    fedit () {
-        IFS=$'\n' out=("$(fzf-tmux --query="$1" --exit-0 --expect=ctrl-o,ctrl-e)")
-        key=$(head -1 <<< "$out")
-        file=$(head -2 <<< "$out" | tail -1)
-        if [ -n "$file" ]; then
-            [ "$key" = ctrl-o ] && subl "$file" || ${EDITOR:-vim} "$file"
-        fi
-    }
-
-    # fkill - kill processes - list only the ones you can kill. Modified the earlier script.
-    fkill() {
-        local pid
-        if [ "$UID" != "0" ]; then
-            pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
-        else
-            pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
-        fi
-
-        if [ "x$pid" != "x" ]
-        then
-            echo $pid | xargs kill -${1:-9}
-        fi
-    }
-
-    alias bd=". bd -si"
-
-    # fuzzy grep open via ag with line number
-    fvim() {
-        local file
-        local line
-
-        read -r file line <<<"$(ag --nobreak --noheading $@ | fzf -0 -1 | awk -F: '{print $1, $2}')"
-
-        if [[ -n $file ]]
-        then
-            vim $file +$line
-        fi
-    }
 
     # prints an excerpt from the art of the command line
     function taocl() {

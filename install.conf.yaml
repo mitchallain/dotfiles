@@ -7,10 +7,12 @@
 
 - link:
     ~/.albertignore: albert/albertignore
+    ~/.aliases/private_aliases.sh: private/private_bash_aliases.sh
+    ~/.aliases/fzf_functions.sh: fzf_functions.sh
     ~/.bash_aliases: bash_aliases.sh
-    ~/.private_aliases: private/private_bash_aliases.sh
     ~/.bash_logout: bash_logout
     ~/.bashrc: bashrc
+    ~/.bastianrc: private/bastianrc.sh
     ~/.clang-format: clang/.clang-format
     ~/.config/albert/albert.conf: albert/albert.conf
     ~/.config/albert/org.albert.extension.snippets/snippets.db: albert/snippets.db
@@ -21,9 +23,10 @@
     ~/.ipython/profile_default/startup: ipython/profile_default/startup
     ~/.mermaid.json: mermaid.json
     ~/.pandoc: pandoc
+    ~/.private_aliases: private/private_bash_aliases.sh
     ~/.profile: profile
     ~/.pylintrc: pylintrc
-    ~/.ros_env_hooks: ros_env_hooks
+    ~/.ros_env_hooks: private/ros_env_hooks
     ~/.ssh/config: ssh/config
     ~/.tmux.conf: tmux.conf
     ~/.tmux.powerline.conf: tmux.powerline.conf
