@@ -27,7 +27,7 @@
     ~/.profile: profile
     ~/.pylintrc: pylintrc
     ~/.ros_env_hooks: private/ros_env_hooks
-    ~/.ssh/config: ssh/config
+    ~/.ssh/config: private/ssh/config
     ~/.tmux.conf: tmux.conf
     ~/.tmux.powerline.conf: tmux.powerline.conf
     ~/.tmux/plugins/tpm: tpm
