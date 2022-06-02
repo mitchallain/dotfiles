@@ -138,7 +138,7 @@ savetmuxbuffer () {
 # lr          : List n most recently modified files in directory
 # ------------:-----------------------------------------------------------------
 # Example     : 'lr 5'
-lr() {
+lr () {
   ll -t | head -n $1
 }
 
