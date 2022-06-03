@@ -296,7 +296,7 @@ frostopic() {
 }
 
 frosnode() {
-  local node=$(rosnode list | fzf --preview "rosnode info {}")
+  local node=$(rosnode list | fzf --preview "rosnode info -q {}")
   [[ -z "$node" ]] && return
   rosnode info -q $@ $node
 }
@@ -304,5 +304,11 @@ frosnode() {
 frospack() {
   local pack=$(rospack list | fzf --preview "cat {2}/package.xml" | awk '{print $2}')
   cd $pack
+}
+
+frosparam() {
+  local param=$(rosparam list | fzf --preview "rosparam get {}")
+  [[ -z "$param" ]] && return
+  rosparam get $param
 }
 

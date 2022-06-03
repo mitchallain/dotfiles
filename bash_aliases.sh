@@ -409,18 +409,13 @@ my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 #         echo
 #     }
 
-#   ---------------------------------------
-#   9. FUZZY SEARCHING
-#   ---------------------------------------
-#   see https://github.com/junegunn/fzf/wiki/Examples#searching-file-contents
-
-    # prints an excerpt from the art of the command line
-    function taocl() {
-        curl -s https://raw.githubusercontent.com/jlevy/the-art-of-command-line/master/README.md |
+# prints an excerpt from the art of the command line
+function taocl() {
+    curl -s https://raw.githubusercontent.com/jlevy/the-art-of-command-line/master/README.md |
         sed '/cowsay[.]png/d' |
         pandoc -f markdown -t html |
         xmlstarlet fo --html --dropdtd |
         xmlstarlet sel -t -v "(html/body/ul/li[count(p)>0])[$RANDOM mod last()+1]" |
         xmlstarlet unesc | fmt -80 | iconv -t US
-    }
+}
 

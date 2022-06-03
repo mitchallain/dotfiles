@@ -1,3 +1,9 @@
 [style]
 based_on_style = pep8
 column_limit = 80
+
+# Set to True to prefer splitting before '+', '-', '*', '/', '//', or '@'
+# rather than after.
+split_before_arithmetic_operator=True
+
+
