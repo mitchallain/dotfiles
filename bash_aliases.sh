@@ -19,35 +19,20 @@
 #   -------------------------------
 #   1. ENVIRONMENT CONFIGURATION
 #   -------------------------------
+#   TODO: move this to bashrc
 
-#   Change Prompt
-#   ------------------------------------------------------------
-    # SEE bashrc for powerline invocation
-    parse_git_branch() {
-        git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-    }
-    export PS1="\u@\h \[\033[32m\]\W\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ "
-    #export PS1="\u@\h:\W\\$ "
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+export PS1="\u@\h \[\033[32m\]\W\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ "
+#export PS1="\u@\h:\W\\$ "
 
-#   Set Paths
-#   ------------------------------------------------------------
-#    export PATH="$PATH:/usr/local/bin/"
-
-#   Set Default Editor (change 'Nano' to the editor of your choice)
-#   ------------------------------------------------------------
-    export EDITOR=/usr/bin/vi
-
-#   Set default blocksize for ls, df, du
-#   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
-#   ------------------------------------------------------------
-    export BLOCKSIZE=1k
-
-#   Add color to terminal
-#   (this is all commented out as I use Mac Terminal Profiles)
-#   from http://osxdaily.com/2012/02/21/add-color-to-the-terminal-in-mac-os-x/
-#   ------------------------------------------------------------
-#   export CLICOLOR=1
-#   export LSCOLORS=ExFxBxDxCxegedabagacad
+#   Set default editor using update-alternatives if available
+if [ -L "/usr/bin/editor" ] && [ -e "/usr/bin/editor" ] ; then
+  export EDITOR=/usr/bin/editor
+else
+  export EDITOR=/usr/bin/vi
+fi
 
 
 #   ----------------------------------------
@@ -182,15 +167,15 @@ alias rosmemcheck="rosrun --prefix 'valgrind --tool=memcheck' "
 # ------------:-----------------------------------------------------------------
 # Example     : 'rosloglvl ultra_workspace_manager rospy debug' (confirm?)
 rosloglvl () {
-    rosservice call $2/set_logger_level "logger='ros.$1'"$'\r'"level='$3'"
+  rosservice call $2/set_logger_level "logger='ros.$1'"$'\r'"level='$3'"
 }
 
 # sws         : reset ROS environment, find containing workspace and source it
 # ------------:-----------------------------------------------------------------
 sws () {
-    source /opt/ros/$ROS_DISTRO/setup.bash;
-    local wspath=`catkin locate`;
-    source $wspath/devel/setup.bash;
+  source /opt/ros/$ROS_DISTRO/setup.bash;
+  local wspath=`catkin locate`;
+  source $wspath/devel/setup.bash;
 }
 
 # rostopicw   : update rostopic list every 1 second, or n seconds where n is arg 1
@@ -411,11 +396,11 @@ my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 
 # prints an excerpt from the art of the command line
 function taocl() {
-    curl -s https://raw.githubusercontent.com/jlevy/the-art-of-command-line/master/README.md |
-        sed '/cowsay[.]png/d' |
-        pandoc -f markdown -t html |
-        xmlstarlet fo --html --dropdtd |
-        xmlstarlet sel -t -v "(html/body/ul/li[count(p)>0])[$RANDOM mod last()+1]" |
-        xmlstarlet unesc | fmt -80 | iconv -t US
+  curl -s https://raw.githubusercontent.com/jlevy/the-art-of-command-line/master/README.md |
+    sed '/cowsay[.]png/d' |
+    pandoc -f markdown -t html |
+    xmlstarlet fo --html --dropdtd |
+    xmlstarlet sel -t -v "(html/body/ul/li[count(p)>0])[$RANDOM mod last()+1]" |
+    xmlstarlet unesc | fmt -80 | iconv -t US
 }
 

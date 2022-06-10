@@ -4,21 +4,21 @@
 # various bash functions for filtering ros log files
 
 
-# rlognotopics     : remove the '[topics: /rosout, /scan, ...]' string from
+# roslognotopics   : remove the '[topics: /rosout, /scan, ...]' string from
 #                  : rosout.log files using sed
 # -----------------:------------------------------------------------------------
 roslognotopics () {
     sed -E 's/\[topics: ((\/\w+)+(, |\]))+//g'
 }
 
-# rlogshortpath    : shorten absolute path component from rosout.log files using
+# roslogshortpath  : shorten absolute path component from rosout.log files using
 #                  : sed
 # -----------------:------------------------------------------------------------
 roslogshortpath () {
     sed -E 's/(\/\S+)+\/(\S+(\.cpp|\.py))/\2/g'
 }
 
-# rlogcolor        : uses perl to add ansi escaped colors to lines containing
+# roslogcolor      : uses perl to add ansi escaped colors to lines containing
 #                  : log severities
 #                  : https://automationrhapsody.com/coloured-log-files-linux
 # -----------------:------------------------------------------------------------
@@ -27,9 +27,26 @@ roslogcolor () {
 }
 
 
-# rlogomit         : shorten absolute path component from rosout.log files using
+# roslogomit       : shorten absolute path component from rosout.log files using
 #                  : sed
 # -----------------:------------------------------------------------------------
 roslogomit () {
-    grep -v $1 --color=always
+    grep -v "$1" --color=always
+}
+
+# cgrep           : grep color
+# -----------------:------------------------------------------------------------
+cgrep () {
+    grep --color=always "$@"
+}
+
+# ncgrep           : grep no color
+# -----------------:------------------------------------------------------------
+ncgrep () {
+    grep --color=never "$@"
+}
+
+roslogtimekey () {
+    cat "$1" | grep --color=never "${@:2}" | roslognotopics | roslogshortpath \
+        | roslogomit "sicknav.cpp" | roslogcolor | less -SNR
 }

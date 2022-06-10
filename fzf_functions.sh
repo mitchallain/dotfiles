@@ -186,14 +186,14 @@ fhist() {
 }
 
 # fman             : global man page search
-# -----------------:-----------------------------------------------------------------
+# -----------------:------------------------------------------------------------
 fman() {
   man -k . | fzf --prompt='Man> ' | awk '{print $1}' | xargs -r man
 }
 
 # fnotes           : fuzzy full-text search markdown notes and open in sublime
 #                  : TODO test against obsidian notes
-# -----------------:-----------------------------------------------------------------
+# -----------------:------------------------------------------------------------
 fnotes() {
   bdir=$pwd
   ndir="/home/mallain/Dropbox/BMR-MA/Notable/notes"
@@ -208,8 +208,18 @@ fnotes() {
   cd $bdir > /dev/null 2>&1
 }
 
+# fthis            : fuzzy full-text search current directory and open in editor
+# -----------------:------------------------------------------------------------
+fthis() {
+  # VSCODE DEFAULT
+  # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' code -g
+
+  # SUBLIME DEFAULT
+  ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' subl
+}
+
 # fif              : find-in-file - usage: fif <searchTerm>
-# -----------------:-----------------------------------------------------------------
+# -----------------:------------------------------------------------------------
 fif() {
   if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
   rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
@@ -254,7 +264,17 @@ fedit () {
   fi
 }
 
-alias fe=fedit
+# fe               : Open selected file(s) with vim in multiple tabs
+#                  :   - Bypass fuzzy finder if there's only one match (--select-1)
+#                  :   - Exit if there's no match (--exit-0)
+# -----------------:-----------------------------------------------------------------
+fe() {
+  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+  # [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+
+  # use vim over $EDITOR so that -p option can be passed reliably
+  [[ -n "$files" ]] && vim -p  "${files[@]}"
+}
 
 # fkill            : kill processes - list only the ones you can kill
 # -----------------:-----------------------------------------------------------------
