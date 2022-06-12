@@ -25,7 +25,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf.vim'
   "Plug 'junegunn/limelight.vim'
   "Plug 'junegunn/goyo.vim'
+
   Plug 'altercation/vim-colors-solarized'
+  " Plug 'shaunsingh/solarized.nvim'
+  "Plug 'romainl/flattened'
+
   Plug 'preservim/nerdtree'
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'rust-lang/rust.vim'
@@ -57,10 +61,11 @@ call plug#end()
 
 :set clipboard=unnamed
 
+
 " Edit vimr configuration file
-nnoremap <Leader>ve :e $MYVIMRC<CR>
+nnoremap <Leader>e :e $MYVIMRC<CR>
 " " Reload vimr configuration file
-nnoremap <Leader>vr :source $MYVIMRC<CR>
+nnoremap <Leader>r :source $MYVIMRC<CR>
 
 set background=dark
 colorscheme solarized
@@ -73,8 +78,7 @@ colorscheme solarized
 :set rtp+=~/.fzf
 nnoremap <c-p> :FZF<cr>
 " augroup fzf
-
-
+"   autocmd! FileType fzf
 "   autocmd  FileType fzf set laststatus=0 noshowmode noruler
 "     \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 " augroup END
