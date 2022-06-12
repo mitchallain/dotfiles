@@ -18,6 +18,7 @@
     ~/.config/albert/albert.conf: albert/albert.conf
     ~/.config/albert/org.albert.extension.snippets/snippets.db: albert/snippets.db
     ~/.config/matplotlib/stylelib: matplotlib/stylelib
+    ~/.config/nvim: nvim
     ~/.config/terminator/config: terminator/config
     ~/.config/yapf/style: yapf/style
     ~/.gitconfig: gitconfig
