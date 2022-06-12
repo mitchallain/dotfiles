@@ -5,7 +5,7 @@
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
-      *) return;;
+    *) return;;
 esac
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -106,14 +106,12 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 # Bastian-Specific Environment Setup
-# Currently needs to run prior to ~/.bash_aliases due to
+# Currently needs to run after to ~/.bash_aliases due to
 # nested sourcing of private aliases which use env variables
 if [ -f ~/.bastianrc ] && [ -f ~/.aliases/bastian_aliases.sh ]; then
     . ~/.bastianrc
     . ~/.aliases/bastian_aliases.sh
 fi
-
-
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -126,20 +124,43 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/mallain/anaconda2/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/mallain/anaconda2/etc/profile.d/conda.sh" ]; then
-        . "/home/mallain/anaconda2/etc/profile.d/conda.sh"
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# OS-specific setup
+if [[ "$ostype" == "linux-gnu"* ]]; then
+    # >>> conda initialize >>>
+    # !! contents within this block are managed by 'conda init' !!
+    __conda_setup="$('/home/mallain/anaconda2/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
     else
-        export PATH="/home/mallain/anaconda2/bin:$PATH"
+        if [ -f "/home/mallain/anaconda2/etc/profile.d/conda.sh" ]; then
+            . "/home/mallain/anaconda2/etc/profile.d/conda.sh"
+        else
+            export path="/home/mallain/anaconda2/bin:$path"
+        fi
     fi
+    unset __conda_setup
+    # <<< conda initialize <<<
+
+elif [[ "$ostype" == "darwin"* ]]; then
+    # >>> conda initialize >>>
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$('/Users/mallain/opt/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/Users/mallain/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+            . "/Users/mallain/opt/anaconda3/etc/profile.d/conda.sh"
+        else
+            export PATH="/Users/mallain/opt/anaconda3/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+    # <<< conda initialize <<<
+
+    export BASH_SILENCE_DEPRECATION_WARNING=1
 fi
-unset __conda_setup
-# <<< conda initialize <<<
 
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

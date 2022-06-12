@@ -10,6 +10,7 @@
     ~/.aliases/bastian_aliases.sh: private/bastian_aliases.sh
     ~/.aliases/fzf_functions.sh: fzf_functions.sh
     ~/.bash_aliases: bash_aliases.sh
+    ~/.bash_profile: bash_profile.sh
     ~/.bash_logout: bash_logout
     ~/.bashrc: bashrc
     ~/.bastianrc: private/bastianrc.sh
