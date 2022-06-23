@@ -67,6 +67,7 @@ nnoremap <Leader>e :e $MYVIMRC<CR>
 " " Reload vimr configuration file
 nnoremap <Leader>r :source $MYVIMRC<CR>
 
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
 " END PERSONAL CUSTOMIZATIONS
 

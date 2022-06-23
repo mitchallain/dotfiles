@@ -17,6 +17,7 @@
 \usepackage{longtable}
 \usepackage{booktabs}
 
+\usepackage{fancyhdr}
 
 \usepackage{listings}
 \newcommand{\passthrough}[1]{#1}  % required from pandoc to provide inline
@@ -32,7 +33,11 @@
 \urlstyle{rm}
 
 \frenchspacing{}        % Remove extra spaces after periods.
-\pagestyle{empty}       % Remove page numbers.
+\pagestyle{fancy}       % Remove page numbers.
+\fancyhf{}
+\fancyfoot[L]{CONFIDENTIAL AND PROPRIETARY}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrule}{}
 
 \usepackage{fontspec}
 \defaultfontfeatures{Mapping=tex-text}  % Sets quotation marks.
