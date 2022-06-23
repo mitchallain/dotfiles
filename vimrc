@@ -1,19 +1,6 @@
-" BEGIN SETTINGS INSERTED BY AWESOME VIM ON GITHUB
-"
-set runtimepath+=~/.vim_runtime
-
-source ~/.vim_runtime/vimrcs/basic.vim
-source ~/.vim_runtime/vimrcs/filetypes.vim
-source ~/.vim_runtime/vimrcs/plugins_config.vim
-" source ~/.vim_runtime/vimrcs/extended.vim
-
-try
-  source ~/.vim_runtime/my_configs.vim
-catch
-endtry
-" END SETTINGS INSERTED BY AWESOME VIM ON GITHUB
-
 " AUTO INSTALL PLUG
+" This needs to come before sourcing configuration scripts
+" for runtime and package path setup.
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -26,9 +13,8 @@ call plug#begin('~/.vim/plugged')
   "Plug 'junegunn/limelight.vim'
   "Plug 'junegunn/goyo.vim'
 
-  Plug 'altercation/vim-colors-solarized'
-  " Plug 'shaunsingh/solarized.nvim'
-  "Plug 'romainl/flattened'
+  Plug 'overcache/NeoSolarized'
+  Plug 'shaunsingh/solarized.nvim'
 
   Plug 'preservim/nerdtree'
   Plug 'christoomey/vim-tmux-navigator'
@@ -46,6 +32,20 @@ call plug#begin('~/.vim/plugged')
   Plug 'neoclide/coc-python'
 
 call plug#end()
+
+" BEGIN SETTINGS INSERTED BY AWESOME VIM ON GITHUB
+" must follow plug#end for package path setup (NeoVim solarized)
+set runtimepath+=~/.vim_runtime
+source ~/.vim_runtime/vimrcs/basic.vim
+source ~/.vim_runtime/vimrcs/filetypes.vim
+source ~/.vim_runtime/vimrcs/plugins_config.vim
+" source ~/.vim_runtime/vimrcs/extended.vim
+
+try
+  source ~/.vim_runtime/my_configs.vim
+catch
+endtry
+" END SETTINGS INSERTED BY AWESOME VIM ON GITHUB
 
 " BEGIN PERSONAL CUSTOMIZATIONS AND EXPERIMENTS
 :set rnu
@@ -67,11 +67,8 @@ nnoremap <Leader>e :e $MYVIMRC<CR>
 " " Reload vimr configuration file
 nnoremap <Leader>r :source $MYVIMRC<CR>
 
-set background=dark
-colorscheme solarized
 
 " END PERSONAL CUSTOMIZATIONS
-
 
 
 " FUZZY FILE FINDER
