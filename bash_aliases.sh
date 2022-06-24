@@ -27,7 +27,8 @@ alias mkdir='mkdir -pv'                             # make parents (-p) and verb
 
 # show dotfiles (-A), classify (-F), no-group (-G), human readable sizes (-h)
 # long listing (-l), append / to directories (-p), sort by mtime newest first (-t)
-alias ll='ls -AFGhlpt'
+alias ll='ls -AFGhlp'
+alias llt='ls -AFGhlpt'
 
 # clear screen (-c), exit if only one screen (-F), raw control chars (-R)
 # truncate long lines (-S), no termcap init (-X)

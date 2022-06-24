@@ -312,23 +312,27 @@ fvim() {
 frostopic() {
   local topic=$(rostopic list | fzf --preview "rostopic info {}")
   [[ -z "$topic" ]] && return
+  echo "rostopic echo $@ $topic"
   rostopic echo $@ $topic
 }
 
 frosnode() {
   local node=$(rosnode list | fzf --preview "rosnode info -q {}")
   [[ -z "$node" ]] && return
+  echo "rosnode info -q $@ $node"
   rosnode info -q $@ $node
 }
 
 frospack() {
   local pack=$(rospack list | fzf --preview "cat {2}/package.xml" | awk '{print $2}')
+  echo "cd $path"
   cd $pack
 }
 
 frosparam() {
   local param=$(rosparam list | fzf --preview "rosparam get {}")
   [[ -z "$param" ]] && return
+  echo "rosparam get $param"
   rosparam get $param
 }
 
