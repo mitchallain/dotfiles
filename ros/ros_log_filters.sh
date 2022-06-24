@@ -48,5 +48,5 @@ ncgrep () {
 
 roslogtimekey () {
     cat "$1" | grep --color=never "${@:2}" | roslognotopics | roslogshortpath \
-        | roslogomit "sicknav.cpp" | roslogcolor | less -SNR
+        | roslogomit "sicknav350.cpp" | roslogcolor | less -SNR
 }

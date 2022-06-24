@@ -21,6 +21,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'rust-lang/rust.vim'
   Plug 'dense-analysis/ale'
   Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
   "Plug 'scrooloose/nerdcommenter'
   Plug 'tpope/vim-commentary'
