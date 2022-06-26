@@ -133,7 +133,7 @@ fi
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # OS-specific setup
-if [[ "$ostype" == "linux-gnu"* ]]; then
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # >>> conda initialize >>>
     # !! contents within this block are managed by 'conda init' !!
     __conda_setup="$('/home/mallain/anaconda2/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
@@ -149,7 +149,7 @@ if [[ "$ostype" == "linux-gnu"* ]]; then
     unset __conda_setup
     # <<< conda initialize <<<
 
-elif [[ "$ostype" == "darwin"* ]]; then
+elif [[ "$OSTYPE" == "darwin"* ]]; then
     # >>> conda initialize >>>
     # !! Contents within this block are managed by 'conda init' !!
     __conda_setup="$('/Users/mallain/opt/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
