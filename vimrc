@@ -8,23 +8,36 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
+  " Fuzzy searching
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
-  "Plug 'junegunn/limelight.vim'
-  "Plug 'junegunn/goyo.vim'
 
+  " Solarized for vim and nvim
   Plug 'overcache/NeoSolarized'
   Plug 'shaunsingh/solarized.nvim'
 
+  " A tree explorer plugin for vim.
   Plug 'preservim/nerdtree'
+
+  " Seamless navigation between tmux panes and vim splits
   Plug 'christoomey/vim-tmux-navigator'
+
+  " This is a Vim plugin that provides Rust file detection, 
+  " syntax highlighting, formatting, Syntastic integration, and more. 
   Plug 'rust-lang/rust.vim'
+
+  " ALE (Asynchronous Lint Engine) is a plugin providing linting
+  " (syntax checking and semantic errors)
   Plug 'dense-analysis/ale'
+  
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
   "Plug 'scrooloose/nerdcommenter'
   Plug 'tpope/vim-commentary'
+
+  " Nodejs extension host for vim & neovim, load extensions 
+  " like VSCode and host language servers
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'KabbAmine/zeavim.vim'
 
