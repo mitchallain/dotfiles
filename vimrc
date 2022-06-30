@@ -40,6 +40,9 @@ call plug#begin('~/.vim/plugged')
   " like VSCode and host language servers
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'KabbAmine/zeavim.vim'
+  Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+  Plug 'vim-scripts/Tabmerge'
+  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
   "PYTHON
   Plug 'vimjas/vim-python-pep8-indent'
