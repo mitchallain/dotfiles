@@ -130,7 +130,27 @@ if ! shopt -oq posix; then
     fi
 fi
 
-export PATH="$HOME/.cargo/bin:$PATH"
+## PATH MANIPULATION - ONLY WHEN PATHS ARE FOUND
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH if cargo installed
+if [ -d "$HOME/.cargo/bin" ] ; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+fi
+
+# set PATH if poetry installed
+if [ -d "$HOME/.poetry/bin" ] ; then
+    PATH="$HOME/.poetry/bin:$PATH"
+fi
+
+# go path for building singularity from source
+if [ -d "/usr/local/go/bin" ]; then
+    export PATH=/usr/local/go/bin:$PATH
+fi
+
 
 # OS-specific setup
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
