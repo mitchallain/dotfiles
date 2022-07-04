@@ -52,41 +52,31 @@ call plug#end()
 
 " BEGIN SETTINGS INSERTED BY AWESOME VIM ON GITHUB
 " must follow plug#end for package path setup (NeoVim solarized)
+" NOTE: I am using this repo for a quick setup and template for config,
+"       but I will create a more customized setup once I am more used to
+"       vim/nvim. For now, focus is on modifying the options to suit me, and
+"       commenting out options which are not useful.
 set runtimepath+=~/.vim_runtime
 source ~/.vim_runtime/vimrcs/basic.vim
 source ~/.vim_runtime/vimrcs/filetypes.vim
 source ~/.vim_runtime/vimrcs/plugins_config.vim
 " source ~/.vim_runtime/vimrcs/extended.vim
-
-try
-  source ~/.vim_runtime/my_configs.vim
-catch
-endtry
 " END SETTINGS INSERTED BY AWESOME VIM ON GITHUB
 
-" BEGIN PERSONAL CUSTOMIZATIONS AND EXPERIMENTS
-:set rnu
-:set nu
-:set mouse=a
 
-" see vim-runtime/vimrcs/filetypes.vim for ft specific tab size
-:set tabstop=4
-
-"always match tabsize with < and > commands
-:set shiftwidth=0
-:set expandtab
-
-:set clipboard=unnamed
-
-
+" SETTINGS INBOX - TODO SORT INTO VIMRCS
 " Edit vimr configuration file
-nnoremap <Leader>e :e $MYVIMRC<CR>
+" nnoremap <Leader>e :e $MYVIMRC<CR>
+nnoremap <Leader>e :e ~/.vimrc<CR>
 " " Reload vimr configuration file
 nnoremap <Leader>r :source $MYVIMRC<CR>
 
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
-" END PERSONAL CUSTOMIZATIONS
+" I do sort of prefer the thin cursor in neovim,
+" but not even to justify the inconsistency with vim
+set guicursor=i:block
+" END SETTINGS INBOX
 
 
 " FUZZY FILE FINDER
