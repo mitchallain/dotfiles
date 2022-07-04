@@ -48,6 +48,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'vimjas/vim-python-pep8-indent'
   Plug 'neoclide/coc-python'
 
+  " Shows marks next to line numbers
+  Plug 'kshenoy/vim-signature'
+
 call plug#end()
 
 " BEGIN SETTINGS INSERTED BY AWESOME VIM ON GITHUB
