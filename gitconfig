@@ -18,4 +18,5 @@
     co = checkout
     st = status
     br = branch
+    smu = submodule update --recursive
 
