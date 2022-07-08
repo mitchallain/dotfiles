@@ -6,6 +6,7 @@
 # TODO
 # - check if fzf is installed and exit this file early
 #
+export FZF_DEFAULT_COMMAND="find -L"
 
 # fwifi
 # -----
