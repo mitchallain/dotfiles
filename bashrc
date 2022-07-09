@@ -198,13 +198,9 @@ bind Space:magic-space
 #    source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 #fi
 
+# have seen recommendations to omit this line as it should be set by the 
+# terminal emulator
 export TERM=xterm-256color
-
-# go path for building singularity from source
-if [ -d "/usr/local/go/bin" ]; then
-    export PATH=/usr/local/go/bin:$PATH
-fi
-
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
