@@ -6,7 +6,17 @@
 # TODO
 # - check if fzf is installed and exit this file early
 #
-export FZF_DEFAULT_COMMAND="find -L"
+
+# ripgrep is a search tool written in rust that is FAST
+# https://blog.burntsushi.net/ripgrep/
+# find -L does not seem to work on macOS
+if [ -x "$(command -v rg)" ]; then
+    export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    export FZF_DEFAULT_COMMAND="find -L"
+# elif [[ "$OSTYPE" == "darwin"* ]]; then
+#     export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden"
+fi
 
 # fwifi
 # -----
@@ -44,6 +54,7 @@ fwhich () {
       | awk '{print $3}' ) || return
   which $bashfn
 }
+
 # tm               : create new tmux session, or switch to existing one with fzf
 #                  : works from within tmux too (@bag-man)
 #                  : (optional) with an arg that names an existing session,
