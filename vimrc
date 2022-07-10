@@ -16,8 +16,6 @@ call plug#begin('~/.vim/plugged')
   " NeoSolarized requires TrueColor support
   Plug 'overcache/NeoSolarized'
   Plug 'altercation/solarized'
-  " Plug 'shaunsingh/solarized.nvim'
-  " Plug 'altercation/vim-colors-solarized'
 
   " A tree explorer plugin for vim.
   Plug 'preservim/nerdtree'
@@ -38,6 +36,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'airblade/vim-gitgutter'
   "Plug 'scrooloose/nerdcommenter'
   Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-dispatch'
 
   " Nodejs extension host for vim & neovim, load extensions 
   " like VSCode and host language servers
