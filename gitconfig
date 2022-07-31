@@ -19,4 +19,7 @@
     st = status
     br = branch
     smu = submodule update --recursive
+    stashpull = pull --rebase --autostash
+    sp = pull --rebase --autostash
+    stauts = status
 
