@@ -56,6 +56,8 @@ call plug#begin('~/.vim/plugged')
   " Shows marks next to line numbers
   Plug 'kshenoy/vim-signature'
 
+  Plug 'taketwo/vim-ros'
+
 call plug#end()
 
 " BEGIN SETTINGS INSERTED BY AWESOME VIM ON GITHUB
