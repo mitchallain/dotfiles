@@ -38,25 +38,39 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-dispatch'
 
+  " Show numbers in tab names
+  Plug 'mkitt/tabline.vim'
+
   " Nodejs extension host for vim & neovim, load extensions 
   " like VSCode and host language servers
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'neoclide/coc-python'
   
+  " once you are on the latest stable release (>= v0.7.2)
+  " this is the recommended python setup
+  " Plug 'neovim/nvim-lspconfig'
+
   " Zeavim allows to use the offline documentation browser Zeal from Vim.
   Plug 'KabbAmine/zeavim.vim'
 
   Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
   Plug 'vim-scripts/Tabmerge'
+
+  " Markdown Authoring
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
   "PYTHON
   Plug 'vimjas/vim-python-pep8-indent'
-  Plug 'neoclide/coc-python'
 
   " Shows marks next to line numbers
   Plug 'kshenoy/vim-signature'
 
   Plug 'taketwo/vim-ros'
+
+  " ctags and tagbar
+  " ensure that 'sudo snap/apt install universal-ctags'
+  " Plug 'ludovicchabant/vim-gutentags'
+  " Plug 'liuchengxu/vista.vim'
 
 call plug#end()
 
