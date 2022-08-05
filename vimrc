@@ -19,6 +19,8 @@ call plug#begin('~/.vim/plugged')
 
   " A tree explorer plugin for vim.
   Plug 'preservim/nerdtree'
+  " Makes NERDTree independent of tabs
+  Plug 'jistr/vim-nerdtree-tabs'
 
   " Seamless navigation between tmux panes and vim splits
   Plug 'christoomey/vim-tmux-navigator'
