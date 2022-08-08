@@ -73,6 +73,7 @@ call plug#begin('~/.vim/plugged')
   " ensure that 'sudo snap/apt install universal-ctags'
   " Plug 'ludovicchabant/vim-gutentags'
   " Plug 'liuchengxu/vista.vim'
+  Plug 'preservim/tagbar'
 
 call plug#end()
 
