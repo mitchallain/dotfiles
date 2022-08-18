@@ -38,6 +38,27 @@ fwifi () {
   nmcli -a device wifi connect $ssid
 }
 
+# fconns
+# ------
+# fuzzy nmcli connection switcher
+# note indexing from end due to spaces in connection names
+fconns () {
+    local conn
+    conn=$(
+        nmcli --color yes c s |
+        fzf \
+            --with-nth=1.. \
+            --ansi \
+            --height=40% \
+            --cycle \
+            --inline-info \
+            --header-lines=1 \
+            | awk '{print $(NF-2)}' ) || return
+    [[ -z "$conn" ]] && return
+    # echo $conn
+    nmcli c u $conn
+}
+
 # fwhich
 # ------
 # fuzzy search all bash functions
@@ -208,7 +229,7 @@ fman() {
 # -----------------:------------------------------------------------------------
 fnotes() {
   bdir=$pwd
-  ndir="/home/mallain/Dropbox/BMR-MA/Notable/notes"
+  ndir="/home/mallain/Google Drive/05 Notes"
   cd $ndir > /dev/null 2>&1
 
   # VSCODE DEFAULT
@@ -217,6 +238,8 @@ fnotes() {
   # SUBLIME DEFAULT
   ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' subl
 
+  # n?vim
+  # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' subl
   cd $bdir > /dev/null 2>&1
 }
 
