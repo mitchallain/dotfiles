@@ -75,6 +75,8 @@ call plug#begin('~/.vim/plugged')
   " Plug 'liuchengxu/vista.vim'
   Plug 'preservim/tagbar'
 
+  Plug 'github/copilot.vim'
+
 call plug#end()
 
 " BEGIN SETTINGS INSERTED BY AWESOME VIM ON GITHUB
