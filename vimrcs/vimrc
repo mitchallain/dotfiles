@@ -1,0 +1,13 @@
+" I still do not understand this runtimepath setting
+" but it appears to be unnecessary for the following lines
+set runtimepath+=~/.vimrcs
+source ~/.vimrcs/basic.vim
+source ~/.vimrcs/filetypes.vim
+source ~/.vimrcs/plugins.vim
+
+" Edit or reload this file
+nnoremap <leader>e :e ~/.vimrc<CR>
+nnoremap <leader>ev :vsplit ~/.vimrc<CR>
+" Note this may init.vim in neovim
+nnoremap <leader>r :source $MYVIMRC<CR>
+

@@ -32,8 +32,8 @@
     ~/.tmux.conf: tmux.conf
     ~/.tmux.powerline.conf: tmux.powerline.conf
     ~/.tmux/plugins/tpm: tpm
-    ~/.vim_runtime: vim-runtime
-    ~/.vimrc: vimrc
+    ~/.vimrcs: vimrcs
+    ~/.vimrc: vimrcs/vimrc
     ~/.zshrc: zshrc
     ~/rosconsole.config: ros/rosconsole.config
 
