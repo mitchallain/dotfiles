@@ -166,9 +166,9 @@ set ffs=unix,dos,mac
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " OPTION A: disable swap, bkup
-" set nobackup
-" set nowb
-" set noswapfile
+set nobackup
+set nowb
+set noswapfile
 
 " OPTION B: HIDE VIM SWAP, BKUP, UNDO FILES
 " attempt to create vim backup at startup - https://stackoverflow.com/a/1549318

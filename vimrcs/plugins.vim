@@ -51,11 +51,14 @@ call plug#begin('~/.vim/plugged')
   " once you are on the latest stable release (>= v0.7.2)
   " this is the recommended python setup
   Plug 'neovim/nvim-lspconfig'
+  Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
   Plug 'hrsh7th/nvim-cmp'  " auto-completion plugin
   Plug 'hrsh7th/cmp-nvim-lsp'  " LSP source for nvim-cmp
   Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
   Plug 'L3MON4D3/LuaSnip' " Snippets plugin
 
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'jose-elias-alvarez/null-ls.nvim'
 
   " Zeavim allows to use the offline documentation browser Zeal from Vim.
   Plug 'KabbAmine/zeavim.vim'
@@ -203,4 +206,10 @@ nnoremap <leader>m :SignatureToggle<cr>
 " => vim-doge
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:doge_doc_standard_python = 'google'
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => lsp 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd BufEnter * lua vim.diagnostic.disable()
 

@@ -12,7 +12,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
-  print('LSP attached - loading keymaps')
+  -- print('LSP attached - loading keymaps')
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -40,22 +40,6 @@ local lsp_flags = {
   -- This is the default in Nvim 0.7+
   debounce_text_changes = 150,
 }
-require('lspconfig')['pyright'].setup{
-    on_attach = on_attach,
-    flags = lsp_flags,
-}
--- require('lspconfig')['ccls'].setup{
---     on_attach = on_attach,
---     flags = lsp_flags,
--- }
-require('lspconfig')['rust_analyzer'].setup{
-    on_attach = on_attach,
-    flags = lsp_flags,
-    -- Server-specific settings...
-    settings = {
-      ["rust-analyzer"] = {}
-    }
-}
 
 -- From https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
 -- Add additional capabilities supported by nvim-cmp
@@ -64,14 +48,25 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 local lspconfig = require('lspconfig')
 
--- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { 'ccls', 'rust_analyzer', 'pyright' }
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    -- on_attach = my_custom_on_attach,
+lspconfig['pyright'].setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
     capabilities = capabilities,
-  }
-end
+}
+lspconfig['ccls'].setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+}
+lspconfig['rust_analyzer'].setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+    -- Server-specific settings...
+    settings = {
+      ["rust-analyzer"] = {}
+    }
+}
 
 -- luasnip setup
 local luasnip = require 'luasnip'
@@ -88,10 +83,10 @@ cmp.setup {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
+    -- ['<CR>'] = cmp.mapping.confirm {
+    --   behavior = cmp.ConfirmBehavior.Replace,
+    --   select = true,
+    -- },
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -116,3 +111,47 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
+
+require("null-ls").setup({
+    sources = {
+        require("null-ls").builtins.formatting.stylua,
+        require("null-ls").builtins.diagnostics.cppcheck,
+        require("null-ls").builtins.diagnostics.flake8,
+        -- require("null-ls").builtins.diagnostics.pylint,
+        require("null-ls").builtins.diagnostics.markdownlint,
+        require("null-ls").builtins.completion.spell,
+    },
+})
+
+-- local diagnostics_active = true
+-- local toggle_diagnostics = function()
+--   diagnostics_active = not diagnostics_active
+--   if diagnostics_active then
+--     print('Showing diagnostics')
+--     vim.diagnostic.show()
+--   else
+--     print('Hiding diagnostics')
+--     vim.diagnostic.hide()
+--   end
+-- end
+
+-- Plug-in allows easy toggling of diagnostics features
+-- start_on currently does not work
+-- require'toggle_lsp_diagnostics'.init({ start_on = false })
+vim.keymap.set('n', '<leader>dd', '<Plug>(toggle-lsp-diag)')
+vim.keymap.set('n', '<leader>dt', '<Plug>(toggle-lsp-diag-vtext)')
+vim.keymap.set('n', '<leader>de', vim.diagnostic.enable)
+
+-- Diagnostic symbols in the sign column (gutter)
+-- local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+-- for type, icon in pairs(signs) do
+--   local hl = "DiagnosticSign" .. type
+--   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+-- end
+
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = '●'
+  },
+  update_in_insert = false,
+})
