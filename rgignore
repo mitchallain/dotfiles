@@ -1,0 +1,3 @@
+# ripgrep ignore, specifically for fuzzy file switching
+# ignore binary files
+*.pyc

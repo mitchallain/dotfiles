@@ -9,5 +9,7 @@ source ~/.vimrcs/plugins.vim
 nnoremap <leader>e :e ~/.vimrc<CR>
 nnoremap <leader>ev :vsplit ~/.vimrc<CR>
 " Note this may init.vim in neovim
-nnoremap <leader>r :source $MYVIMRC<CR>
+" Reloading the filetype helps with filetype autocmd that need to 
+" re-execute after sourcing the config
+nnoremap <leader>r :source $MYVIMRC<CR> :exe ':set filetype='.&filetype<CR>
 
