@@ -219,7 +219,8 @@ vnoremap <silent> * :<C-u>call VisualSelection('', '', '')<CR>/<C-R>=@/<CR><CR>
 vnoremap <silent> # :<C-u>call VisualSelection('', '', '')<CR>?<C-R>=@/<CR><CR>
 
 " jump into ripgrep search with visual selection
-vnoremap <leader>f :<C-u>call VisualSelection('', '', 'false')<CR>:Rg <C-R>=@/<CR><CR>
+vnoremap <leader>fi :<C-u>call VisualSelection('', '', 'false')<CR>:Rg <C-R>=@/<CR><CR>
+nnoremap <leader>fi viw :<C-u>call VisualSelection('', '', 'false')<CR>:Rg <C-R>=@/<CR><CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -301,6 +302,9 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap VIM 0 to first non-blank character
 map 0 ^
+
+" Sort selection
+vnoremap <leader>so :sort<cr>
 
 " normal mode replaces word under cursor
 " visual mode replaces selection

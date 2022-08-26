@@ -14,8 +14,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf.vim'
 
   " Solarized for vim and nvim
-  Plug 'overcache/NeoSolarized'  " requires TrueColor support
+  " Plug 'overcache/NeoSolarized'  " requires TrueColor support
+  Plug 'MitchAllain/neosolarized.nvim'
+  Plug 'tjdevries/colorbuddy.nvim'
   Plug 'altercation/solarized'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
   " A tree explorer plugin for vim.
   Plug 'preservim/nerdtree'
@@ -95,11 +98,11 @@ call plug#end()
 " support from the terminal, usually indicated by $COLORTERM
 if $COLORTERM == 'truecolor'
     set termguicolors
-    colorscheme NeoSolarized
+    colorscheme neosolarized
 else
     " colorscheme solarized
     " This seems to work for some odd reason on mac terminal.app
-    colorscheme NeoSolarized
+    colorscheme neosolarized
 endif
 
 " Make bg transparent
@@ -211,5 +214,5 @@ let g:doge_doc_standard_python = 'google'
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => lsp 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-autocmd BufEnter * lua vim.diagnostic.disable()
+" autocmd BufEnter * lua vim.diagnostic.disable()
 

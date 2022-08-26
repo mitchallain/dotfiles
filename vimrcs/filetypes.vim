@@ -37,7 +37,7 @@ au FileType cpp let b:dispatch = 'make -C build'
 
 " apply clang-format to selection with Ctrl K
 " see https://clang.llvm.org/docs/ClangFormat.html#vim-integration
-au Filetype cpp map <leader>f :pyf ~/bin/clang-format.py<cr>
+au Filetype cpp map <leader>fo :pyf ~/bin/clang-format.py<cr>
 
 " automatic clang-format on save
 function! Formatonsave()
@@ -139,6 +139,6 @@ au Filetype markdown setlocal wrap
 " see also myconfig for remaps to edit and source vimrc
 augroup myvimrc
     au!
-    au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+    au BufWritePost *.vim,.vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
 augroup END
 
