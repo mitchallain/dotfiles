@@ -123,6 +123,7 @@ nnoremap <c-p> :FZF<cr>
 
 " nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-t> :NERDTreeTabsToggle<CR>
+" nnoremap <C-f> :NERDTreeTabsFind<CR> :NERDTreeTabsToggle<CR> 
 
 " not a big fan of stepping on this built-in, but I do need this mapping
 " nnoremap <C-f> :NERDTreeFind<CR>

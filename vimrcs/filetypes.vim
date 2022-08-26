@@ -10,7 +10,7 @@ au BufRead,BufNewFile *.py,*.pyw,*.c,*.h,*.cpp match BadWhitespace /\s\+$/
 """"""""""""""""""""""""""""""
 " => Python section
 """"""""""""""""""""""""""""""
-let python_highlight_all = 1
+" let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
 au FileType python setlocal shiftwidth=4 softtabstop=4 expandtab
 
@@ -35,9 +35,10 @@ au FileType cpp setlocal shiftwidth=2 softtabstop=2 expandtab
 au FileType cpp let b:dispatch = 'make -C build'
 " au FileType cpp nnoremap <leader>c :Dispatch! make -C build<cr>
 
+" TODO: remove in favor of null-ls integration
 " apply clang-format to selection with Ctrl K
 " see https://clang.llvm.org/docs/ClangFormat.html#vim-integration
-au Filetype cpp map <leader>fo :pyf ~/bin/clang-format.py<cr>
+" au Filetype cpp map <leader>fo :pyf ~/bin/clang-format.py<cr>
 
 " automatic clang-format on save
 function! Formatonsave()

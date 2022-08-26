@@ -33,7 +33,8 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-  -- vim.keymap.set('n', '<leader>f', vim.lsp.buf.formatting, bufopts)
+  vim.keymap.set('n', '<leader>fo', vim.lsp.buf.formatting, bufopts)
+  vim.keymap.set('v', '<leader>fo', vim.lsp.buf.range_formatting, bufopts) -- this isn't quite working yet
 end
 
 local lsp_flags = {
@@ -113,14 +114,22 @@ cmp.setup {
 }
 
 require("null-ls").setup({
-    sources = {
-        require("null-ls").builtins.formatting.stylua,
-        require("null-ls").builtins.diagnostics.cppcheck,
-        require("null-ls").builtins.diagnostics.flake8,
-        -- require("null-ls").builtins.diagnostics.pylint,
-        require("null-ls").builtins.diagnostics.markdownlint,
-        require("null-ls").builtins.completion.spell,
-    },
+  sources = {
+    -- require("null-ls").builtins.completion.spell,
+    require("null-ls").builtins.diagnostics.markdownlint,
+    -- require("null-ls").builtins.diagnostics.pylint,
+    require("null-ls").builtins.diagnostics.cppcheck,
+    require("null-ls").builtins.diagnostics.flake8,
+    require("null-ls").builtins.formatting.clang_format,
+    
+    -- had to npm install --global prettier
+    require("null-ls").builtins.formatting.prettier.with({
+        extra_args = { "--print-width", "80", "--prose-wrap", "always" },
+    }),
+    require("null-ls").builtins.formatting.stylua,
+  },
+  on_attach = on_attach,
+  log_level = "trace",
 })
 
 -- local diagnostics_active = true
@@ -134,10 +143,16 @@ require("null-ls").setup({
 --     vim.diagnostic.hide()
 --   end
 -- end
+-- vim.keymap.set('n', '<leader>dd', toggle_diagnostics)
 
 -- Plug-in allows easy toggling of diagnostics features
 -- start_on currently does not work
 -- require'toggle_lsp_diagnostics'.init({ start_on = false })
+require('toggle_lsp_diagnostics').init({ 
+  -- underline = false,
+  virtual_text = {
+    prefix = "●",
+  }})
 vim.keymap.set('n', '<leader>dd', '<Plug>(toggle-lsp-diag)')
 vim.keymap.set('n', '<leader>dt', '<Plug>(toggle-lsp-diag-vtext)')
 vim.keymap.set('n', '<leader>de', vim.diagnostic.enable)
@@ -154,4 +169,9 @@ vim.diagnostic.config({
     prefix = '●'
   },
   update_in_insert = false,
+})
+
+require('colorbuddy').setup()
+require('neosolarized').setup({
+    comment_italics = true,
 })
