@@ -34,7 +34,7 @@ call plug#begin('~/.vim/plugged')
 
   " ALE (Asynchronous Lint Engine) is a plugin providing linting
   " (syntax checking and semantic errors)
-  Plug 'dense-analysis/ale'
+  " Plug 'dense-analysis/ale'
   
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-fugitive'
@@ -53,14 +53,34 @@ call plug#begin('~/.vim/plugged')
   
   " once you are on the latest stable release (>= v0.7.2)
   " this is the recommended python setup
-  Plug 'neovim/nvim-lspconfig'
-  Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
+  Plug 'neovim/nvim-lspconfig'  " Quickstart configs for built-in LSP client
+  Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'  " easily toggle virtual text diagnostics on and off
+
+  " Completion with nvim-cmp
+  " https://github.com/hrsh7th/nvim-cmp
   Plug 'hrsh7th/nvim-cmp'  " auto-completion plugin
+  
+  " List of completion sources
+  " https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
   Plug 'hrsh7th/cmp-nvim-lsp'  " LSP source for nvim-cmp
+  Plug 'hrsh7th/cmp-buffer'  " nvim-cmp source for buffer words
+  Plug 'hrsh7th/cmp-path'  " nvim-cmp source for filesystem paths
+  " Plug 'hrsh7th/cmp-cmdline'  " nvim-cmp source for vim's cmdline, found this to be intrusive
+
+  Plug 'aspeddro/cmp-pandoc.nvim'  " nvim-cmp source for markdown / pandoc
+  Plug 'jbyuki/nabla.nvim'  " floating LaTeX equation rendered
+
+  " For luasnip users
   Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
   Plug 'L3MON4D3/LuaSnip' " Snippets plugin
 
-  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-lua/plenary.nvim'  " Lua function library
+  
+  " null-ls - Inject diagnostics and formatting through LSP from supported
+  " binaries on PATH. Note this does not provide the binaries, which must be
+  " installed seperately with system package manager or lang package manager.
+  " Built-in support:
+  " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
   Plug 'jose-elias-alvarez/null-ls.nvim'
 
   " Zeavim allows to use the offline documentation browser Zeal from Vim.
@@ -87,7 +107,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'preservim/tagbar'
 
   " Plug 'github/copilot.vim'
-  Plug 'ap/vim-css-color'
+  " Plug 'ap/vim-css-color'
+  Plug 'chrisbra/Colorizer'
 
 call plug#end()
 
@@ -108,6 +129,11 @@ endif
 " Make bg transparent
 set background=dark
 hi Normal ctermbg=NONE guibg=NONE
+
+"""""""""""""""""""""""""""""""
+" => Colorizer
+""""""""""""""""""""""""""""""
+let g:colorizer_auto_filetype='vim,lua,css,html'
 
 """""""""""""""""""""""""""""""
 " => fzf - fuzzy finder
@@ -141,30 +167,30 @@ let g:NERDTreeMapJumpPrevSibling = ''
 nnoremap <leader>t :TagbarToggle<CR>
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Ale (syntax checker and linter)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_linters = {
-\   'python': ['flake8'],
-\}
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" => Ale (syntax checker and linter)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"let g:ale_linters = {
+"\   'python': ['flake8'],
+"\}
 
-let g:ale_fixers = {
-\   'rust': ['rustfmt', 'trim_whitespace', 'remove_trailing_lines'],
-\   'python': ['yapf', 'trim_whitespace']
-\}
+"let g:ale_fixers = {
+"\   'rust': ['rustfmt', 'trim_whitespace', 'remove_trailing_lines'],
+"\   'python': ['yapf', 'trim_whitespace']
+"\}
 
-" Optional, configure as-you-type completions
-set completeopt=menu,menuone,preview,noselect,noinsert
-let g:ale_completion_enabled = 1
+"" Optional, configure as-you-type completions
+"set completeopt=menu,menuone,preview,noselect,noinsert
+"let g:ale_completion_enabled = 1
 
-nmap <silent> <leader>a <Plug>(ale_next_wrap)
+"nmap <silent> <leader>a <Plug>(ale_next_wrap)
 
-" Disabling highlighting
-let g:ale_set_highlights = 0
+"" Disabling highlighting
+"let g:ale_set_highlights = 0
 
-" Only run linting when saving the file
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
+"" Only run linting when saving the file
+"let g:ale_lint_on_text_changed = 'never'
+"let g:ale_lint_on_enter = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
