@@ -154,36 +154,43 @@ null_ls.setup({
         null_ls.builtins.formatting.stylua.with({
             extra_args = { "--indent-type", "Spaces" },
         }),
+        null_ls.builtins.formatting.yapf,
     },
     on_attach = on_attach,
     log_level = "warn",
 })
 
-local diagnostics_active = true
-local toggle_diagnostics = function()
-    diagnostics_active = not diagnostics_active
-    if diagnostics_active then
-        print("Showing diagnostics")
-        vim.diagnostic.show()
-    else
-        print("Hiding diagnostics")
-        vim.diagnostic.hide()
-    end
-end
-vim.keymap.set("n", "<leader>dd", toggle_diagnostics)
+-- local diagnostics_active = true
+-- local toggle_diagnostics = function()
+--     diagnostics_active = not diagnostics_active
+--     if diagnostics_active then
+--         print("Showing diagnostics")
+--         vim.diagnostic.show()
+--     else
+--         print("Hiding diagnostics")
+--         vim.diagnostic.hide()
+--     end
+-- end
+-- vim.keymap.set("n", "<leader>dd", toggle_diagnostics)
 
 -- Plug-in allows easy toggling of diagnostics features
 -- start_on currently does not work
--- require'toggle_lsp_diagnostics'.init({ start_on = false })
--- require("toggle_lsp_diagnostics").init({
---     underline = true,
---     virtual_text = {
---         prefix = "●",
---     },
--- })
--- vim.keymap.set("n", "<leader>dd", "<Plug>(toggle-lsp-diag)")
--- vim.keymap.set("n", "<leader>dt", "<Plug>(toggle-lsp-diag-vtext)")
--- vim.keymap.set("n", "<leader>de", vim.diagnostic.enable)
+require'toggle_lsp_diagnostics'.init({ start_on = false })
+require("toggle_lsp_diagnostics").init({
+    severity_sort = true,
+    underline = true,
+    update_in_insert = false,
+    virtual_text = {
+        spacing = 4,
+        prefix = "●",
+    },
+    float = {
+        source = "always",
+    },
+})
+vim.keymap.set("n", "<leader>dd", "<Plug>(toggle-lsp-diag)")
+vim.keymap.set("n", "<leader>dt", "<Plug>(toggle-lsp-diag-vtext)")
+vim.keymap.set("n", "<leader>de", vim.diagnostic.enable)
 
 -- Diagnostic symbols in the sign column (gutter)
 -- local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }

@@ -160,6 +160,8 @@ nnoremap <C-f> :NERDTreeTabsFind<CR>
 let g:NERDTreeMapJumpNextSibling = ''
 let g:NERDTreeMapJumpPrevSibling = ''
 
+let g:NERDTreeRespectWildIgnore = 1
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => tagbar
