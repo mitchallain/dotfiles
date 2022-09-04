@@ -1,13 +1,27 @@
-# executed only by login bash shells
-# login shells are Mac OS X default
+# ~/.bash_profile: executed by the command interpreter for login shells.
 
-# MAC OS X Only
-# See ~/.bashrc for os conditional definitions
+# Because of this file's existence, neither ~/.bash_login nor ~/.profile
+# will be sourced.
 
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
-    fi
+# See /usr/share/doc/bash/examples/startup-files for examples.
+# The files are located in the bash-doc package.
+
+# source .profile if it exists
+if [ -r "$HOME/.profile" ]; then
+. "$HOME/.profile"
 fi
+
+# The following sources ~/.bashrc in the interactive login case,
+# because .bashrc isn't sourced for interactive login shells:
+case "$-" in
+    *i*)
+        if [ -r "$HOME/.bashrc" ]; then
+            . "$HOME/.bashrc"
+        fi
+esac
+
+# include .bashrc if it exists
+# if [ -r "$HOME/.bashrc" ]; then
+# . "$HOME/.bashrc"
+# fi
 
