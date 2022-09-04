@@ -7,7 +7,10 @@ local opts = { noremap = true, silent = true }
 vim.keymap.set("n", "<leader>di", vim.diagnostic.open_float, opts)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
+
+-- Testing trouble.nvim
+-- vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
+vim.keymap.set("n", "<leader>q", "<cmd>TroubleToggle document_diagnostics<cr>", opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -21,7 +24,13 @@ local on_attach = function(client, bufnr)
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+
+    -- why does this not seem to work? Always executes
+    if client.resolved_capabilities.hover then
+        -- print('client has hover')
+        vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+    end
+
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
     vim.keymap.set("n", "<leader>k", vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
@@ -32,16 +41,29 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, bufopts)
     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+
+    -- Testing trouble.nvim
+    -- vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+    vim.keymap.set("n", "gr", "<cmd>TroubleToggle lsp_references<cr>", bufopts)
+
     vim.keymap.set("n", "<leader>fo", vim.lsp.buf.formatting, bufopts)
     vim.keymap.set("v", "<leader>fo", vim.lsp.buf.range_formatting, bufopts) -- this isn't quite working yet
+end
+
+-- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#luasnip
+local has_words_before = function()
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
 -- luasnip setup
 local luasnip = require("luasnip")
 
--- nvim-cmp setup
+-- nvim-cmp setup with lspkind
 -- https://github.com/hrsh7th/nvim-cmp
+local lspkind = require("lspkind")
+lspkind.init()
+
 local cmp = require("cmp")
 cmp.setup({
     snippet = {
@@ -49,24 +71,20 @@ cmp.setup({
             luasnip.lsp_expand(args.body)
         end,
     },
-    mapping = cmp.mapping.preset.insert({
-        ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        -- ['<CR>'] = cmp.mapping.confirm {
-        --   behavior = cmp.ConfirmBehavior.Replace,
-        --   select = true,
-        -- },
-        ["<Tab>"] = cmp.mapping(function(fallback)
+    mapping = {
+        ["<C-n>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
             elseif luasnip.expand_or_jumpable() then
                 luasnip.expand_or_jump()
+            elseif has_words_before() then
+                cmp.complete()
             else
                 fallback()
             end
         end, { "i", "s" }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
+
+        ["<C-p>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
             elseif luasnip.jumpable(-1) then
@@ -75,12 +93,50 @@ cmp.setup({
                 fallback()
             end
         end, { "i", "s" }),
-    }),
+
+        -- ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+        -- ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+
+        ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        ["<C-e>"] = cmp.mapping.abort(),
+        ["<C-y>"] = cmp.mapping(
+            cmp.mapping.confirm({
+                behavior = cmp.ConfirmBehavior.Insert,
+                select = true,
+            }),
+            { "i", "c" }
+        ),
+
+        ["<tab>"] = cmp.config.disable,
+    },
     sources = {
+        -- note that order here dictates priority
+        { name = "nvim_lua" },
         { name = "nvim_lsp" },
+        { name = "path" },
         { name = "luasnip" },
-        { name = "buffer" },
+        { name = "buffer", keyword_length = 5 },
         { name = "cmp_pandoc" },
+    },
+    formatting = {
+        format = lspkind.cmp_format({
+            with_text = true,
+            menu = {
+                buffer = "[buf]",
+                nvim_lsp = "[lsp]",
+                nvim_lua = "[api]",
+                path = "[path]",
+                luasnip = "[snip]",
+                gh_issues = "[issues]",
+                -- tn = "[tabnine]",
+            },
+        }),
+    },
+
+    experimental = {
+        native_menu = false,
+        ghost_text = true,
     },
 })
 
@@ -88,7 +144,7 @@ cmp.setup({
 -- cmp.setup.cmdline('/', {
 --   mapping = cmp.mapping.preset.cmdline(),
 --   sources = {
---     { name = 'buffer' }
+--     { name = 'buffer', keyword_length = 5 }
 --   }
 -- })
 
@@ -142,9 +198,11 @@ null_ls.setup({
         -- null_ls.builtins.completion.spell,
         null_ls.builtins.diagnostics.markdownlint,
         -- null_ls.builtins.diagnostics.pylint,
+        null_ls.builtins.diagnostics.cmake_lint,
         null_ls.builtins.diagnostics.cppcheck,
         null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.formatting.clang_format,
+        null_ls.builtins.formatting.cmake_format,
 
         -- had to npm install --global prettier
         null_ls.builtins.formatting.prettier.with({
@@ -158,24 +216,16 @@ null_ls.setup({
     },
     on_attach = on_attach,
     log_level = "warn",
+    -- log_level = "debug",
 })
 
--- local diagnostics_active = true
--- local toggle_diagnostics = function()
---     diagnostics_active = not diagnostics_active
---     if diagnostics_active then
---         print("Showing diagnostics")
---         vim.diagnostic.show()
---     else
---         print("Hiding diagnostics")
---         vim.diagnostic.hide()
---     end
--- end
--- vim.keymap.set("n", "<leader>dd", toggle_diagnostics)
+local format_diagnostic = function(diagnostic)
+    return string.format("%s (%s)", diagnostic.message, diagnostic.code)
+end
 
 -- Plug-in allows easy toggling of diagnostics features
 -- start_on currently does not work
-require'toggle_lsp_diagnostics'.init({ start_on = false })
+require("toggle_lsp_diagnostics").init({ start_on = true })
 require("toggle_lsp_diagnostics").init({
     severity_sort = true,
     underline = true,
@@ -186,6 +236,7 @@ require("toggle_lsp_diagnostics").init({
     },
     float = {
         source = "always",
+        format = format_diagnostic,
     },
 })
 vim.keymap.set("n", "<leader>dd", "<Plug>(toggle-lsp-diag)")
@@ -199,7 +250,6 @@ vim.keymap.set("n", "<leader>de", vim.diagnostic.enable)
 --   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 -- end
 
-
 vim.diagnostic.config({
     severity_sort = true,
     underline = true,
@@ -210,10 +260,9 @@ vim.diagnostic.config({
     },
     float = {
         source = "always",
+        format = format_diagnostic,
     },
 })
-
--- require("colorbuddy").setup()
 
 -- from https://github.com/craftzdog/dotfiles-public/blob/1c58c37e96cd5f451d7f43ac1a3b3c5807752ad9/.config/nvim/after/plugin/neosolarized.rc.lua
 require("neosolarized").setup({

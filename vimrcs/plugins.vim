@@ -59,6 +59,7 @@ call plug#begin('~/.vim/plugged')
   " Completion with nvim-cmp
   " https://github.com/hrsh7th/nvim-cmp
   Plug 'hrsh7th/nvim-cmp'  " auto-completion plugin
+  Plug 'onsails/lspkind.nvim'  " prettier completion window
   
   " List of completion sources
   " https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
@@ -82,6 +83,10 @@ call plug#begin('~/.vim/plugged')
   " Built-in support:
   " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
   Plug 'jose-elias-alvarez/null-ls.nvim'
+
+  " Prettier listings of diagnostics, LSP refs, etc.
+  Plug 'kyazdani42/nvim-web-devicons'
+  Plug 'folke/trouble.nvim'
 
   " Zeavim allows to use the offline documentation browser Zeal from Vim.
   Plug 'KabbAmine/zeavim.vim'
