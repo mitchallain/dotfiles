@@ -19,6 +19,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'tjdevries/colorbuddy.nvim'
   Plug 'altercation/solarized'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'nvim-treesitter/nvim-treesitter-context'
 
   " A tree explorer plugin for vim.
   Plug 'preservim/nerdtree'
