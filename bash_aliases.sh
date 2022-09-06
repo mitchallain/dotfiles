@@ -156,7 +156,7 @@ rosloglvl () {
 # ------------:-----------------------------------------------------------------
 sws () {
   source /opt/ros/$ROS_DISTRO/setup.bash;
-  local wspath=`catkin locate`;
+  local wspath=$(catkin locate);
   source $wspath/devel/setup.bash;
 }
 

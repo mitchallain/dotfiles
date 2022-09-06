@@ -43,7 +43,11 @@ sudo apt install neovim
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
+# C++ development tools
+sudo apt install cppcheck ccls
 
+# ros development
+sudo apt install catkin-lint
 
 
 

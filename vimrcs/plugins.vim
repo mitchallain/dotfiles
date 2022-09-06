@@ -167,6 +167,8 @@ let g:NERDTreeMapJumpNextSibling = ''
 let g:NERDTreeMapJumpPrevSibling = ''
 
 let g:NERDTreeRespectWildIgnore = 1
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeIgnore = ['\.ccls-cache$', '\.pytest_cache$']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

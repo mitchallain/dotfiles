@@ -11,7 +11,7 @@
 # https://blog.burntsushi.net/ripgrep/
 # find -L does not seem to work on macOS
 if [ -x "$(command -v rg)" ]; then
-    if [ -f "$HOME/.config/.rgignore" ]; then
+    if [ -r "$HOME/.config/.rgignore" ]; then
         export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden --ignore-file ~/.config/.rgignore"
     else
         export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden"
