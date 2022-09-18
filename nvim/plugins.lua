@@ -175,11 +175,11 @@ lspconfig["pyright"].setup({
     flags = lsp_flags,
     capabilities = capabilities,
 })
-lspconfig["ccls"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-})
+-- lspconfig["ccls"].setup({
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+--     capabilities = capabilities,
+-- })
 lspconfig["rust_analyzer"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
