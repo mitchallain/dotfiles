@@ -132,6 +132,7 @@ fi
 
 
 # OS-specific setup
+# TODO: path manipulation doesn't really belong in bashrc
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # >>> conda initialize >>>
     # !! contents within this block are managed by 'conda init' !!
@@ -177,7 +178,7 @@ bind Space:magic-space
 #    source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 #fi
 
-# have seen recommendations to omit this line as it should be set by the 
+# TODO: have seen recommendations to omit this line as it should be set by the 
 # terminal emulator
 export TERM=xterm-256color
 
