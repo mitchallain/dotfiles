@@ -8,6 +8,14 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" Function from vim-plug docs "Conditional activation"
+" conditional loading of plugins
+" https://github.com/junegunn/vim-plug/wiki/tips#conditional-activation
+function! Cond(cond, ...)
+  let opts = get(a:000, 0, {})
+  return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
+endfunction
+
 call plug#begin('~/.vim/plugged')
   " Fuzzy searching
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -19,7 +27,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'tjdevries/colorbuddy.nvim'
   Plug 'altercation/solarized'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/nvim-treesitter-context'
+  Plug 'nvim-treesitter/nvim-treesitter-context', Cond(has('nvim'))
+  " Plug 'itchyny/lightline.vim'
 
   " A tree explorer plugin for vim.
   Plug 'preservim/nerdtree'
@@ -74,7 +83,7 @@ call plug#begin('~/.vim/plugged')
 
   " For luasnip users
   Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
-  Plug 'L3MON4D3/LuaSnip' " Snippets plugin
+  Plug 'L3MON4D3/LuaSnip', Cond(has('nvim')) " Snippets plugin
 
   Plug 'nvim-lua/plenary.nvim'  " Lua function library
   
@@ -87,7 +96,7 @@ call plug#begin('~/.vim/plugged')
 
   " Prettier listings of diagnostics, LSP refs, etc.
   Plug 'kyazdani42/nvim-web-devicons'
-  Plug 'folke/trouble.nvim'
+  Plug 'folke/trouble.nvim', Cond(has('nvim'))
 
   " Zeavim allows to use the offline documentation browser Zeal from Vim.
   Plug 'KabbAmine/zeavim.vim'
@@ -123,18 +132,22 @@ call plug#end()
 """"""""""""""""""""""""""""""
 " NeoSolarized works with neovim/vim but requires truecolor
 " support from the terminal, usually indicated by $COLORTERM
-if $COLORTERM == 'truecolor'
-    set termguicolors
-    colorscheme neosolarized
-else
-    " colorscheme solarized
-    " This seems to work for some odd reason on mac terminal.app
-    colorscheme neosolarized
-endif
+set termguicolors
+colorscheme neosolarized
 
 " Make bg transparent
 set background=dark
 hi Normal ctermbg=NONE guibg=NONE
+
+"""""""""""""""""""""""""""""""
+" => lightline
+""""""""""""""""""""""""""""""
+" let g:lightline = {
+"       \ 'colorscheme': 'solarized',
+"       \ 'component_function': {
+"       \   'gitbranch': 'FugitiveHead'
+"       \ },
+"       \ }
 
 """""""""""""""""""""""""""""""
 " => Colorizer
