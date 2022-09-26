@@ -23,7 +23,7 @@ call plug#begin('~/.vim/plugged')
 
   " Solarized for vim and nvim
   " Plug 'overcache/NeoSolarized'  " requires TrueColor support
-  Plug 'MitchAllain/neosolarized.nvim'
+  Plug 'MitchAllain/neosolarized.nvim', { 'branch': 'main' }
   Plug 'tjdevries/colorbuddy.nvim'
   Plug 'altercation/solarized'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -50,7 +50,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
   "Plug 'scrooloose/nerdcommenter'
-  Plug 'tpope/vim-commentary'
+  " Plug 'tpope/vim-commentary'
+  Plug 'numToStr/Comment.nvim'
   Plug 'tpope/vim-dispatch'
 
   " Show numbers in tab names
@@ -64,21 +65,21 @@ call plug#begin('~/.vim/plugged')
   " once you are on the latest stable release (>= v0.7.2)
   " this is the recommended python setup
   Plug 'neovim/nvim-lspconfig'  " Quickstart configs for built-in LSP client
-  Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'  " easily toggle virtual text diagnostics on and off
+  Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim', { 'branch': 'main' }  " easily toggle virtual text diagnostics on and off
 
   " Completion with nvim-cmp
   " https://github.com/hrsh7th/nvim-cmp
-  Plug 'hrsh7th/nvim-cmp'  " auto-completion plugin
+  Plug 'hrsh7th/nvim-cmp', { 'branch': 'main' } " auto-completion plugin
   Plug 'onsails/lspkind.nvim'  " prettier completion window
   
   " List of completion sources
   " https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
-  Plug 'hrsh7th/cmp-nvim-lsp'  " LSP source for nvim-cmp
-  Plug 'hrsh7th/cmp-buffer'  " nvim-cmp source for buffer words
-  Plug 'hrsh7th/cmp-path'  " nvim-cmp source for filesystem paths
+  Plug 'hrsh7th/cmp-nvim-lsp', { 'branch': 'main' }  " LSP source for nvim-cmp
+  Plug 'hrsh7th/cmp-buffer', { 'branch': 'main' } " nvim-cmp source for buffer words
+  Plug 'hrsh7th/cmp-path', { 'branch': 'main' }  " nvim-cmp source for filesystem paths
   " Plug 'hrsh7th/cmp-cmdline'  " nvim-cmp source for vim's cmdline, found this to be intrusive
 
-  Plug 'aspeddro/cmp-pandoc.nvim'  " nvim-cmp source for markdown / pandoc
+  Plug 'aspeddro/cmp-pandoc.nvim', { 'branch': 'main' } " nvim-cmp source for markdown / pandoc
   Plug 'jbyuki/nabla.nvim'  " floating LaTeX equation rendered
 
   " For luasnip users
@@ -92,11 +93,11 @@ call plug#begin('~/.vim/plugged')
   " installed seperately with system package manager or lang package manager.
   " Built-in support:
   " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
-  Plug 'jose-elias-alvarez/null-ls.nvim'
+  Plug 'jose-elias-alvarez/null-ls.nvim', { 'branch': 'main' }
 
   " Prettier listings of diagnostics, LSP refs, etc.
   Plug 'kyazdani42/nvim-web-devicons'
-  Plug 'folke/trouble.nvim', Cond(has('nvim'))
+  Plug 'folke/trouble.nvim', Cond(has('nvim'), { 'branch': 'main' })
 
   " Zeavim allows to use the offline documentation browser Zeal from Vim.
   Plug 'KabbAmine/zeavim.vim'

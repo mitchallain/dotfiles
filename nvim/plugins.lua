@@ -268,3 +268,5 @@ vim.diagnostic.config({
 require("neosolarized").setup({
     comment_italics = true,
 })
+
+require('Comment').setup()
