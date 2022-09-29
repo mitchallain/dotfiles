@@ -28,6 +28,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'altercation/solarized'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/nvim-treesitter-context', Cond(has('nvim'))
+  Plug 'nvim-treesitter/playground'
   " Plug 'itchyny/lightline.vim'
 
   " A tree explorer plugin for vim.

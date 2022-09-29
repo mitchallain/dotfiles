@@ -44,6 +44,16 @@ alias .6='cd ../../../../../../'                    # Go back 6 directory levels
 alias ~="cd ~"                                      # ~:            Go Home
 alias c='clear'                                     # c:            Clear terminal display
 
+# ch               : clear screen and tmux history if in tmux
+# -----------------:-----------------------------------------------------------------
+ch() {
+  clear
+  clear
+  # if [ -z "$TMUX" ]; then
+  #   tmux clear-history
+  # fi
+}
+
 alias which='type -a'                               # which:        Find executables
 alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
 alias fix_stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
