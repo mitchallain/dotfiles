@@ -270,3 +270,13 @@ require("neosolarized").setup({
 })
 
 require('Comment').setup()
+
+require('treesitter-context').setup({
+    patterns = {
+        python = {
+            'try',
+            'else',
+            'elif',
+        },
+    },
+})
