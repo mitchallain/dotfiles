@@ -42,6 +42,7 @@ call plug#begin('~/.vim/plugged')
   " This is a Vim plugin that provides Rust file detection, 
   " syntax highlighting, formatting, Syntastic integration, and more. 
   Plug 'rust-lang/rust.vim'
+  Plug 'MitchAllain/IEC.vim'
 
   " ALE (Asynchronous Lint Engine) is a plugin providing linting
   " (syntax checking and semantic errors)

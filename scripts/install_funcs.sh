@@ -106,6 +106,10 @@ install_nvim () {
    # this will retrieve a newer version than
    # "sudo apt install python3-pynvim"
     python3 -m pip install --user pynvim
+
+    # install to update-alternatives
+    sudo update-alternatives --install \
+        /usr/bin/editor editor ~/bin/nvim 30
 }
 
 # nerd fonts meslo - da best
