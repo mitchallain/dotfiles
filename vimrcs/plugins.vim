@@ -51,6 +51,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
+  Plug 'APZelos/blamer.nvim'
   "Plug 'scrooloose/nerdcommenter'
   " Plug 'tpope/vim-commentary'
   Plug 'numToStr/Comment.nvim'

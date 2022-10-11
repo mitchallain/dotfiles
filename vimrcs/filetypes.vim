@@ -115,6 +115,7 @@ au FileType gitcommit call setpos('.', [0, 1, 1, 0])
 """"""""""""""""""""""""""""""
 " => Shell section
 """"""""""""""""""""""""""""""
+au BufNewFile,BufRead *.def set filetype=sh
 au FileType sh setlocal shiftwidth=4 tabstop=4 sts=0 expandtab
 
 

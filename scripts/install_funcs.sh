@@ -11,8 +11,7 @@ install_core_utils () {
         xclip \
         curl \
         terminator \
-        bat \ # cat alternative
-        exa  # ls alternative
+        bat
 }
 
 install_cpp_tools () {
