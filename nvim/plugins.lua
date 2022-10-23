@@ -113,6 +113,7 @@ cmp.setup({
     sources = {
         -- note that order here dictates priority
         { name = "nvim_lua" },
+        { name = "isort" },
         { name = "nvim_lsp" },
         { name = "path" },
         { name = "luasnip" },
@@ -165,8 +166,7 @@ local lsp_flags = {
 
 -- From https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
 -- Add additional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 local lspconfig = require("lspconfig")
 
