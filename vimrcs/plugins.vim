@@ -23,7 +23,7 @@ call plug#begin('~/.vim/plugged')
 
   " Solarized for vim and nvim
   " Plug 'overcache/NeoSolarized'  " requires TrueColor support
-  Plug 'MitchAllain/neosolarized.nvim', { 'branch': 'main' }
+  Plug 'mitchallain/neosolarized.nvim', { 'branch': 'main' }
   Plug 'tjdevries/colorbuddy.nvim'
   Plug 'altercation/solarized'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -42,7 +42,7 @@ call plug#begin('~/.vim/plugged')
   " This is a Vim plugin that provides Rust file detection, 
   " syntax highlighting, formatting, Syntastic integration, and more. 
   Plug 'rust-lang/rust.vim'
-  Plug 'MitchAllain/IEC.vim'
+  Plug 'mitchallain/IEC.vim'
 
   " ALE (Asynchronous Lint Engine) is a plugin providing linting
   " (syntax checking and semantic errors)

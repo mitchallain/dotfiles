@@ -12,7 +12,7 @@
 [core]
     editor = vi
 [github]
-    user = MitchAllain
+    user = mitchallain
 [alias]
     d = diff
     co = checkout

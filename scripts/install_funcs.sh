@@ -71,7 +71,7 @@ install_gitbatch () {
 
 # dotfiles setup
 install_dotfiles () {
-    git clone git@github.com:MitchAllain/dotfiles.git ~/dotfiles
+    git clone git@github.com:mitchallain/dotfiles.git ~/dotfiles
     cd ~/dotfiles
     git submodule update --recursive --init
     ./install
