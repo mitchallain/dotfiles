@@ -60,8 +60,26 @@ parse_git_branch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
+# https://stackoverflow.com/questions/3497885/code-challenge-bash-prompt-path-shortener
+_dir_chomp () {
+    local IFS=/ c=1 n d
+    local p=(${1/#$HOME/\~}) r=${p[*]}
+    local s=${#r}
+    while ((s>$2&&c<${#p[*]}-1))
+    do
+        d=${p[c]}
+        n=1;[[ $d = .* ]]&&n=2
+        ((s-=${#d}-n))
+        p[c++]=${d:0:n}
+    done
+    echo "${p[*]}"
+}
+
 if [ "$color_prompt" = yes ]; then
-    PS1="${debian_chroot:+($debian_chroot)}\u@\h \[\033[32m\]\W\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ "
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h \[\033[32m\]$(
+  _dir_chomp "$(pwd)" 20
+)\[\033[33m\]$(parse_git_branch)\[\033[00m\] $ '
+    # PS1="${debian_chroot:+($debian_chroot)}\u@\h \[\033[32m\]\W\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ "
     # PS1='${debian_chroot:+($debian_chroot)}\u@\h \[\033[32m\]\W \$ '
 else
     PS1="${debian_chroot:+($debian_chroot)}\u@\h:\W\$(parse_git_branch) \$ "
