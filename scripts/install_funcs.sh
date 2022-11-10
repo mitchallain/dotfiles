@@ -49,6 +49,10 @@ install_fzf () {
     ~/.fzf/install
 }
 
+install_forgit () {
+    git clone git@github.com:wfxr/forgit.git ~/.forgit
+}
+
 # albert - alfred clone for linux (spotlight replacement)
 # https://albertlauncher.github.io/installing/
 # https://software.opensuse.org/download.html?project=home:manuelschneid3r&package=albert
@@ -137,6 +141,11 @@ install_ros_noetic () {
     curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
     sudo apt update
     sudo apt install ros-noetic-desktop-full
+}
+
+install_appimagelauncher () {
+    sudo add-apt-repository ppa:appimagelauncher-team/stable
+    sudo apt install appimagelauncher
 }
 
 install_obsidian () {
