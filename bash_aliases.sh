@@ -266,11 +266,6 @@ rosbag_simtime() {
   rosbag play $1 -l --clock
 }
 
-# Private alias definitions for work - stored separately
-if [ -f ~/.aliases/private_aliases.sh ]; then
-  . ~/.aliases/private_aliases.sh
-fi
-
 # fzf dependent functions and aliases
 if [ -x "$(command -v fzf)" ] && [ -f ~/.aliases/fzf_functions.sh ]; then
   . ~/.aliases/fzf_functions.sh
