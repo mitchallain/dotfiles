@@ -121,6 +121,9 @@ for i in - {0..9} ; do
     bind -r '\e'$i
 done
 
+# setup fzf before bash_aliases
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -187,7 +190,6 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 bind 'set show-all-if-ambiguous on'
 # bind 'TAB:menu-complete'
 bind Space:magic-space
