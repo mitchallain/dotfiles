@@ -115,6 +115,14 @@ install_nvim () {
         /usr/bin/editor editor ~/bin/nvim 30
 }
 
+# https://askubuntu.com/a/1291854
+install_node_14 () {
+    sudo apt update
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+    sudo apt install -y nodejs
+}
+
+
 # nerd fonts meslo - da best
 install_nf_meslo_font () {
     mkdir ~/.local/share/fonts
