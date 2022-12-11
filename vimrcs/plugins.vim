@@ -125,7 +125,7 @@ call plug#begin('~/.vim/plugged')
   " Plug 'liuchengxu/vista.vim'
   Plug 'preservim/tagbar'
 
-  " Plug 'github/copilot.vim'
+  Plug 'github/copilot.vim'
   " Plug 'ap/vim-css-color'
   Plug 'chrisbra/Colorizer'
 
@@ -263,6 +263,8 @@ nnoremap <leader>m :SignatureToggle<cr>
 " => vim-doge
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:doge_doc_standard_python = 'google'
+let g:doge_mapping_comment_jump_forward = '<Tab>'
+let g:doge_mapping_comment_jump_backward = '<S-Tab>'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -276,3 +278,13 @@ let g:doge_doc_standard_python = 'google'
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:blamer_date_format = '%Y-%m-%d'
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => copilot 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" alternative keymaps for copilot
+let g:copilot_enabled = 0
+nmap <leader>ce :Copilot enable<CR>
+nmap <leader>cc :Copilot disable<CR>
+imap <silent> <C-s> <Plug>(copilot-suggest)
+imap <silent> <C-d> <Plug>(copilot-dismiss)
