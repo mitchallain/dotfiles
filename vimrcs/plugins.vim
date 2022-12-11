@@ -127,7 +127,7 @@ call plug#begin('~/.vim/plugged')
 
   Plug 'github/copilot.vim'
   " Plug 'ap/vim-css-color'
-  Plug 'chrisbra/Colorizer'
+  Plug 'norcalli/nvim-colorizer.lua', Cond(has('nvim'))
 
 call plug#end()
 
