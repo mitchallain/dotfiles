@@ -47,6 +47,8 @@ nmap <leader>w :w!<cr>
 " (useful for handling the permission-denied error)
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
+" Ctrl-C behaves like escape, e.g. triggers InsertLeave
+imap <C-c> <Esc>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
