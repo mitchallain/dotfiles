@@ -24,6 +24,7 @@ local on_attach = function(client, bufnr)
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+    vim.keymap.set("n", "gs", "<cmd>ClangdSwitchSourceHeader<cr>", opts)
 
     -- why does this not seem to work? Always executes
     if client.resolved_capabilities.hover then
@@ -171,6 +172,8 @@ local lsp_flags = {
 -- From https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+-- see https://github.com/jose-elias-alvarez/null-ls.nvim/issues/428#issuecomment-997226723
+capabilities.offsetEncoding = { "utf-16" }
 
 local lspconfig = require("lspconfig")
 
@@ -179,11 +182,11 @@ lspconfig["pyright"].setup({
     flags = lsp_flags,
     capabilities = capabilities,
 })
--- lspconfig["ccls"].setup({
---     on_attach = on_attach,
---     flags = lsp_flags,
---     capabilities = capabilities,
--- })
+lspconfig["clangd"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
 lspconfig["rust_analyzer"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
@@ -205,7 +208,7 @@ null_ls.setup({
         null_ls.builtins.diagnostics.cmake_lint,
         null_ls.builtins.diagnostics.cppcheck,
         null_ls.builtins.diagnostics.flake8,
-        null_ls.builtins.formatting.clang_format,
+        -- null_ls.builtins.formatting.clang_format,
         null_ls.builtins.formatting.cmake_format,
 
         -- had to npm install --global prettier
