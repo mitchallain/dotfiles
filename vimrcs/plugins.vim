@@ -96,7 +96,8 @@ call plug#begin('~/.vim/plugged')
   " installed seperately with system package manager or lang package manager.
   " Built-in support:
   " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
-  Plug 'jose-elias-alvarez/null-ls.nvim', { 'branch': 'main' }
+  " main branch no longer supports 0.7 as of 2022-12-07
+  Plug 'jose-elias-alvarez/null-ls.nvim', { 'branch': '0.7-compat' }
 
   " Prettier listings of diagnostics, LSP refs, etc.
   Plug 'kyazdani42/nvim-web-devicons'

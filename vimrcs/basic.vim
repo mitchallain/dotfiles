@@ -175,12 +175,12 @@ set noswapfile
 
 " OPTION B: HIDE VIM SWAP, BKUP, UNDO FILES
 " attempt to create vim backup at startup - https://stackoverflow.com/a/1549318
-silent !mkdir ~/.vim/tmp > /dev/null 2>&1
+" silent !mkdir ~/.vim/tmp > /dev/null 2>&1
 " moves swap, backup, and undo files from working directory to ~/.vim/tmp/
 " see https://stackoverflow.com/a/1625850/3885499
-set backupdir=~/.vim/tmp//,.
-set directory=~/.vim/tmp//,.
-set undodir=~/.vim/tmp//,.
+" set backupdir=~/.vim/tmp//,.
+" set directory=~/.vim/tmp//,.
+" set undodir=~/.vim/tmp//,.
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -315,7 +315,7 @@ nnoremap <leader>s :%s/\<<C-r><C-w>\>/
 vnoremap <leader>s y:%s/<C-r><C-r>"/
 
 " open sublime merge
-nnoremap <silent> <leader>sm :!smerge %s<cr>
+nnoremap <silent> <leader>sm :!smerge %s<cr><cr>
 
 " Move a line of text using ALT+[jk] or Command+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
