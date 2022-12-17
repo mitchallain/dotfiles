@@ -23,74 +23,74 @@ call plug#begin('~/.vim/plugged')
 
   " Solarized for vim and nvim
   " Plug 'overcache/NeoSolarized'  " requires TrueColor support
-  Plug 'mitchallain/neosolarized.nvim', { 'branch': 'main' }
+  Plug 'mitchallain/neosolarized.nvim', { 'branch': 'main' }  " I removed packer dependency
   Plug 'tjdevries/colorbuddy.nvim'
   Plug 'altercation/solarized'
+  Plug 'norcalli/nvim-colorizer.lua', Cond(has('nvim'))  " colorizer for hex codes, etc
+
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/nvim-treesitter-context', Cond(has('nvim'))
   Plug 'nvim-treesitter/playground'
-  " Plug 'itchyny/lightline.vim'
+  Plug 'theprimeagen/harpoon'
+  Plug 'mbbill/undotree'
 
   " A tree explorer plugin for vim.
   Plug 'preservim/nerdtree'
-  " Makes NERDTree independent of tabs
-  Plug 'jistr/vim-nerdtree-tabs'
+  Plug 'jistr/vim-nerdtree-tabs'  " Makes NERDTree independent of tabs
 
   " Seamless navigation between tmux panes and vim splits
   Plug 'christoomey/vim-tmux-navigator'
 
-  " This is a Vim plugin that provides Rust file detection, 
-  " syntax highlighting, formatting, Syntastic integration, and more. 
-  Plug 'rust-lang/rust.vim'
+  " Specific language/framework support plug-ins
   Plug 'mitchallain/IEC.vim'
+  Plug 'vimjas/vim-python-pep8-indent'
+  Plug 'taketwo/vim-ros'  " gotos
+  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
-  " ALE (Asynchronous Lint Engine) is a plugin providing linting
-  " (syntax checking and semantic errors)
-  " Plug 'dense-analysis/ale'
-  
-  Plug 'tpope/vim-surround'
+  " Git plug-ins
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
   Plug 'APZelos/blamer.nvim'
-  "Plug 'scrooloose/nerdcommenter'
-  " Plug 'tpope/vim-commentary'
-  Plug 'numToStr/Comment.nvim'
+
+  Plug 'tpope/vim-surround'
   Plug 'tpope/vim-dispatch'
+
+  " Commenting plugins
+  " Plug 'scrooloose/nerdcommenter'
+  " Plug 'tpope/vim-commentary'
+  Plug 'numToStr/Comment.nvim'  " current favorite
+  Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 
   " Show numbers in tab names
   Plug 'mkitt/tabline.vim'
 
-  " Nodejs extension host for vim & neovim, load extensions 
-  " like VSCode and host language servers
-  " Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  " Plug 'neoclide/coc-python'
-  
-  " once you are on the latest stable release (>= v0.7.2)
-  " this is the recommended python setup
+  " LSP PLUG-INS
+  " --------------------------------
+  " see https://github.com/VonHeikemen/lsp-zero.nvim
   Plug 'neovim/nvim-lspconfig'  " Quickstart configs for built-in LSP client
-  Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim', { 'branch': 'main' }  " easily toggle virtual text diagnostics on and off
+  Plug 'williamboman/mason.nvim'
+  Plug 'williamboman/mason-lspconfig.nvim' 
+
+  " Autocompletion
+  Plug 'hrsh7th/nvim-cmp', { 'branch': 'main' } " auto-completion plugin
+  Plug 'hrsh7th/cmp-buffer', { 'branch': 'main' } " nvim-cmp source for buffer words
+  Plug 'hrsh7th/cmp-path', { 'branch': 'main' }  " nvim-cmp source for filesystem paths
 
   " Completion with nvim-cmp
   " https://github.com/hrsh7th/nvim-cmp
-  Plug 'hrsh7th/nvim-cmp', { 'branch': 'main' } " auto-completion plugin
   Plug 'onsails/lspkind.nvim'  " prettier completion window
   
   " List of completion sources
   " https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
   Plug 'hrsh7th/cmp-nvim-lsp', { 'branch': 'main' }  " LSP source for nvim-cmp
-  Plug 'hrsh7th/cmp-buffer', { 'branch': 'main' } " nvim-cmp source for buffer words
-  Plug 'hrsh7th/cmp-path', { 'branch': 'main' }  " nvim-cmp source for filesystem paths
-  " Plug 'hrsh7th/cmp-cmdline'  " nvim-cmp source for vim's cmdline, found this to be intrusive
-
+  Plug 'hrsh7th/cmp-nvim-lua', { 'branch': 'main' }  " LSP source for nvim-cmp
+  " Plug 'hrsh7th/cmp-cmdline', { 'branch': 'main' }  " nvim-cmp source for vim's cmdline, found this to be intrusive
   Plug 'aspeddro/cmp-pandoc.nvim', { 'branch': 'main' } " nvim-cmp source for markdown / pandoc
-  Plug 'jbyuki/nabla.nvim'  " floating LaTeX equation rendered
 
-  " For luasnip users
+  " For luasnip usage
   Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
   Plug 'L3MON4D3/LuaSnip', Cond(has('nvim')) " Snippets plugin
 
-  Plug 'nvim-lua/plenary.nvim'  " Lua function library
-  
   " null-ls - Inject diagnostics and formatting through LSP from supported
   " binaries on PATH. Note this does not provide the binaries, which must be
   " installed seperately with system package manager or lang package manager.
@@ -103,22 +103,20 @@ call plug#begin('~/.vim/plugged')
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'folke/trouble.nvim', Cond(has('nvim'), { 'branch': 'main' })
 
+  Plug 'mitchallain/toggle-lsp-diagnostics.nvim', { 'branch': 'main' }  " easily toggle virtual text diagnostics on and off
+  Plug 'ojroques/nvim-lspfuzzy'
+  " --------------------------------------
+
+  Plug 'nvim-lua/plenary.nvim'  " Lua function library
+  Plug 'jbyuki/nabla.nvim'  " floating LaTeX equation rendered
+
   " Zeavim allows to use the offline documentation browser Zeal from Vim.
   Plug 'KabbAmine/zeavim.vim'
 
-  Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
   Plug 'vim-scripts/Tabmerge'
-
-  " Markdown Authoring
-  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-
-  "PYTHON
-  Plug 'vimjas/vim-python-pep8-indent'
 
   " Shows marks next to line numbers
   Plug 'kshenoy/vim-signature'
-
-  Plug 'taketwo/vim-ros'
 
   " ctags and tagbar
   " ensure that 'sudo snap/apt install universal-ctags'
@@ -127,9 +125,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'preservim/tagbar'
 
   Plug 'github/copilot.vim'
-  " Plug 'ap/vim-css-color'
-  Plug 'norcalli/nvim-colorizer.lua', Cond(has('nvim'))
-
 call plug#end()
 
 """""""""""""""""""""""""""""""
@@ -144,15 +139,6 @@ colorscheme neosolarized
 set background=dark
 hi Normal ctermbg=NONE guibg=NONE
 
-"""""""""""""""""""""""""""""""
-" => lightline
-""""""""""""""""""""""""""""""
-" let g:lightline = {
-"       \ 'colorscheme': 'solarized',
-"       \ 'component_function': {
-"       \   'gitbranch': 'FugitiveHead'
-"       \ },
-"       \ }
 
 """""""""""""""""""""""""""""""
 " => Colorizer
@@ -163,21 +149,21 @@ let g:colorizer_auto_filetype='vim,lua,css,html'
 " => fzf - fuzzy finder
 """"""""""""""""""""""""""""""
 set rtp+=~/.fzf
-nnoremap <c-p> :FZF<cr>
+nnoremap <c-p> :FZF --keep-right<cr>
+
+nnoremap <leader>st :BTags<cr>
+nnoremap <leader>sa :Tags<cr>
+nnoremap <leader>sm :Marks<cr>
+nnoremap <leader>sb :Buffers<cr>
+nnoremap <leader>sp :Maps<cr>
+nnoremap <leader>sh :Helptags<cr>
+
 
 """""""""""""""""""""""""""""""
 " => NERDTree - file browser
 """"""""""""""""""""""""""""""
-" nnoremap <leader>n :NERDTreeFocus<CR>
-" nnoremap <C-n> :NERDTree<CR>
-
-" nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-t> :NERDTreeTabsToggle<CR>
-" nnoremap <C-f> :NERDTreeTabsFind<CR> :NERDTreeTabsToggle<CR> 
-
-" not a big fan of stepping on this built-in, but I do need this mapping
-" nnoremap <C-f> :NERDTreeFind<CR>
-nnoremap <C-f> :NERDTreeTabsFind<CR>
+nnoremap <C-f> :NERDTreeTabsFind<CR> :NERDTreeTabsOpen<CR> 
 
 " disable these default keymaps, since they
 " conflict with my vim/tmux navigation scheme
@@ -193,32 +179,6 @@ let g:NERDTreeIgnore = ['\.ccls-cache$', '\.pytest_cache$']
 " => tagbar
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nnoremap <leader>t :TagbarToggle<CR>
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" => Ale (syntax checker and linter)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"let g:ale_linters = {
-"\   'python': ['flake8'],
-"\}
-
-"let g:ale_fixers = {
-"\   'rust': ['rustfmt', 'trim_whitespace', 'remove_trailing_lines'],
-"\   'python': ['yapf', 'trim_whitespace']
-"\}
-
-"" Optional, configure as-you-type completions
-"set completeopt=menu,menuone,preview,noselect,noinsert
-"let g:ale_completion_enabled = 1
-
-"nmap <silent> <leader>a <Plug>(ale_next_wrap)
-
-"" Disabling highlighting
-"let g:ale_set_highlights = 0
-
-"" Only run linting when saving the file
-"let g:ale_lint_on_text_changed = 'never'
-"let g:ale_lint_on_enter = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -258,7 +218,6 @@ autocmd FileType python let b:surround_115 = "'''\r'''" " s = 115
 " => vim-showmarks
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nnoremap <leader>mm :SignatureToggle<cr>
-nnoremap <leader>ms :Marks<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -267,12 +226,6 @@ nnoremap <leader>ms :Marks<cr>
 let g:doge_doc_standard_python = 'google'
 let g:doge_mapping_comment_jump_forward = '<Tab>'
 let g:doge_mapping_comment_jump_backward = '<S-Tab>'
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => lsp 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" autocmd BufEnter * lua vim.diagnostic.disable()
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

@@ -1,5 +1,3 @@
--- print('hello from lua')
-
 -- Inserted from https://github.com/neovim/nvim-lspconfig#suggested-configuration
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -48,7 +46,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
 
     -- Testing trouble.nvim
-    -- vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+    vim.keymap.set("n", "<leader>sr", vim.lsp.buf.references, bufopts)
     vim.keymap.set("n", "gr", "<cmd>TroubleToggle lsp_references<cr>", bufopts)
 
     vim.keymap.set("n", "<leader>fo", vim.lsp.buf.formatting, bufopts)
@@ -196,6 +194,18 @@ lspconfig["rust_analyzer"].setup({
         ["rust-analyzer"] = {},
     },
 })
+lspconfig["sumneko_lua"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabiilities = capabilities,
+    settings = {
+        Lua = {
+            telemetry = {
+                enable = False
+            }
+        }
+    },
+})
 
 local null_ls = require("null-ls")
 
@@ -230,33 +240,6 @@ local format_diagnostic = function(diagnostic)
     return string.format("%s (%s)", diagnostic.message, diagnostic.code)
 end
 
--- Plug-in allows easy toggling of diagnostics features
--- start_on currently does not work
-require("toggle_lsp_diagnostics").init({ start_on = true })
-require("toggle_lsp_diagnostics").init({
-    severity_sort = true,
-    underline = true,
-    update_in_insert = false,
-    virtual_text = {
-        spacing = 4,
-        prefix = "●",
-    },
-    float = {
-        source = "always",
-        format = format_diagnostic,
-    },
-})
-vim.keymap.set("n", "<leader>dd", "<Plug>(toggle-lsp-diag)")
-vim.keymap.set("n", "<leader>dt", "<Plug>(toggle-lsp-diag-vtext)")
-vim.keymap.set("n", "<leader>de", vim.diagnostic.enable)
-
--- Diagnostic symbols in the sign column (gutter)
--- local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
--- for type, icon in pairs(signs) do
---   local hl = "DiagnosticSign" .. type
---   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
--- end
-
 vim.diagnostic.config({
     severity_sort = true,
     underline = true,
@@ -271,19 +254,26 @@ vim.diagnostic.config({
     },
 })
 
--- from https://github.com/craftzdog/dotfiles-public/blob/1c58c37e96cd5f451d7f43ac1a3b3c5807752ad9/.config/nvim/after/plugin/neosolarized.rc.lua
-require("neosolarized").setup({
-    comment_italics = true,
-})
-
-require('Comment').setup()
-
-require('treesitter-context').setup({
-    patterns = {
-        python = {
-            'try',
-            'else',
-            'elif',
-        },
+-- Plug-in allows easy toggling of diagnostics features
+-- start_on currently does not work
+require("toggle_lsp_diagnostics").init({
+    start_on = true,
+    severity_sort = true,
+    underline = true,
+    update_in_insert = false,
+    virtual_text = {
+        spacing = 4,
+        prefix = "●",
+    },
+    float = {
+        source = "always",
+        format = format_diagnostic,
     },
 })
+
+vim.keymap.set("n", "<leader>dd", "<Plug>(toggle-lsp-diag)")
+vim.keymap.set("n", "<leader>dt", "<Plug>(toggle-lsp-diag-vtext)")
+vim.keymap.set("n", "<leader>de", vim.diagnostic.enable)
+
+
+require('lspfuzzy').setup {}

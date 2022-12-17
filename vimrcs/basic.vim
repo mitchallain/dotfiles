@@ -1,30 +1,7 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Adapted from https://github.com/amix/vimrc 
-"
-" Sections:
-"    -> General
-"    -> VIM user interface
-"    -> Colors and Fonts
-"    -> Files and backups
-"    -> Text, tab and indent related
-"    -> Visual mode related
-"    -> Moving around, tabs and buffers
-"    -> Status line
-"    -> Editing mappings
-"    -> vimgrep searching and cope displaying
-"    -> Spell checking
-"    -> Misc
-"    -> Helper functions
-"
+" => Vim Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" echo 'basic.vim'
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Sets how many lines of history VIM has to remember
-set history=500
+set history=500  " number of lines of command history
 set nofoldenable
 
 " Enable filetype plugins
@@ -35,24 +12,9 @@ filetype indent on
 set autoread
 au FocusGained,BufEnter * checktime
 
-" With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
-" comma is popular but will introduce lag when using comma to navigate
-let mapleader = " "
+" Neovim defaults to a thin cursor in insert mode
+set guicursor=i:block
 
-" Fast saving
-nmap <leader>w :w!<cr>
-
-" :W sudo saves the file
-" (useful for handling the permission-denied error)
-command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
-
-" Ctrl-C behaves like escape, e.g. triggers InsertLeave
-imap <C-c> <Esc>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VIM user interface
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set rnu
 set nu
 set mouse=a
@@ -60,12 +22,6 @@ set clipboard=unnamed
 
 " Set 7 lines to the cursor - when moving vertically using j/k
 set scrolloff=7
-
-" Avoid garbled characters in Chinese language windows OS
-" let $LANG='en'
-" set langmenu=en
-" source $VIMRUNTIME/delmenu.vim
-" source $VIMRUNTIME/menu.vim
 
 " Turn on the Wild menu
 set wildmenu
@@ -130,14 +86,21 @@ endif
 " Add a bit extra margin to the left
 set foldcolumn=1
 
-nnoremap <M-J> :resize +5<cr>
-nnoremap <M-K> :resize -5<cr>
-nnoremap <M-H> :vertical resize +5<cr>
-nnoremap <M-L> :vertical resize -5<cr>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Basic Keymaps
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" I do sort of prefer the thin cursor in neovim,
-" but not even to justify the inconsistency with vim
-set guicursor=i:block
+let mapleader = " "
+
+" Fast saving
+nmap <leader>w :w!<cr>
+
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+
+" Ctrl-C behaves like escape, e.g. triggers InsertLeave
+imap <C-c> <Esc>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
@@ -168,38 +131,28 @@ set ffs=unix,dos,mac
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" OPTION A: disable swap, bkup
 set nobackup
 set nowb
 set noswapfile
-
-" OPTION B: HIDE VIM SWAP, BKUP, UNDO FILES
-" attempt to create vim backup at startup - https://stackoverflow.com/a/1549318
-" silent !mkdir ~/.vim/tmp > /dev/null 2>&1
-" moves swap, backup, and undo files from working directory to ~/.vim/tmp/
-" see https://stackoverflow.com/a/1625850/3885499
-" set backupdir=~/.vim/tmp//,.
-" set directory=~/.vim/tmp//,.
-" set undodir=~/.vim/tmp//,.
+set undodir=~/.vim/undodir  " this gives undotree access
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Use spaces instead of tabs
+set tabstop=4  " 1 tab -> 4 spaces
+set shiftwidth=0  " this means equal to tabstop
 set expandtab
+" note the above configuration does not require setting softtabstop
 
 " Be smart when using tabs ;)
 set smarttab
 
-" 1 tab == 4 spaces
-set tabstop=4
-" this means equal to tabstop
-set shiftwidth=0
-
 " when all else fails, quickly toggle between tabwidths
-nnoremap <leader>t2 :setlocal shiftwidth=2 softtabstop=2 expandtab<cr>
-nnoremap <leader>t4 :setlocal shiftwidth=4 softtabstop=4 expandtab<cr>
+nnoremap <leader>t2 :setlocal tabstop=2 shiftwidth=0 softtabstop=0 expandtab<cr>
+nnoremap <leader>t4 :setlocal tabstop=4 shiftwidth=0 softtabstop=0 expandtab<cr>
+nnoremap <leader>t8 :setlocal tabstop=8 shiftwidth=0 softtabstop=0 expandtab<cr>
 
 " only when set wrap
 set linebreak
@@ -227,15 +180,10 @@ nnoremap <leader>fi viw :<C-u>call VisualSelection('', '', 'false')<CR>:Rg <C-R>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Moving around, tabs, windows and buffers
+" => Keymaps for tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-" map <space> /
-" map <C-space> ?
-
 " Toggle highlights when searching on <leader><cr>
 map <silent> <leader><cr> :setlocal hlsearch!<cr>
-
 
 " Fuzzy buffer searching
 map <leader>b :Buffers<cr>
@@ -271,11 +219,6 @@ let g:lasttab = 1
 nmap <leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
-
-" Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-" map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
-
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
@@ -289,6 +232,10 @@ endtry
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+nnoremap <M-J> :resize +5<cr>
+nnoremap <M-K> :resize -5<cr>
+nnoremap <M-H> :vertical resize +5<cr>
+nnoremap <M-L> :vertical resize -5<cr>
 
 """"""""""""""""""""""""""""""
 " => Status line
@@ -304,7 +251,7 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap VIM 0 to first non-blank character
-map 0 ^
+" map 0 ^  " this is a bad habit
 
 " Sort selection
 vnoremap <leader>so :sort<cr>
@@ -315,20 +262,32 @@ nnoremap <leader>s :%s/\<<C-r><C-w>\>/
 vnoremap <leader>s y:%s/<C-r><C-r>"/
 
 " open sublime merge
-nnoremap <silent> <leader>sm :!smerge %s<cr><cr>
+nnoremap <silent> <leader>me :!smerge %s<cr><cr>
 
-" Move a line of text using ALT+[jk] or Command+[jk] on mac
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+" Move text in visual mode
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
 
-if has("mac") || has("macunix")
-  nmap <D-j> <M-j>
-  nmap <D-k> <M-k>
-  vmap <D-j> <M-j>
-  vmap <D-k> <M-k>
-endif
+" Join lines without moving cursor
+nnoremap J mzJ`z
+
+" Search stays in center
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" Pasting over a word deletes it into the black hole register first
+" This assumes that you don't want to keep the replaced text around
+vnoremap p "_dP
+
+" Yanking into clipboard with leader
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
+nnoremap <leader>Y "+Y
+
+" Don't ever press capital Q, it's the worst place in the universe - the primeagen
+nnoremap Q <nop>
+
+nnoremap <leader>x :!chmod +x %<cr>
 
 " Delete trailing white space on save, useful for some filetypes ;)
 fun! CleanExtraSpaces()
@@ -351,10 +310,10 @@ endif
 map <leader>ss :setlocal spell!<cr>
 
 " Shortcuts using <leader>
-map <leader>sn ]s
-map <leader>sp [s
-map <leader>sa zg
-map <leader>s? z=
+" map <leader>sn ]s
+" map <leader>sp [s
+" map <leader>sa zg
+" map <leader>s? z=
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
