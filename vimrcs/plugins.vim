@@ -257,7 +257,8 @@ autocmd FileType python let b:surround_115 = "'''\r'''" " s = 115
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-showmarks
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <leader>m :SignatureToggle<cr>
+nnoremap <leader>mm :SignatureToggle<cr>
+nnoremap <leader>ms :Marks<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

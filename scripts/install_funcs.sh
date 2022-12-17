@@ -11,7 +11,9 @@ install_core_utils () {
         xclip \
         curl \
         terminator \
-        bat
+        bat \
+        htop \
+        ripgrep
 }
 
 install_cpp_tools () {
@@ -158,4 +160,5 @@ install_appimagelauncher () {
 
 install_obsidian () {
     wget -P ~/Downloads/ "https://github.com/obsidianmd/obsidian-releases/releases/download/v0.15.9/Obsidian-0.15.9.AppImage"
+    chmod +x ~/Downloads/Obsidian-0.15.9.AppImage
 }
