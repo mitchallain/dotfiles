@@ -163,7 +163,6 @@ set smartindent
 set nowrap
 
 set colorcolumn=80,100
-hi ColorColumn ctermbg=grey guibg=#002b36
 
 
 """"""""""""""""""""""""""""""
@@ -277,7 +276,7 @@ nnoremap N Nzzzv
 
 " Pasting over a word deletes it into the black hole register first
 " This assumes that you don't want to keep the replaced text around
-vnoremap p "_dP
+vnoremap p "_dp
 
 " Yanking into clipboard with leader
 nnoremap <leader>y "+y

@@ -162,3 +162,11 @@ install_obsidian () {
     wget -P ~/Downloads/ "https://github.com/obsidianmd/obsidian-releases/releases/download/v0.15.9/Obsidian-0.15.9.AppImage"
     chmod +x ~/Downloads/Obsidian-0.15.9.AppImage
 }
+
+# newer versions of flameshot are not always available through apt
+install_flameshot () {
+    # https://flameshot.org/docs/installation/installation-linux/
+    # https://github.com/flameshot-org/flameshot/releases
+    wget -P ~/Downloads/ "https://github.com/flameshot-org/flameshot/releases/download/v12.1.0/flameshot-12.1.0-1.ubuntu-20.04.amd64.deb"
+    sudo dpkg -i ~/Downloads/flameshot-12.1.0-1.ubuntu-20.04.amd64.deb
+}

@@ -138,7 +138,7 @@ colorscheme neosolarized
 " Make bg transparent
 set background=dark
 hi Normal ctermbg=NONE guibg=NONE
-
+" hi ColorColumn ctermbg=grey guibg=#002b36  " set by neosolarized now
 
 """""""""""""""""""""""""""""""
 " => Colorizer

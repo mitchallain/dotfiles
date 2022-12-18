@@ -68,7 +68,6 @@ au FileType iec setlocal shiftwidth=4 tabstop=4 sts=0
 autocmd BufNewFile,BufRead *.yaml,*.yml,*.rosinstall set filetype=yaml
 
 
-
 """"""""""""""""""""""""""""""
 " => JavaScript section
 """""""""""""""""""""""""""""""
