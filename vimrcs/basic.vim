@@ -276,7 +276,7 @@ nnoremap N Nzzzv
 
 " Pasting over a word deletes it into the black hole register first
 " This assumes that you don't want to keep the replaced text around
-vnoremap p "_dp
+vnoremap p "_dP
 
 " Yanking into clipboard with leader
 nnoremap <leader>y "+y
