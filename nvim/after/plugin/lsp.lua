@@ -229,7 +229,10 @@ null_ls.setup({
         null_ls.builtins.formatting.stylua.with({
             extra_args = { "--indent-type", "Spaces" },
         }),
-        null_ls.builtins.formatting.yapf,
+        -- null_ls.builtins.formatting.yapf,
+        null_ls.builtins.formatting.black.with({
+            extra_args = { "--line-length", "99"},
+        }),
     },
     on_attach = on_attach,
     log_level = "warn",

@@ -134,3 +134,7 @@ augroup myvimrc
     au BufWritePost *.vim,.vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
 augroup END
 
+""""""""""""""""""""""""""""""
+" => Groovy
+""""""""""""""""""""""""""""""
+au BufNewFile,BufRead Jenkinsfile set filetype=groovy

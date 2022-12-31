@@ -243,7 +243,7 @@ nnoremap <M-L> :vertical resize -5<cr>
 set laststatus=2
 
 " Format the status line
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+set statusline=\ %{HasPaste()}%f%m%r%h\ %w\ \ \ \ %l/%L,\ %c
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -276,7 +276,8 @@ nnoremap N Nzzzv
 
 " Pasting over a word deletes it into the black hole register first
 " This assumes that you don't want to keep the replaced text around
-vnoremap p "_dP
+vnoremap P "_dP
+vnoremap p "_dp
 
 " Yanking into clipboard with leader
 nnoremap <leader>y "+y

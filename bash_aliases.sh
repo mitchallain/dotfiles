@@ -69,6 +69,18 @@ alias xclipv="xclip -selection clipboard -o"
 alias gitl="git log"
 alias gits="git status"
 
+# gitstat     : compact git status/log/diff
+# ------------:-----------------------------------------------------------------
+gitstat () {
+    echo -e "\033[32m$(basename "$1") \033[33m($(cd "$1" && git branch --show-current))\033[00m"
+    printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+    echo -e "\033[34m$(cd "$1" && git log -1 --pretty="%h - %>(12)%ad - %B" | tr -d '\n' |\
+        sed "s/\(.\{$(($COLUMNS - 3))\}\).*/\1.../")\033[00m"
+    (cd "$1" && git status -s)
+    echo ""
+}
+
+
 # bd - back to parent directory
 # https://github.com/vigneshwaranr/bd
 alias bd=". bd -si"
