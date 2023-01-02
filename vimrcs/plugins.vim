@@ -46,6 +46,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'vimjas/vim-python-pep8-indent'
   Plug 'taketwo/vim-ros'  " gotos
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+  " Re-execute :call mkdp#util#install() if the above fails to install
 
   " Git plug-ins
   Plug 'tpope/vim-fugitive'
@@ -106,6 +107,12 @@ call plug#begin('~/.vim/plugged')
   Plug 'mitchallain/toggle-lsp-diagnostics.nvim', { 'branch': 'main' }  " easily toggle virtual text diagnostics on and off
   Plug 'ojroques/nvim-lspfuzzy'
   " --------------------------------------
+  
+  " Debug Adapter Protocol
+  Plug 'mfussenegger/nvim-dap'
+  Plug 'mfussenegger/nvim-dap-python'
+  Plug 'theHamsta/nvim-dap-virtual-text'
+  Plug 'rcarriga/nvim-dap-ui'
 
   Plug 'nvim-lua/plenary.nvim'  " Lua function library
   Plug 'jbyuki/nabla.nvim'  " floating LaTeX equation rendered

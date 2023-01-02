@@ -22,4 +22,4 @@
     stashpull = pull --rebase --autostash
     sp = pull --rebase --autostash
     stauts = status
-
+    pushf = push --force-with-lease
