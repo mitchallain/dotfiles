@@ -124,6 +124,12 @@ done
 # setup fzf before bash_aliases
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+# machine-id specific environment loaders
+id=$(cat /etc/machine-id)
+if [ -f ~/.machines/$id.sh ]; then
+    . ~/.machines/$id.sh
+fi
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.

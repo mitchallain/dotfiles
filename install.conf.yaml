@@ -27,11 +27,12 @@
     ~/.config/yapf/style: yapf/style
     ~/.gitconfig: gitconfig
     ~/.ipython/profile_default/startup: ipython/profile_default/startup
+    ~/.machines: private/machines
     ~/.mermaid.json: mermaid.json
     ~/.pandoc: pandoc
     ~/.profile: profile
     ~/.pylintrc: pylintrc
-    ~/.ros_env_hooks: private/ros_env_hooks
+    ~/.projects: private/projects
     ~/.ssh/config: private/ssh/config
     ~/.tmux.conf: tmux.conf
     ~/.tmux.powerline.conf: tmux.powerline.conf
