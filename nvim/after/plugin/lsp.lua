@@ -24,9 +24,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
     vim.keymap.set("n", "gs", "<cmd>ClangdSwitchSourceHeader<cr>", opts)
 
-    -- why does this not seem to work? Always executes
-    if client.resolved_capabilities.hover then
-        -- print('client has hover')
+    if client.server_capabilities.hoverProvider then
         vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
     end
 
@@ -197,12 +195,26 @@ lspconfig["rust_analyzer"].setup({
 lspconfig["sumneko_lua"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
-    capabiilities = capabilities,
+    capabilities = capabilities,
     settings = {
         Lua = {
+            runtime = {
+                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT',
+            },
+            diagnostics = {
+                -- Get the language server to recognize the `vim` global
+                globals = { 'vim' },
+            },
+            workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = vim.api.nvim_get_runtime_file("", true),
+                checkThirdParty = false,
+            },
+            -- Do not send telemetry data containing a randomized but unique identifier
             telemetry = {
-                enable = False
-            }
+                enable = false,
+            },
         }
     },
 })
@@ -231,7 +243,7 @@ null_ls.setup({
         }),
         -- null_ls.builtins.formatting.yapf,
         null_ls.builtins.formatting.black.with({
-            extra_args = { "--line-length", "99"},
+            extra_args = { "--line-length", "99" },
         }),
     },
     on_attach = on_attach,
