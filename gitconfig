@@ -23,3 +23,5 @@
     sp = pull --rebase --autostash
     stauts = status
     pushf = push --force-with-lease
+    cme = commit --amend
+    cma = commit --amend --no-edit

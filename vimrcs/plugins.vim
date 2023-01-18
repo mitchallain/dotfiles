@@ -103,6 +103,7 @@ call plug#begin('~/.vim/plugged')
   " Prettier listings of diagnostics, LSP refs, etc.
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'folke/trouble.nvim', Cond(has('nvim'), { 'branch': 'main' })
+  Plug 'folke/todo-comments.nvim', Cond(has('nvim'), { 'branch': 'main' })
 
   Plug 'mitchallain/toggle-lsp-diagnostics.nvim', { 'branch': 'main' }  " easily toggle virtual text diagnostics on and off
   Plug 'ojroques/nvim-lspfuzzy'
@@ -250,3 +251,8 @@ nmap <leader>ce :Copilot enable<CR>
 nmap <leader>cc :Copilot disable<CR>
 imap <silent> <C-s> <Plug>(copilot-suggest)
 imap <silent> <C-d> <Plug>(copilot-dismiss)
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => undotree 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:undotree_WindowLayout = 2
