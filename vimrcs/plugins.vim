@@ -69,8 +69,8 @@ call plug#begin('~/.vim/plugged')
   " --------------------------------
   " see https://github.com/VonHeikemen/lsp-zero.nvim
   Plug 'neovim/nvim-lspconfig'  " Quickstart configs for built-in LSP client
-  Plug 'williamboman/mason.nvim'
-  Plug 'williamboman/mason-lspconfig.nvim' 
+  Plug 'williamboman/mason.nvim', { 'branch': 'main' }
+  Plug 'williamboman/mason-lspconfig.nvim', { 'branch': 'main' } 
 
   " Autocompletion
   Plug 'hrsh7th/nvim-cmp', { 'branch': 'main' } " auto-completion plugin
@@ -106,7 +106,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'folke/todo-comments.nvim', Cond(has('nvim'), { 'branch': 'main' })
 
   Plug 'mitchallain/toggle-lsp-diagnostics.nvim', { 'branch': 'main' }  " easily toggle virtual text diagnostics on and off
-  Plug 'ojroques/nvim-lspfuzzy'
+  Plug 'ojroques/nvim-lspfuzzy', { 'branch': 'main' }
   " --------------------------------------
   
   " Debug Adapter Protocol
@@ -132,7 +132,7 @@ call plug#begin('~/.vim/plugged')
   " Plug 'liuchengxu/vista.vim'
   Plug 'preservim/tagbar'
 
-  Plug 'github/copilot.vim'
+  Plug 'github/copilot.vim', { 'branch': 'release' }
 call plug#end()
 
 """""""""""""""""""""""""""""""
