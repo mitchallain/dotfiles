@@ -18,6 +18,7 @@
     ~/.config/alacritty: alacritty
     ~/.config/albert/albert.conf: albert/albert.conf
     ~/.config/albert/org.albert.extension.snippets/snippets.db: albert/snippets.db
+    ~/.config/catkin: ros/catkin
     ~/.config/flameshot/flameshot.ini: flameshot.ini
     ~/.flake8: flake8
     ~/.config/matplotlib/stylelib: matplotlib/stylelib
