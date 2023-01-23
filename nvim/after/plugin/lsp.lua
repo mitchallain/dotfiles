@@ -47,8 +47,11 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "<leader>sr", vim.lsp.buf.references, bufopts)
     vim.keymap.set("n", "gr", "<cmd>TroubleToggle lsp_references<cr>", bufopts)
 
-    vim.keymap.set("n", "<leader>fo", vim.lsp.buf.formatting, bufopts)
-    vim.keymap.set("v", "<leader>fo", vim.lsp.buf.range_formatting, bufopts) -- this isn't quite working yet
+    -- Format whole file asynchronously
+    vim.keymap.set("n", "<leader>fo", function () vim.lsp.buf.format { async = true } end, bufopts)
+
+    -- Format a range from visual mode
+    vim.keymap.set("v", "<leader>fo", vim.lsp.buf.format, bufopts)
 end
 
 -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#luasnip

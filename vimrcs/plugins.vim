@@ -40,6 +40,7 @@ call plug#begin('~/.vim/plugged')
 
   " Seamless navigation between tmux panes and vim splits
   Plug 'christoomey/vim-tmux-navigator'
+  Plug 'preservim/vimux'
 
   " Specific language/framework support plug-ins
   Plug 'mitchallain/IEC.vim'

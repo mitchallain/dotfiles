@@ -175,7 +175,7 @@ vnoremap <silent> # :<C-u>call VisualSelection('', '', '')<CR>?<C-R>=@/<CR><CR>
 
 " jump into ripgrep search with visual selection
 vnoremap <leader>fi :<C-u>call VisualSelection('', '', 'false')<CR>:Rg <C-R>=@/<CR><CR>
-nnoremap <leader>fi viw :<C-u>call VisualSelection('', '', 'false')<CR>:Rg <C-R>=@/<CR><CR>
+nnoremap <leader>fi viw:<C-u>call VisualSelection('', '', 'false')<CR>:Rg <C-R>=@/<CR><CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
