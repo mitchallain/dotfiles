@@ -257,3 +257,11 @@ imap <silent> <C-d> <Plug>(copilot-dismiss)
 " => undotree 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:undotree_WindowLayout = 2
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => vimux 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>vl :VimuxRunLastCommand<CR>
+map <Leader>vp :VimuxPromptCommand<CR>
+" map <Leader>vt :VimuxRunCommand("pytest " . bufname("%"))<CR>
+map <Leader>vt :VimuxPromptCommand("pytest " . bufname("%"))<CR>

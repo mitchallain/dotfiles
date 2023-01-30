@@ -16,6 +16,7 @@ vim.keymap.set("n", "<leader>ds", ":lua require'dap'.step_into()<CR>") -- step
 vim.keymap.set("n", "<leader>dr", ":lua require'dap'.step_out()<CR>") -- return
 
 vim.keymap.set("n", "<leader>db", ":lua require'dap'.toggle_breakpoint()<CR>")
+vim.keymap.set("n", "<leader>dx", ":lua require'dap'.clear_breakpoints()<CR>")
 vim.keymap.set("n", "<leader>dB", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
 vim.keymap.set("n", "<leader>dl", ":lua require'dap'.repl.open()<CR>")
 

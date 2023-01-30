@@ -10,7 +10,10 @@ filetype indent on
 
 " Set to auto read when a file is changed from the outside
 set autoread
-au FocusGained,BufEnter * checktime
+autocmd FocusGained,BufEnter * checktime
+
+" possibly a little more robust but so far untested
+" autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
 
 " Neovim defaults to a thin cursor in insert mode
 set guicursor=i:block
