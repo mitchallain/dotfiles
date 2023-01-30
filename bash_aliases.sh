@@ -278,6 +278,45 @@ rosbag_simtime() {
   rosbag play $1 -l --clock
 }
 
+# entr - automatic execution of commands using kqueue or inotify
+if [ -x "$(command -v entr)" ]; then
+  entr_pytest_rospack() {
+    local packpath
+    # if rospack succeeds, copy to packpath variable (global system package search)
+    if rospack find "$1" > /dev/null; then
+      packpath=$(rospack find "$1")
+    elif catkin locate "$1" > /dev/null; then
+      # otherwise, use catkin locate (local workspace package search)
+      packpath=$(catkin locate "$1")
+    else
+      # exit if neither works
+      echo "Package not found"
+      exit 1
+    fi
+
+    find "$packpath"/test -name "test*.py" | entr -c pytest "${@:2}" "$packpath"
+  }
+
+  entr_test_rospack() {
+    # if rospack succeeds, copy to packpath variable (global system package search)
+    local packpath
+    if rospack find $1 > /dev/null; then
+      packpath=$(rospack find $1)
+    elif catkin locate $1 > /dev/null; then
+      # otherwise, use catkin locate (local workspace package search)
+      packpath=$(catkin locate $1)
+    else
+      # exit if neither works
+      echo "Package not found"
+      exit 1
+    fi
+
+    find $packpath/test -name "test*" | entr -c catkin test $1
+  }
+      # use entr to run all test
+  alias lx="exa -lga --icons -s name"
+fi
+
 # fzf dependent functions and aliases
 if [ -x "$(command -v fzf)" ] && [ -f ~/.aliases/fzf_functions.sh ]; then
   . ~/.aliases/fzf_functions.sh
