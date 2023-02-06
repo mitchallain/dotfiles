@@ -243,6 +243,7 @@ let g:doge_mapping_comment_jump_backward = '<S-Tab>'
 " => blamer 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:blamer_date_format = '%Y-%m-%d'
+nnoremap  <leader>bl :BlamerToggle<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

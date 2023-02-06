@@ -1,15 +1,34 @@
 [global_config]
-  always_split_with_profile = True
-  enabled_plugins = LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
   focus = system
   title_transmit_bg_color = "#d30102"
+  enabled_plugins = LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
+  always_split_with_profile = True
 [keybindings]
-  broadcast_all = None
-  broadcast_group = <Primary><Alt>g
-  broadcast_off = None
   group_all = <Alt>g
-  layout_launcher = None
   ungroup_all = <Shift><Alt>G
+  new_window = None
+  broadcast_off = None
+  broadcast_group = <Primary><Alt>g
+  broadcast_all = None
+  layout_launcher = None
+[profiles]
+  [[default]]
+    background_color = "#002b36"
+    background_darkness = 0.98
+    background_type = transparent
+    cursor_color = "#eee8d5"
+    font = MesloLGM Nerd Font Mono 10
+    foreground_color = "#eee8d5"
+    show_titlebar = False
+    scrollback_lines = 100000
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#586e75:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+    login_shell = True
+    use_system_font = False
+  [[solarized-light]]
+    background_color = "#eee8d5"
+    cursor_color = "#002b36"
+    foreground_color = "#002b36"
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
 [layouts]
   [[default]]
     [[[child1]]]
@@ -62,21 +81,3 @@
       profile = solarized-dark
       type = Terminal
 [plugins]
-[profiles]
-  [[default]]
-    background_color = "#002b36"
-    background_darkness = 0.97
-    background_type = transparent
-    cursor_color = "#eee8d5"
-    font = MesloLGMDZ Nerd Font Mono 10
-    foreground_color = "#eee8d5"
-    login_shell = True
-    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#586e75:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
-    scrollback_lines = 100000
-    show_titlebar = False
-    use_system_font = False
-  [[solarized-light]]
-    background_color = "#eee8d5"
-    cursor_color = "#002b36"
-    foreground_color = "#002b36"
-    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"

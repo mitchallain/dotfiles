@@ -51,7 +51,10 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "<leader>fo", function () vim.lsp.buf.format { async = true } end, bufopts)
 
     -- Format a range from visual mode
-    vim.keymap.set("v", "<leader>fo", vim.lsp.buf.format, bufopts)
+    if client.server_capabilities.rangeFormatting then
+        print('Supports range formatting')
+        vim.keymap.set("v", "<leader>fo", vim.lsp.buf.format, bufopts)
+    end
 end
 
 -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#luasnip
