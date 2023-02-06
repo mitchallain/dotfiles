@@ -42,6 +42,7 @@
     ~/.vimrcs: vimrcs
     ~/.vimrc: vimrcs/vimrc
     ~/.zshrc: zshrc
+    ~/catkin_ws/src/.envrc: ros/.envrc
     ~/rosconsole.config: ros/rosconsole.config
 
 - shell:

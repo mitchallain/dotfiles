@@ -281,37 +281,67 @@ rosbag_simtime() {
 # entr - automatic execution of commands using kqueue or inotify
 if [ -x "$(command -v entr)" ]; then
   entr_pytest_rospack() {
-    local packpath
-    # if rospack succeeds, copy to packpath variable (global system package search)
-    if rospack find "$1" > /dev/null; then
-      packpath=$(rospack find "$1")
-    elif catkin locate "$1" > /dev/null; then
+    local watchpath="."
+    local testpath="$1/test"
+    local findargs=""
+    local packname="$1"
+    # suppress stdout and stderr
+    if rospack find $1 > /dev/null 2>&1; then
+      watchpath="$(rospack find $1)/test"
+    elif catkin locate $1 > /dev/null 2>&1; then
       # otherwise, use catkin locate (local workspace package search)
-      packpath=$(catkin locate "$1")
+      watchpath="$(catkin locate $1)/test"
+    elif catkin list --directory $1 > /dev/null 2>&1; then
+      # join all newlines with a space and add /test to the end of each
+      local packnames="$(catkin list -u --directory $1)"
+
+      # for each package name, use catkin locate to find the package path
+      # and append /test to the end of each
+      testpath=""
+      for packname in $packnames; do
+        local thistestpath="$(catkin locate $packname)/test"
+        testpath="$testpath $thistestpath"
+      done
+
+      # add /test/test*.py to the end of each package name
+      findargs="$(echo $packnames | sed -e 's/ /\/test\/test*.py /g')/test/test*.py"
+
+      # add the -o -path flag to the beginning of each path for find
+      findargs="-and -path $(echo $findargs | sed -e 's/ / -or -path *\//g')"
     else
-      # exit if neither works
       echo "Package not found"
       exit 1
     fi
 
-    find "$packpath"/test -name "test*.py" | entr -c pytest "${@:2}" "$packpath"
+    find "$watchpath" -name "test*.py" $findargs | entr -c pytest "${@:2}" "$testpath"
   }
 
   entr_test_rospack() {
-    # if rospack succeeds, copy to packpath variable (global system package search)
-    local packpath
-    if rospack find $1 > /dev/null; then
-      packpath=$(rospack find $1)
-    elif catkin locate $1 > /dev/null; then
+    local watchpath="."
+    local findargs=""
+    local packname="$1"
+    # suppress stdout and stderr
+    if rospack find $1 > /dev/null 2>&1; then
+      watchpath="$(rospack find $1)/test"
+    elif catkin locate $1 > /dev/null 2>&1; then
       # otherwise, use catkin locate (local workspace package search)
-      packpath=$(catkin locate $1)
+      watchpath="$(catkin locate $1)/test"
+    elif catkin list --directory $1 > /dev/null 2>&1; then
+      # join all newlines with a space and add /test to the end of each
+      local packnames="$(catkin list -u --directory $1)"
+      packname="$(echo $packnames | tr -t '\n' ' ')"
+
+      # add /test/test*.py to the end of each package name
+      findargs="$(echo $packnames | sed -e 's/ /\/test\/test* /g')/test/test*"
+
+      # add the -o -path flag to the beginning of each path for find
+      findargs="-and -path $(echo $findargs | sed -e 's/ / -or -path *\//g')"
     else
-      # exit if neither works
       echo "Package not found"
       exit 1
     fi
 
-    find $packpath/test -name "test*" | entr -c catkin test $1
+    find "$watchpath" -name "test*" $findargs | entr -c catkin test $packname
   }
       # use entr to run all test
   alias lx="exa -lga --icons -s name"

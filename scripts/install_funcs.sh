@@ -6,20 +6,29 @@ install_core_utils () {
     sudo apt install gnome-tweak-tool
 
     sudo apt install \
-        vim \
-        tmux \
-        xclip \
-        curl \
-        terminator \
         bat \
+        curl \
         htop \
-        ripgrep
+        ripgrep \
+        terminator \
+        tmux \
+        vim \
+        xclip
 }
 
 install_cpp_tools () {
     sudo apt install \
         cppcheck
 }
+
+install_dev_tools () {
+    sudo apt install -y \
+        direnv \
+        entr
+}
+
+
+
 
 setup_python () {
     sudo apt install python3-pip

@@ -228,12 +228,12 @@ null_ls.setup({
     sources = {
         -- null_ls.builtins.code_actions.gitsigns,
         -- null_ls.builtins.completion.spell,
-        null_ls.builtins.diagnostics.markdownlint,
         -- null_ls.builtins.diagnostics.pylint,
+        -- null_ls.builtins.formatting.clang_format,
         null_ls.builtins.diagnostics.cmake_lint,
         null_ls.builtins.diagnostics.cppcheck,
         null_ls.builtins.diagnostics.flake8,
-        -- null_ls.builtins.formatting.clang_format,
+        null_ls.builtins.diagnostics.markdownlint,
         null_ls.builtins.formatting.cmake_format,
 
         -- had to npm install --global prettier
@@ -290,8 +290,8 @@ require("toggle_lsp_diagnostics").init({
 })
 
 vim.keymap.set("n", "<leader>dd", "<Plug>(toggle-lsp-diag)")
-vim.keymap.set("n", "<leader>dt", "<Plug>(toggle-lsp-diag-vtext)")
+vim.keymap.set("n", "<leader>dT", "<Plug>(toggle-lsp-diag-vtext)")
 vim.keymap.set("n", "<leader>de", vim.diagnostic.enable)
 
 
-require('lspfuzzy').setup {}
+-- require('lspfuzzy').setup {}

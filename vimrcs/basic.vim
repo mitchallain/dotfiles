@@ -332,6 +332,38 @@ map <leader>pp :setlocal paste!<cr>
 " https://vim.fandom.com/wiki/Selecting_your_pasted_text
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
+
+" https://github.com/tjdevries/config_manager/blob/83b6897e83525efdfdc24001453137c40373aa00/xdg_config/nvim/plugin/keymaps.vim#L45-L53
+" Execute a single line or selection of vimscript or lua
+function! s:executor() abort
+  if &ft == 'lua'
+    " echo "test"
+    call execute(printf(":lua %s", getline(".")))
+  elseif &ft == 'vim'
+    exe getline(">")
+  endif
+endfunction
+nnoremap <leader>xl :call <SID>executor()<CR>
+vnoremap <leader>xl :<C-w>exe join(getline("'<","'>"),'<Bar>')<CR>
+
+" Execute this file
+if !exists('*basic#save_and_exec')
+  function! basic#save_and_exec() abort
+    if &filetype == 'vim'
+      :silent! write
+      :source %
+    elseif &filetype == 'lua'
+      :silent! write
+      :luafile %
+    endif
+
+    return
+  endfunction
+endif
+
+nnoremap <leader><leader>xf :call basic#save_and_exec()<CR>
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

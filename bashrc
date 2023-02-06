@@ -214,3 +214,9 @@ export NVM_DIR="$HOME/.nvm"
 
 #eval "$(starship init bash)"
 
+# direnv allows for layered environment variable management with a .envrc file
+# in each directory
+if [ -x "$(command -v direnv)" ]; then
+    eval "$(direnv hook bash)"
+fi
+
