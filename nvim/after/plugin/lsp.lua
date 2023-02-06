@@ -24,6 +24,10 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
     vim.keymap.set("n", "gs", "<cmd>ClangdSwitchSourceHeader<cr>", opts)
 
+    -- goto split and goto vsplit
+    vim.keymap.set("n", "gv", "<cmd>vert winc ]<cr>", opts)
+    vim.keymap.set("n", "gt", "<cmd>winc ]<cr>", opts)
+
     if client.server_capabilities.hoverProvider then
         vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
     end

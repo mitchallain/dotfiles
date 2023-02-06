@@ -316,6 +316,10 @@ if [ -x "$(command -v entr)" ]; then
     find "$watchpath" -name "test*.py" $findargs | entr -c pytest "${@:2}" "$testpath"
   }
 
+  entr_pytest_single() {
+      echo "$1" | entr -c pytest "${@:2}" "$1"
+  }
+
   entr_test_rospack() {
     local watchpath="."
     local findargs=""

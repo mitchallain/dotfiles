@@ -118,7 +118,7 @@ call plug#begin('~/.vim/plugged')
 
   Plug 'nvim-lua/plenary.nvim'  " Lua function library
   Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
-  Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+  Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main', }
   Plug 'jbyuki/nabla.nvim'  " floating LaTeX equation rendered
 
   " Zeavim allows to use the offline documentation browser Zeal from Vim.
@@ -160,7 +160,7 @@ let g:colorizer_auto_filetype='vim,lua,css,html'
 " => fzf - fuzzy finder
 """"""""""""""""""""""""""""""
 set rtp+=~/.fzf
-" nnoremap <c-p> :FZF --keep-right<cr>
+nnoremap <c-p> :FZF --keep-right<cr>
 "
 " nnoremap <leader>st :BTags<cr>
 " nnoremap <leader>sa :Tags<cr>
