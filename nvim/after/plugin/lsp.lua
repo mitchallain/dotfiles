@@ -26,7 +26,7 @@ local on_attach = function(client, bufnr)
 
     -- goto split and goto vsplit
     vim.keymap.set("n", "gv", "<cmd>vert winc ]<cr>", opts)
-    vim.keymap.set("n", "gt", "<cmd>winc ]<cr>", opts)
+    vim.keymap.set("n", "gl", "<cmd>winc ]<cr>", opts)
 
     if client.server_capabilities.hoverProvider then
         vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
@@ -240,7 +240,7 @@ null_ls.setup({
         null_ls.builtins.diagnostics.cmake_lint,
         null_ls.builtins.diagnostics.cppcheck,
         null_ls.builtins.diagnostics.flake8,
-        null_ls.builtins.diagnostics.markdownlint,
+        -- null_ls.builtins.diagnostics.markdownlint,
         null_ls.builtins.formatting.cmake_format,
 
         -- had to npm install --global prettier
