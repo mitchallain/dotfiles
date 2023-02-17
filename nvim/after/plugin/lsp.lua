@@ -8,7 +8,7 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
 -- Testing trouble.nvim
 -- vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
-vim.keymap.set("n", "<leader>q", "<cmd>TroubleToggle document_diagnostics<cr>", opts)
+vim.keymap.set("n", "<leader>qq", "<cmd>TroubleToggle document_diagnostics<cr>", opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -202,7 +202,7 @@ lspconfig["rust_analyzer"].setup({
         ["rust-analyzer"] = {},
     },
 })
-lspconfig["sumneko_lua"].setup({
+lspconfig["lua_ls"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
@@ -239,6 +239,7 @@ null_ls.setup({
         -- null_ls.builtins.formatting.clang_format,
         null_ls.builtins.diagnostics.cmake_lint,
         null_ls.builtins.diagnostics.cppcheck,
+        null_ls.builtins.diagnostics.ruff,
         null_ls.builtins.diagnostics.flake8,
         -- null_ls.builtins.diagnostics.markdownlint,
         null_ls.builtins.formatting.cmake_format,

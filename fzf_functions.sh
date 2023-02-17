@@ -12,9 +12,9 @@
 # find -L does not seem to work on macOS
 if [ -x "$(command -v rg)" ]; then
     if [ -r "$HOME/.config/.rgignore" ]; then
-        export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden --ignore-file ~/.config/.rgignore"
+        export FZF_DEFAULT_COMMAND="rg -i --files --no-ignore-vcs --hidden --ignore-file ~/.config/.rgignore"
     else
-        export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden --glob !**/.git/*"
+        export FZF_DEFAULT_COMMAND="rg -i --files --no-ignore-vcs --hidden --glob !**/.git/*"
     fi
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export FZF_DEFAULT_COMMAND="find -L"

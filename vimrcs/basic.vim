@@ -263,6 +263,14 @@ vnoremap <leader>so :sort<cr>
 nnoremap <leader>s :%s/\<<C-r><C-w>\>/
 vnoremap <leader>s y:%s/<C-r><C-r>"/
 
+" normal mode modify the word under the cursor
+" visual mode modify the visual selection
+nnoremap <leader>cw :%s/\<<C-r><C-w>\>/<C-r><C-w>
+vnoremap <leader>cw y:%s/<C-r><C-r>"/<C-r><C-r>"
+
+" replace word project wide in the quickfix list
+nnoremap <leader>qr :cfdo %s/
+
 " open sublime merge
 nnoremap <silent> <leader>me :!smerge %s<cr><cr>
 

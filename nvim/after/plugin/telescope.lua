@@ -8,7 +8,7 @@ vim.keymap.set('n', '<leader>fk', builtin.keymaps, {})
 vim.keymap.set('n', '<leader>ft', builtin.current_buffer_tags, {})
 
 -- vim.keymap.set('n', '<C-p>', builtin.find_files, {})
-vim.api.nvim_set_keymap("n", "<C-p>", "<Cmd>lua require('telescope').extensions.frecency.frecency()<CR>", {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap("n", "<C-p>", "<Cmd>lua require('telescope').extensions.frecency.frecency()<CR>", {noremap = true, silent = true})
 
 -- BELOW is not yet working!
 -- vim.api.nvim_set_keymap('n', '<leader>ff', 'builtin.find_files', {desc="Lists files in your current working directory, respects .gitignore"})

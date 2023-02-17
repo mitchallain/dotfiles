@@ -163,7 +163,7 @@ let g:colorizer_auto_filetype='vim,lua,css,html'
 " => fzf - fuzzy finder
 """"""""""""""""""""""""""""""
 set rtp+=~/.fzf
-" nnoremap <c-p> :FZF --keep-right<cr>
+nnoremap <c-p> :FZF --keep-right -i<cr>
 "
 " nnoremap <leader>st :BTags<cr>
 " nnoremap <leader>sa :Tags<cr>
@@ -186,7 +186,7 @@ let g:NERDTreeMapJumpPrevSibling = ''
 
 let g:NERDTreeRespectWildIgnore = 1
 let g:NERDTreeShowHidden = 1
-let g:NERDTreeIgnore = ['\.ccls-cache$', '\.pytest_cache$']
+let g:NERDTreeIgnore = ['\.ccls-cache$', '\.pytest_cache$', '__pycache__']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
