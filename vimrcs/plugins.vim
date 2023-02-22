@@ -47,6 +47,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'vimjas/vim-python-pep8-indent'
   Plug 'taketwo/vim-ros'  " gotos
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+  Plug 'mzlogin/vim-markdown-toc'
   " Re-execute :call mkdp#util#install() if the above fails to install
 
   " Git plug-ins
