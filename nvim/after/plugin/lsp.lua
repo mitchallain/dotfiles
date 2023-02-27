@@ -22,6 +22,10 @@ local on_attach = function(client, bufnr)
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+
+    -- if the filetype is cpp, then use the clangd switch source header
+    vim.keymap.set("n", "gsv", "<cmd>vsplit<cr><cmd>ClangdSwitchSourceHeader<cr>", opts)
+    vim.keymap.set("n", "gss", "<cmd>split<cr><cmd>ClangdSwitchSourceHeader<cr>", opts)
     vim.keymap.set("n", "gs", "<cmd>ClangdSwitchSourceHeader<cr>", opts)
 
     -- goto split and goto vsplit
@@ -238,7 +242,9 @@ null_ls.setup({
         -- null_ls.builtins.diagnostics.pylint,
         -- null_ls.builtins.formatting.clang_format,
         null_ls.builtins.diagnostics.cmake_lint,
-        null_ls.builtins.diagnostics.cppcheck,
+        null_ls.builtins.diagnostics.cppcheck.with({
+            extra_args = { "--language=c++" },
+        }),
         null_ls.builtins.diagnostics.ruff,
         null_ls.builtins.diagnostics.flake8,
         -- null_ls.builtins.diagnostics.markdownlint,

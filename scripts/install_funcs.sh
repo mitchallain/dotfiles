@@ -14,6 +14,10 @@ install_core_utils () {
         tmux \
         vim \
         xclip
+
+    # bat is installed as batcat due to clash with another package
+    mkdir -p ~/.local/bin
+    ln -s /usr/bin/batcat ~/.local/bin/bat
 }
 
 install_cpp_tools () {

@@ -89,6 +89,8 @@ alias bd=". bd -si"
 ## Replace some common commands with fancier alternatives from this century
 
 # bat - better cat
+# when installed via debian, executable is batcat
+# must be linked with `ln -s /usr/bin/batcat ~/.local/bin/bat`
 if [ -x "$(command -v bat)" ]; then
   alias cat="bat"
 fi
@@ -250,28 +252,24 @@ catkin_source() {
 #                  : and links to src directory for editor to run clang-tidy against
 #                  : TODO check compdb installation first
 # -----------------:-----------------------------------------------------------------
-catkin_tidy() {
-  catkin build $1 --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-  local wspath=`catkin locate`
-  # local translation_db=$wspath/build/$1/compile_commands.json
-  local packages=`catkin list -u`
-  local dbs=""
-  for pack in $packages
-  do
-    if [ -f $wspath/build/$pack/compile_commands.json ]; then
-      local db="-p $wspath/build/$pack "
-      dbs="$dbs$db"
-    fi
-  done
-  compdb $dbs list > $wspath/src/compile_commands.json
-
-  # old, todo remove, linking individual packages, before I found compdb
-  #if [ -f $translation_db ]; then
-  #    ln -fs $wspath/build/$1/compile_commands.json $wspath/src/compile_commands.json
-  #else
-  #    echo "$translation_db does not exist"
-  #fi
-}
+# if compdb command exists
+if [[ -n $(command -v compdb) ]]; then
+  catkin_tidy() {
+    catkin build $1 --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    local wspath=`catkin locate`
+    # local translation_db=$wspath/build/$1/compile_commands.json
+    local packages=`catkin list -u`
+    local dbs=""
+    for pack in $packages
+    do
+      if [ -f $wspath/build/$pack/compile_commands.json ]; then
+        local db="-p $wspath/build/$pack "
+        dbs="$dbs$db"
+      fi
+    done
+    compdb $dbs list > $wspath/src/compile_commands.json
+  }
+fi
 
 rosbag_simtime() {
   rosparam set /use_sim_time true

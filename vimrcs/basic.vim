@@ -298,9 +298,20 @@ nnoremap <leader>Y "+Y
 " Don't ever press capital Q, it's the worst place in the universe - the primeagen
 nnoremap Q <nop>
 
-nnoremap <leader>x :!chmod +x %<cr>
+" Toggle executability of the file on and off
+nnoremap <leader>x :sil !if [ -x % ]; then chmod -x %; else chmod +x %; fi<cr>
 
-" Delete trailing white space on save, useful for some filetypes ;)
+" 'Jump' mappings, because the square bracket is hard to reach for me
+nnoremap <leader>jf ]m
+nnoremap <leader>Jf [m
+nnoremap <leader>jr ]M
+nnoremap <leader>Jr [M
+
+" Google a selection
+vnoremap <C-g> y:sil !google-chrome "? <C-r>""<cr>
+nnoremap <C-g> yiw:sil !google-chrome "? <C-r>""<cr>
+
+" Delete trailing white space on save, useful for some filetypes
 fun! CleanExtraSpaces()
     let save_cursor = getpos(".")
     let old_query = getreg('/')

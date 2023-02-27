@@ -22,15 +22,18 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf.vim'
 
   " Solarized for vim and nvim
-  " Plug 'overcache/NeoSolarized'  " requires TrueColor support
   Plug 'mitchallain/neosolarized.nvim', { 'branch': 'main' }  " I removed packer dependency
+  " Plug 'ishan9299/nvim-solarized-lua'
+  " Plug 'shaunsingh/solarized.nvim'
   Plug 'tjdevries/colorbuddy.nvim'
-  Plug 'altercation/solarized'
+  " Plug 'altercation/solarized'
   Plug 'norcalli/nvim-colorizer.lua', Cond(has('nvim'))  " colorizer for hex codes, etc
 
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/nvim-treesitter-context', Cond(has('nvim'))
+  Plug 'nvim-treesitter/nvim-treesitter-textobjects', Cond(has('nvim'))
   Plug 'nvim-treesitter/playground'
+  " Plug '~/.vim/plugged/nvim-treesorter'
   Plug 'theprimeagen/harpoon'
   Plug 'mbbill/undotree'
 
@@ -164,8 +167,10 @@ let g:colorizer_auto_filetype='vim,lua,css,html'
 " => fzf - fuzzy finder
 """"""""""""""""""""""""""""""
 set rtp+=~/.fzf
-nnoremap <c-p> :FZF --keep-right -i<cr>
-"
+" Custom fzf command always shows basename, does not care about case,
+" and searches basename first, before falling back to complete pathname
+nnoremap <c-p> :FZF --keep-right -i --delimiter / --nth -1,..<cr>
+
 " nnoremap <leader>st :BTags<cr>
 " nnoremap <leader>sa :Tags<cr>
 " nnoremap <leader>sm :Marks<cr>
@@ -272,3 +277,4 @@ map <leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vp :VimuxPromptCommand<CR>
 " map <Leader>vt :VimuxRunCommand("pytest " . bufname("%"))<CR>
 map <Leader>vt :VimuxPromptCommand("pytest " . bufname("%"))<CR>
+map <Leader>vb :VimuxRunCommand("cd " . fnamemodify(bufname("%"), ":p:h") . " && catkin build --this")<CR>
