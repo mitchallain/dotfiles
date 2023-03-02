@@ -22,6 +22,8 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 #     export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden"
 fi
 
+export FZF_DEFAULT_OPTS="--bind ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down"
+
 # fwifi
 # -----
 # fuzzy wifi switcher using nmcli
@@ -197,7 +199,9 @@ fshow_preview() {
 # ---------------------
 
 # fbook - fuzzy browse chrome bookmarks
-alias fbook="$HOME/bin/fbook.rb"
+if [ -x "$HOME/bin/fbook.rb" ]; then
+    alias fbook="$HOME/bin/fbook.rb"
+fi
 
 # fhist            : search chrome browser history
 # -----------------:-----------------------------------------------------------------
