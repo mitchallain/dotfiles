@@ -54,11 +54,11 @@ ch() {
   # fi
 }
 
-alias which='type -a'                               # which:        Find executables
-alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
-alias fix_stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
-mcd () { mkdir -p "$1" && cd "$1"; }                # mcd:          Makes new Dir and jumps inside
-alias DT='tee /tmp/termout.txt'                     # DT:           Pipe content to temporary file
+alias which='type -a'                  # which:        Find executables
+alias path='echo -e ${PATH//:/\\n}'    # path:         Echo all executable Paths
+alias fix_stty='stty sane'             # fix_stty:     Restore terminal settings when screwed up
+mcd () { mkdir -p "$1" && cd "$1"; }   # mcd:          Makes new Dir and jumps inside
+alias DT='tee /tmp/termout.txt'        # DT:           Pipe content to temporary file
 
 alias xclipc="xclip -selection c"
 alias xclipcr="tr -d '\n' | xclip -selection c"
@@ -69,13 +69,15 @@ alias xclipv="xclip -selection clipboard -o"
 alias gitl="git log"
 alias gits="git status"
 
-# gitstat     : compact git status/log/diff
-# ------------:-----------------------------------------------------------------
+
+# Print a compact git status, log, and diff for the provided directory
+# Args:
+#     $1: directory to check
 gitstat () {
     echo -e "\033[32m$(basename "$1") \033[33m($(cd "$1" && git branch --show-current))\033[00m"
     printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
     echo -e "\033[34m$(cd "$1" && git log -1 --pretty="%h - %>(12)%ad - %B" | tr -d '\n' |\
-        sed "s/\(.\{$(($COLUMNS - 3))\}\).*/\1.../")\033[00m"
+        sed "s/\(.\{$((COLUMNS - 3))\}\).*/\1.../")\033[00m"
     (cd "$1" && git status -s)
     echo ""
 }
@@ -83,7 +85,9 @@ gitstat () {
 
 # bd - back to parent directory
 # https://github.com/vigneshwaranr/bd
-alias bd=". bd -si"
+if [ -x "$(command -v bd)" ]; then
+    alias bd=". bd -si"
+fi
 
 ## COMMAND ALTERNATIVES
 ## Replace some common commands with fancier alternatives from this century
@@ -92,68 +96,95 @@ alias bd=". bd -si"
 # when installed via debian, executable is batcat
 # must be linked with `ln -s /usr/bin/batcat ~/.local/bin/bat`
 if [ -x "$(command -v bat)" ]; then
-  alias cat="bat"
+    alias cat="bat"
 fi
 
 # exa - better ls
 if [ -x "$(command -v exa)" ]; then
-  alias lx="exa -lga --icons -s name"
+    alias lx="exa -lga --icons -s name"
 fi
 
 ## BASH FUNCTIONS
 ## --------------
 
-# trash       : alternative to rm which moves all arguments to the Ubuntu trash
-#             : TODO: platform-agnostic
-# ------------:-----------------------------------------------------------------
+# Moves all arguments to the Ubuntu trash
+# Example     : 'trash file1 file2'
+# Args:
+#     $@: files to move to trash
 trash () { command mv "$@" ~/.local/share/Trash ; }
 
-# xopen       : xdg-open wrapper which supports multiple files/urls and runs in
-#             : bg by default
-# ------------:-----------------------------------------------------------------
+
+# Open file(s) in the background using xdg-open
+#
+# Args:
+#    $@: files to open
+#
+# Example: 'xopen file1 file2'
 xopen() {
-  for var in "$@"; do
-    (xdg-open "$var" > /dev/null 2>&1 &)
-  done
+    for var in "$@"; do
+        (xdg-open "$var" > /dev/null 2>&1 &)
+    done
 }
 
-# savetmuxbuffer  : captures the last 10000 lines from tmux and saves to a file
-#                 : requires three args: session, window, and pane
-# ----------------:-------------------------------------------------------------
-# Example         : 'savetmuxbuffer ROS bringup 0'
+
+# Capture the last 10000 lines of the tmux pane and save to a file
+#
+# Args:
+#    $1: tmux session
+#    $2: tmux window
+#    $3: tmux pane
+#    $4: file to save to
+#
+# Example: 'savetmuxbuffer ROS bringup 0 /tmp/bringup.log'
 savetmuxbuffer () {
-  /usr/bin/tmux send-keys -t $1:$2.$3 C-b ":capture-pane -e -S 10000" C-m
-  /usr/bin/tmux send-keys -t $1:$2.$3 C-b ":save-buffer ~/buffer.txt" C-m
+    /usr/bin/tmux send-keys -t "$1":"$2"."$3" C-b ":capture-pane -e -S 10000" C-m
+    /usr/bin/tmux send-keys -t "$1":"$2"."$3" C-b ":save-buffer $4" C-m
 }
 
-# lr          : List n most recently modified files in directory
-# ------------:-----------------------------------------------------------------
-# Example     : 'lr 5'
+
+# List n most recently modified files in directory
+# Args:
+#    $1: number of files to list
 lr () {
-  ll -t | head -n $1
+    if [ -z "$1" ]; then
+        echo "Usage: lr <number of files>"
+        return
+    fi
+    ll -t | head -n "$1"
 }
 
-# mans        : Search manpage given in arg 1 for term in arg 2 (case insensitive)
-#             : Displays paginated & colored result with two lines per hit
-# ------------:-----------------------------------------------------------------
-# Example     : 'mans mplayer codec'
+# Search manpage given in arg 1 for term in arg 2 (case insensitive)
+# Displays paginated & colored result with two lines per hit
+# Args:
+#     $1: manpage to search
+#     $2: term to search for
+#
+# Example     : 'mans ls -l'
 mans () {
-  man $1 | grep -iC2 --color=always $2 | less
+    # pipe manpage to less, start less with search term
+    man "$1" | less -R -p "$2"
 }
 
-# colview     : view argument as formatted csv file in the console
-# ------------:-----------------------------------------------------------------
-# Example     : 'colview test.csv'
+
+# View a csv file in the console
+# Args:
+#    $1: csv file to view
+#
+# Example: 'colview test.csv'
 colview () {
-  column -n -s, -tn < $1 | less -#2 -N -S
+    column -n -s, -tn < "$1" | less -#2 -N -S
 }
 
-# unmvgitmv   : move a file at arg 1 back to path arg 2, then git mv from 2 to 1
-#             : for when you forget to git mv
-# ------------:-----------------------------------------------------------------
+# Move file at arg 1 back to path arg 2, then git mv from 2 to 1
+# Args:
+#    $1: file to move
+#    $2: destination path
+#
+# Example:
+#   'mvgitmv /home/user/file1 /home/user/file2'
 unmvgitmv () {
-  mv $1 $2
-  git mv $2 $1
+    mv "$1" "$2"
+    git mv "$2" "$1"
 }
 
 # ----------------------------------------
@@ -161,91 +192,133 @@ unmvgitmv () {
 # ----------------------------------------
 
 # Preferred pylint config
-alias pylint="pylint --rcfile=~/.pylintrc"
+alias pylintrc="pylint --rcfile=~/.pylintrc"
 
 # #   ROS aliases
-alias rosenv='printenv | grep ROS'                              # rosenv:  print the ROS path variables
+alias rosenv='printenv | grep ROS'
 alias rosgdb="rosrun --prefix 'gdb -ex run --args' "
 alias rosprofile="rosrun --prefix 'valgrind --tool=callgrind' "
 alias rosmemcheck="rosrun --prefix 'valgrind --tool=memcheck' "
 
-# rosloglvl   : set logger in arg 1 at node in arg 2 to level in arg 3
-# ------------:-----------------------------------------------------------------
-# Example     : 'rosloglvl ultra_workspace_manager rospy debug' (confirm?)
+# Set the logger level for a ROS node
+# Args:
+#    $1: node name
+#    $2: logger name
+#    $3: log level
+#
+# Example: 'rosloglvl ultra_workspace_manager rospy debug'
 rosloglvl () {
-  rosservice call $2/set_logger_level "logger='ros.$1'"$'\r'"level='$3'"
+    rosservice call "$2"/set_logger_level "logger='ros.$1'"$'\r'"level='$3'"
 }
 
-# sws         : reset ROS environment, find containing workspace and source it
-# ------------:-----------------------------------------------------------------
+# Reset any overlays by sourcing the default ROS environment, then source
+# the workspace containing the current directory, if any.
 sws () {
-  source /opt/ros/$ROS_DISTRO/setup.bash;
-  local wspath=$(catkin locate);
-  source $wspath/devel/setup.bash;
+    # shellcheck source=/opt/ros/noetic/setup.bash
+    source /opt/ros/"$ROS_DISTRO"/setup.bash;
+    local wspath
+    wspath="$(catkin locate 2>/dev/null)"
+
+    # check if in a workspace and setup.bash exists
+    if [ -n "$wspath" ] && [ -f "$wspath"/devel/setup.bash ]; then
+        # shellcheck source=/home/mallain/catkin_ws/devel/setup.bash
+        source "$wspath"/devel/setup.bash;
+    fi
 }
 
-# rostopicw   : update rostopic list every 1 second, or n seconds where n is arg 1
-# ------------:-----------------------------------------------------------------
+# Update 'rostopic list' every 1 second, or n seconds where n is arg 1
+# Args:
+#   $1: (optional: default 1) period in seconds
+#
+# Example: 'rostopicw 2'
 rostopicw () {
-  local period=${1:-1}
-  watch -n $period "rostopic list"
+    local period=${1:-1}
+    watch -n "$period" "rostopic list"
 }
 
-# rostopicw   : update rosnode list every 1 second, or n seconds where n is arg 1
-# ------------:-----------------------------------------------------------------
+# Update 'rosnode list' every 1 second, or n seconds where n is arg 1
+# Args:
+#  $1: (optional: default 1) period in seconds
+#
+# Example: 'rosnodew 2'
 rosnodew () {
-  local period=${1:-"1"}
-  watch -n $period "rosnode list"
+    local period=${1:-"1"}
+    watch -n "$period" "rosnode list"
 }
 
-# rosmaster   : replace rosmaster hostname with arg 1, assume default port
-# ------------:-----------------------------------------------------------------
+# Replace rosmaster hostname with arg 1, assume default port
+# Args:
+#     $1: hostname
+#     $2: (optional, default '11311') port
+#
+# Example: 'rosmaster robot'
 rosmaster () {
-  export ROS_MASTER_URI=http://$1:11311
+    local port=${2:-"11311"}
+    export ROS_MASTER_URI=http://$1:$port
 }
 
-# rosgrep     : find package
-#             : todo replace with fuzzy package finder
-# ------------:-----------------------------------------------------------------
+# Search package names and paths for pattern
+# Args:
+#    $1: pattern to search for
+#
+# Example: 'rosgrep sensor'
 rosgrep () {
-  rospack list | grep "$1";
+    rospack list | grep "$1";
 }
 
-# roseulerify : republish a transform as Vector3 with rpy components
-#             : TODO better way?
-# ------------:-----------------------------------------------------------------
+# Republish a Quaternion as Vector3 with Euler angles in degrees on /eulerify/<topic>
+# Args:
+#     $1: Quaternion topic to republish, or quaternion field in a message
+#     e.g. '/<topic>/pose/orientation'
+#
+# Example: 'roseulerify /pose/pose/orientation'
 roseulerify () {
-  rosrun topic_tools transform $1 /eulerify$1 geometry_msgs/Vector3 'map(lambda x: x * 57.296, tf.transformations.euler_from_quaternion([m.x, m.y, m.z, m.w]))' --import tf
+    rosrun topic_tools transform "$1" /eulerify/"$1" geometry_msgs/Vector3 \
+        'map(lambda x: x * 57.296, tf.transformations.euler_from_quaternion([m.x, m.y, m.z, m.w]))' --import tf
 }
 
-# roswiki     : parse ros wiki url from package.xml and open in chrome
-# ------------:-----------------------------------------------------------------
+# Parse ros wiki url from package.xml and open in chrome
+# Args:
+#    $1: package name
+#
+# Example: 'roswiki robot_localization'
 roswiki () {
-  roscd $1; URL=$(cat package.xml | grep http | cut -d ">" -f 2 | cut -d "<" -f 1); /opt/google/chrome/chrome $URL
+    local pkgxml
+    pkgxml=$(rospack find "$1")/package.xml
+    local url
+    url=$(cat "$pkgxml" | grep http | cut -d ">" -f 2 | cut -d "<" -f 1)
+
+    # open in chrome in the background, suppress output
+    google-chrome "$url" > /dev/null 2>&1 &
 }
 
-# catkin_test : build package name from first arg and execute tests, printing results
-#             : results are printed ...
-#             : TODO is this redundant with 'catkin test --this'?
-# ------------:-----------------------------------------------------------------
+# Build package name from first arg and execute tests, printing results
+# Args:
+#   $1: package name
 catkin_test() {
-  local wspath=`catkin locate`
-  catkin build --no-deps --catkin-make-args run_tests -- $1 > /dev/null && catkin_test_results $wspath/build/$1
-  #    catkin build --no-deps --catkin-make-args run_tests -- $1 && catkin_test_results $wspath/build/$1
+    local wspath
+    wspath=$(catkin locate)
+    catkin build --no-deps --catkin-make-args run_tests -- "$1" > /dev/null \
+        && catkin_test_results "$wspath"/build/"$1"
 }
 
-# catkin_test_this : build current package and execute tests, printing results
-# -----------------:-----------------------------------------------------------------
+# Build current package and execute tests, printing results
 catkin_test_this() {
-  local pkgname=`catkin list --this -u`
-  catkin_test $pkgname
+    local pkgname
+    pkgname=$(catkin list --this -u)
+    catkin_test "$pkgname"
 }
 
-# catkin_source    : source containing ws *without* clearing ros env
-#                  : i.e., this will overlay the current workspace
-# -----------------:-----------------------------------------------------------------
+# Source containing workspace without clearing ros env, i.e. overlay ws
 catkin_source() {
-  source `catkin locate`/devel/setup.bash
+    local wspath
+    wspath=$(catkin locate 2>/dev/null)
+    if [ -n "$wspath" ] && [ -f "$wspath"/devel/setup.bash ]; then
+        # shellcheck source=/home/mallain/catkin_ws/devel/setup.bash
+        source "$wspath"/devel/setup.bash
+    else
+        echo "Not in a catkin workspace"
+    fi
 }
 
 # catkin_tidy      : uses compdb tool to collect all built packages' translation dbs
@@ -253,110 +326,99 @@ catkin_source() {
 #                  : TODO check compdb installation first
 # -----------------:-----------------------------------------------------------------
 # if compdb command exists
+
+# compdb is a tool that manipulates compilation databases generated by CMake
 if [[ -n $(command -v compdb) ]]; then
-  catkin_tidy() {
-    catkin build $1 --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-    local wspath=`catkin locate`
-    # local translation_db=$wspath/build/$1/compile_commands.json
-    local packages=`catkin list -u`
-    local dbs=""
-    for pack in $packages
-    do
-      if [ -f $wspath/build/$pack/compile_commands.json ]; then
-        local db="-p $wspath/build/$pack "
-        dbs="$dbs$db"
-      fi
-    done
-    compdb $dbs list > $wspath/src/compile_commands.json
-  }
+
+    # Collect all translation dbs from all packages in the workspace and link to src
+    # This may require a clean build to ensure all translation dbs are generated
+    # but that is left to the user to decide
+    # Args:
+    #     $@: additional arguments to pass to catkin build
+    #
+    # Example: 'catkin clean -y && wscompdb'
+    wscompdb() {
+        catkin build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON "$@"
+        local wspath
+        wspath=$(catkin locate 2>/dev/null)
+        if [ -n "$wspath" ]; then
+            local packages
+            packages=$(catkin list -u)
+            local dbs=""
+            for pack in $packages
+            do
+                if [ -f "$wspath"/build/"$pack"/compile_commands.json ]; then
+                    dbs="$dbs -p $wspath/build/$pack"
+                else
+                    echo "No translation db for $pack"
+                fi
+            done
+            compdb "$dbs" list > "$wspath"/src/compile_commands.json \
+                && echo "Compilation database created at $wspath/src/compile_commands.json"
+        else
+            echo "Not in a catkin workspace"
+        fi
+    }
 fi
 
+# Play a rosbag with simulated time
 rosbag_simtime() {
-  rosparam set /use_sim_time true
-  rosbag play $1 -l --clock
+    rosparam set /use_sim_time true
+    rosbag play "$1" -l --clock
+}
+
+# Try to find the package path using rospack and catkin tools. If the package
+#     is not found, return the package name.
+# Args:
+#     $1  ROS package name
+rospackpath() {
+    if rospack find "$1" > /dev/null 2>&1; then
+        rospack find "$1"
+    elif catkin locate "$1" > /dev/null 2>&1; then
+        # otherwise, use catkin locate (local workspace package search)
+        catkin locate "$1"
+    else
+        echo "$1"
+    fi
 }
 
 # entr - automatic execution of commands using kqueue or inotify
 if [ -x "$(command -v entr)" ]; then
-  entr_pytest_rospack() {
-    local watchpath="."
-    local testpath="$1/test"
-    local findargs=""
-    local packname="$1"
-    # suppress stdout and stderr
-    if rospack find $1 > /dev/null 2>&1; then
-      watchpath="$(rospack find $1)/test"
-    elif catkin locate $1 > /dev/null 2>&1; then
-      # otherwise, use catkin locate (local workspace package search)
-      watchpath="$(catkin locate $1)/test"
-    elif catkin list --directory $1 > /dev/null 2>&1; then
-      # join all newlines with a space and add /test to the end of each
-      local packnames="$(catkin list -u --directory $1)"
 
-      # for each package name, use catkin locate to find the package path
-      # and append /test to the end of each
-      testpath=""
-      for packname in $packnames; do
-        local thistestpath="$(catkin locate $packname)/test"
-        testpath="$testpath $thistestpath"
-      done
+    # Re-execute all pytests within a ROS package when any test file is updated.
+    # Args:
+    #     $1      ROS package name
+    #     ${@:2}  Additional args are passed to pytest
+    entr_pytest_rospack() {
+        local packpath
+        packpath="$(rospackpath "$1")"
+        find "$packpath"/test -name "test*.py" | entr -c pytest "${@:2}" "$packpath"
+    }
 
-      # add /test/test*.py to the end of each package name
-      findargs="$(echo $packnames | sed -e 's/ /\/test\/test*.py /g')/test/test*.py"
+    # Re-execute a pytest when the test*.py file is updated
+    # Args:
+    #     $1      Path to a pytest test*.py file
+    #     ${@:2}  Additional args are passed to pytest
+    entr_pytest() {
+        echo "$1" | entr -c pytest "${@:2}" "$1"
+    }
 
-      # add the -o -path flag to the beginning of each path for find
-      findargs="-and -path $(echo $findargs | sed -e 's/ / -or -path *\//g')"
-    else
-      echo "Package not found"
-      exit 1
-    fi
-
-    find "$watchpath" -name "test*.py" $findargs | entr -c pytest "${@:2}" "$testpath"
-  }
-
-  entr_pytest_single() {
-      echo "$1" | entr -c pytest "${@:2}" "$1"
-  }
-
-  entr_test_rospack() {
-    local watchpath="."
-    local findargs=""
-    local packname="$1"
-    # suppress stdout and stderr
-    if rospack find $1 > /dev/null 2>&1; then
-      watchpath="$(rospack find $1)/test"
-    elif catkin locate $1 > /dev/null 2>&1; then
-      # otherwise, use catkin locate (local workspace package search)
-      watchpath="$(catkin locate $1)/test"
-    elif catkin list --directory $1 > /dev/null 2>&1; then
-      # join all newlines with a space and add /test to the end of each
-      local packnames="$(catkin list -u --directory $1)"
-      packname="$(echo $packnames | tr -t '\n' ' ')"
-
-      # add /test/test*.py to the end of each package name
-      findargs="$(echo $packnames | sed -e 's/ /\/test\/test* /g')/test/test*"
-
-      # add the -o -path flag to the beginning of each path for find
-      findargs="-and -path $(echo $findargs | sed -e 's/ / -or -path *\//g')"
-    else
-      echo "Package not found"
-      exit 1
-    fi
-
-    find "$watchpath" -name "test*" $findargs | entr -c catkin test $packname
-  }
-      # use entr to run all test
-  alias lx="exa -lga --icons -s name"
+    # Execute catkin test when any test*.py or test*.launch file is updated.
+    # Args:
+    #     $1      ROS Package name
+    #     ${@:2}  Additional args are passed to catkin test
+    entr_test_rospack() {
+        local packpath
+        packpath="$(rospackpath "$1")"
+        find "$packpath"/test -name "test*.py" -o -name "test*.launch" | entr -c catkin test "${@:2}" "$1"
+    }
 fi
 
 # fzf dependent functions and aliases
 if [ -x "$(command -v fzf)" ] && [ -f ~/.aliases/fzf_functions.sh ]; then
-  . ~/.aliases/fzf_functions.sh
+    # shellcheck source=/home/mallain/.aliases/fzf_functions.sh
+    . ~/.aliases/fzf_functions.sh
 fi
-
-# MAC OS X Aliases - TO DO
-# ------------------------
-# ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
 
 # -------------------------------
 # 4. SPECIALIZED TOOLS
@@ -369,32 +431,36 @@ alias docker_clean_ps='docker rm $(docker ps --filter=status=exited --filter=sta
 # MERMAID DIAGRAM GENERATION
 alias mmdc="/home/mallain/dev/node_modules/.bin/mmdc"
 
-# mmdclip          : use text in clipboard to generate mermaid diagrams
-#                  : need to provide at least output path (-o PATH)
-#                  : can provide any other args (see mmdc -h)
-# -----------------:-----------------------------------------------------------------
-# Example          : 'mmdclip -w 1000 -o test.svg'
+
+# Use text in clipboard as input to mmdc to generate mermaid diagrams
+# Args:
+#    $@: any args to pass to mmdc, must include output path (-o PATH)
+#
+# Example: 'mmdclip -w 1000 -o test.svg'
 mmdclip() {
-  xclip -o | mmdc -i /dev/stdin -c ~/.mermaid.json $@
+  xclip -o | mmdc -i /dev/stdin -c ~/.mermaid.json "$@"
 }
 
-# extract:  Extract most know archives with one command
-# ---------------------------------------------------------
+# Extract most known archives with one command
+# Args:
+#    $1: archive file
+#
+# Example: 'extract archive.tar.gz'
 extract () {
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1     ;;
-      *.tar.gz)    tar xzf $1     ;;
-      *.bz2)       bunzip2 $1     ;;
-      *.rar)       unrar e $1     ;;
-      *.gz)        gunzip $1      ;;
-      *.tar)       tar xf $1      ;;
-      *.tar.xz)    tar xf $1      ;;
-      *.tbz2)      tar xjf $1     ;;
-      *.tgz)       tar xzf $1     ;;
-      *.zip)       unzip $1       ;;
-      *.Z)         uncompress $1  ;;
-      *.7z)        7z x $1        ;;
+  if [ -f "$1" ] ; then
+    case "$1" in
+      *.tar.bz2)   tar xjf "$1"     ;;
+      *.tar.gz)    tar xzf "$1"     ;;
+      *.bz2)       bunzip2 "$1"     ;;
+      *.rar)       unrar e "$1"     ;;
+      *.gz)        gunzip "$1"      ;;
+      *.tar)       tar xf "$1"      ;;
+      *.tar.xz)    tar xf "$1"      ;;
+      *.tbz2)      tar xjf "$1"     ;;
+      *.tgz)       tar xzf "$1"     ;;
+      *.zip)       unzip "$1"       ;;
+      *.Z)         uncompress "$1"  ;;
+      *.7z)        7z x "$1"        ;;
       *)     echo "'$1' cannot be extracted via extract()" ;;
     esac
   else
@@ -406,10 +472,6 @@ extract () {
 # 4. SEARCHING
 # ---------------------------
 
-alias qfind="find . -name "                 # qfind:    Quickly search for file
-ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
-ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
-ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 
 # ---------------------------
 # 5. PROCESS MANAGEMENT
@@ -466,12 +528,13 @@ my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 #     }
 
 # prints an excerpt from the art of the command line
-function taocl() {
-  curl -s https://raw.githubusercontent.com/jlevy/the-art-of-command-line/master/README.md |
-    sed '/cowsay[.]png/d' |
-    pandoc -f markdown -t html |
-    xmlstarlet fo --html --dropdtd |
-    xmlstarlet sel -t -v "(html/body/ul/li[count(p)>0])[$RANDOM mod last()+1]" |
-    xmlstarlet unesc | fmt -80 | iconv -t US
-}
-
+if [ -x "$(command -v pandoc)" ] && [ -x "$(command -v xmlstarlet)" ]; then
+    function taocl() {
+      curl -s https://raw.githubusercontent.com/jlevy/the-art-of-command-line/master/README.md |
+        sed '/cowsay[.]png/d' |
+        pandoc -f markdown -t html |
+        xmlstarlet fo --html --dropdtd |
+        xmlstarlet sel -t -v "(html/body/ul/li[count(p)>0])[$RANDOM mod last()+1]" |
+        xmlstarlet unesc | fmt -80 | iconv -t US
+    }
+fi

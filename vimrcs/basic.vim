@@ -146,6 +146,7 @@ set undodir=~/.vim/undodir  " this gives undotree access
 " Use spaces instead of tabs
 set tabstop=4  " 1 tab -> 4 spaces
 set shiftwidth=0  " this means equal to tabstop
+set softtabstop=0  " off
 set expandtab
 " note the above configuration does not require setting softtabstop
 

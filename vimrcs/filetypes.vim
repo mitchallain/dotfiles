@@ -13,7 +13,7 @@ au BufRead,BufNewFile *.py,*.pyw,*.c,*.h,*.cpp match BadWhitespace /\s\+$/
 """"""""""""""""""""""""""""""
 " let python_highlight_all = 1
 " au FileType python syn keyword pythonDecorator True None False self
-au FileType python setlocal shiftwidth=0 tabstop=4 sts=0 expandtab
+au FileType python setlocal shiftwidth=0 tabstop=4 softtabstop=0 expandtab
 
 au BufNewFile,BufRead *.jinja set syntax=htmljinja
 au BufNewFile,BufRead *.mako set ft=mako
@@ -22,7 +22,7 @@ au BufNewFile,BufRead *.mako set ft=mako
 """"""""""""""""""""""""""""""
 " => C++ section
 """"""""""""""""""""""""""""""
-au FileType cpp setlocal shiftwidth=2 tabstop=2 sts=0 expandtab
+au FileType cpp setlocal shiftwidth=2 tabstop=2 softtabstop=0 expandtab
 au FileType cpp let b:dispatch = 'make -C build'
 " au FileType cpp nnoremap <leader>c :Dispatch! make -C build<cr>
 
@@ -49,23 +49,25 @@ au filetype cmake let b:dispatch = 'mkdir build; cd build; cmake ..'
 " => Rust section
 """"""""""""""""""""""""""""""
 autocmd BufNewFile,BufRead *.rs set filetype=rust
+au FileType rust setlocal shiftwidth=0 tabstop=4 softtabstop=0 expandtab
 
 """"""""""""""""""""""""""""""
 " => XML section
 """"""""""""""""""""""""""""""
 autocmd BufNewFile,BufRead *.launch set filetype=xml
-au FileType xml setlocal shiftwidth=2 tabstop=2 sts=0 expandtab
+au FileType xml setlocal shiftwidth=0 tabstop=2 softtabstop=0 expandtab
 
 """"""""""""""""""""""""""""""
 " => IEC 61131-3 ST section
 """"""""""""""""""""""""""""""
 au BufNewFile,BufRead *.st,*.ST set filetype=iec
-au FileType iec setlocal shiftwidth=4 tabstop=4 sts=0
+au FileType iec setlocal shiftwidth=0 tabstop=4 softtabstop=0
 
 """"""""""""""""""""""""""""""
 " => YAML section
 """"""""""""""""""""""""""""""
 autocmd BufNewFile,BufRead *.yaml,*.yml,*.rosinstall set filetype=yaml
+au FileType yaml setlocal shiftwidth=0 tabstop=2 softtabstop=0 expandtab
 
 
 """"""""""""""""""""""""""""""
@@ -107,8 +109,11 @@ au FileType gitcommit call setpos('.', [0, 1, 1, 0])
 """"""""""""""""""""""""""""""
 " => Shell section
 """"""""""""""""""""""""""""""
+" Google uses 2 spaces
+" However, I prefer 4, which matches the default shell config files in Ubuntu
+" e.g., .bashrc
 au BufNewFile,BufRead *.def set filetype=sh
-au FileType sh setlocal shiftwidth=4 tabstop=4 sts=0 expandtab
+au FileType sh setlocal tabstop=4 shiftwidth=0 softtabstop=0 expandtab
 
 
 """"""""""""""""""""""""""""""

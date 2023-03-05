@@ -1,15 +1,13 @@
 #!/bin/bash
 # fzf_functions.sh
-#
 # bash functions using the fzf fuzzy finder
-#
-# TODO
-# - check if fzf is installed and exit this file early
-#
+
+if [ ! -x "$(command -v fzf)" ]; then
+    return
+fi
 
 # ripgrep is a search tool written in rust that is FAST
 # https://blog.burntsushi.net/ripgrep/
-# find -L does not seem to work on macOS
 if [ -x "$(command -v rg)" ]; then
     if [ -r "$HOME/.config/.rgignore" ]; then
         export FZF_DEFAULT_COMMAND="rg -i --files --no-ignore-vcs --hidden --ignore-file ~/.config/.rgignore"
@@ -17,9 +15,8 @@ if [ -x "$(command -v rg)" ]; then
         export FZF_DEFAULT_COMMAND="rg -i --files --no-ignore-vcs --hidden --glob !**/.git/*"
     fi
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # find -L does not seem to work on macOS
     export FZF_DEFAULT_COMMAND="find -L"
-# elif [[ "$OSTYPE" == "darwin"* ]]; then
-#     export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden"
 fi
 
 export FZF_DEFAULT_OPTS="--bind ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down"
@@ -28,85 +25,90 @@ export FZF_DEFAULT_OPTS="--bind ctrl-u:preview-half-page-up,ctrl-d:preview-half-
 # -----
 # fuzzy wifi switcher using nmcli
 fwifi () {
-  local ssid
-  ssid=$(
+    local ssid
+    ssid=$(
     nmcli -f 'bssid,signal,bars,freq,ssid' --color yes device wifi |
-    fzf \
-      --with-nth=1.. \
-      --ansi \
-      --height=40% \
-      --reverse \
-      --cycle \
-      --inline-info \
-      --header-lines=1 \
-      | awk '{print $1}' ) || return
-  [[ -z "$ssid" ]] && return
-  nmcli -a device wifi connect $ssid
+        fzf \
+        --with-nth=1.. \
+        --ansi \
+        --height=40% \
+        --reverse \
+        --cycle \
+        --inline-info \
+        --header-lines=1 \
+        | awk '{print $1}' ) || return
+            [[ -z "$ssid" ]] && return
+            nmcli -a device wifi connect "$ssid"
 }
 
-# fconns
-# ------
 # fuzzy nmcli connection switcher
 # note indexing from end due to spaces in connection names
 fconns () {
     local conn
     conn=$(
-        nmcli --color yes c s |
+    nmcli --color yes c s |
         fzf \
-            --with-nth=1.. \
-            --ansi \
-            --height=40% \
-            --cycle \
-            --inline-info \
-            --header-lines=1 \
-            | awk '{print $(NF-2)}' ) || return
-    [[ -z "$conn" ]] && return
-    # echo $conn
-    nmcli c u $conn
+        --with-nth=1.. \
+        --ansi \
+        --height=40% \
+        --cycle \
+        --inline-info \
+        --header-lines=1 \
+        | awk '{print $(NF-2)}' ) || return
+            [[ -z "$conn" ]] && return
+            # echo $conn
+            nmcli c u "$conn"
 }
 
-# fwhich
-# ------
 # fuzzy search all bash functions
 # getting pretty meta bruh
 # never could get preview of function source working
 # see https://github.com/junegunn/fzf/issues/1337
 fwhich () {
-  local bashfns
-  bashfn=$(
+    bashfn=$(
     typeset -F |
-    fzf \
-      --with-nth=3 \
-      --preview 'source ~/.bashrc; declare -f {3}' \
-      | awk '{print $3}' ) || return
-  which $bashfn
+        fzf \
+        --with-nth=3 \
+        --preview 'source ~/.bashrc; declare -f {3}' \
+        | awk '{print $3}' ) || return
+            which "$bashfn"
 }
 
-# tm               : create new tmux session, or switch to existing one with fzf
-#                  : works from within tmux too (@bag-man)
-#                  : (optional) with an arg that names an existing session,
-#                  : switch to that session, else create it
-# -----------------:-----------------------------------------------------------------
+# create new tmux session or switch to existing one with fzf
+# works from within tmux too
+# Args:
+#    $1: (optional) if given and names an existing session, switch to that
+#        session, else create it
 tm() {
-  [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-  if [ $1 ]; then
-    tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
-  fi
-  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
+    [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+    if [ "$1" ]; then
+        tmux "$change" -t "$1" 2>/dev/null || (tmux new-session -d -s "$1" \
+            && tmux "$change" -t "$1"); return
+    fi
+    session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) \
+        &&  tmux "$change" -t "$session" || echo "No sessions found."
 }
+
 
 # FUZZY GIT
 # --------------
+# https://github.com/wfxr/forgit
+#
+# (gbd) Interactive git branch -D <branch> selector
+# (gbl) Interactive git blame selector
+# (gcb) Interactive git checkout <branch> selector
+# (gcf) Interactive git checkout <file> selector
+# (gclean) Interactive git clean selector
+# (gco) Interactive git checkout <commit> selector
+# (gcp) Interactive git cherry-pick selector
+# (gct) Interactive git checkout <tag> selector
+# (gd)  Interactive git diff viewer
+# (grb) Interactive git rebase -i selector
+# (grc) Interactive git revert <commit> selector
+# (grh) Interactive git reset HEAD <file> selector
+# (gsp) Interactive git stash push selector
+# (gss) Interactive git stash viewer
 
-### https://github.com/wfxr/forgit#custom-options
-# ga:     interactive git add selector
-# glo:    interactive git log viewer
-# gi:     interactive .gitignore generator
-# gd:     interactive git diff viewer
-# grh:    interactive interactive git reset HEAD &lt;file> selector
-# gcf:    interactive git checkout &lt;file> selector
-# gss:    interactive git stash viewer
-# gclean: interactive git clean selector
 [ -f ~/.forgit/forgit.plugin.zsh ] && source ~/.forgit/forgit.plugin.zsh
 
 # fbr              : checkout git branch (including remote branches),
@@ -117,7 +119,7 @@ fbr() {
   branches=$(git for-each-ref --count=30 --sort=-committerdate refs/ --format="%(refname:short)") &&
   branch=$(echo "$branches" |
            fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+  git checkout "$(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")"
 }
 
 # fco              : checkout git branch/tag
@@ -207,91 +209,69 @@ fi
 # -----------------:-----------------------------------------------------------------
 export -f xopen
 fhist() {
-  local cols sep google_history open
-  cols=$(( COLUMNS / 3 ))
-  sep='{::}'
+    local cols sep google_history
+    cols=$(( COLUMNS / 3 ))
+    sep='{::}'
 
-  if [ "$(uname)" = "Darwin" ]; then
-    google_history="$HOME/Library/Application Support/Google/Chrome/Default/History"
-    open=open
-  else
-    google_history="$HOME/.config/google-chrome/Default/History"
-    open=xopen
-  fi
-  \cp -f "$google_history" /tmp/h
-  sqlite3 -separator $sep /tmp/h \
-    "select substr(title, 1, $cols), url
-  from urls order by last_visit_time desc" |
-    awk -F $sep '{printf "%-'$cols's  \x1b[36m%s\x1b[m\n", $1, $2}' |
-    fzf --ansi --multi | sed 's#.*\(https*://\)#\1#' | xargs bash -c 'xopen "$@"' _ {}
+    if [ "$(uname)" = "Darwin" ]; then
+        google_history="$HOME/Library/Application Support/Google/Chrome/Default/History"
+    else
+        google_history="$HOME/.config/google-chrome/Default/History"
+    fi
+    \cp -f "$google_history" /tmp/h
+    sqlite3 -separator $sep /tmp/h \
+        "select substr(title, 1, $cols), url
+            from urls order by last_visit_time desc" |
+                awk -F $sep '{printf "%-'$cols's  \x1b[36m%s\x1b[m\n", $1, $2}' |
+                fzf --ansi --multi | sed 's#.*\(https*://\)#\1#' | xargs bash -c 'xopen "$@"' _ {}
 }
 
-# fman             : global man page search
-# -----------------:------------------------------------------------------------
+# fuzzy global man page search
 fman() {
-  man -k . | fzf --prompt='Man> ' | awk '{print $1}' | xargs -r man
+    man -k . | fzf --prompt='Man> ' | awk '{print $1}' | xargs -r man
 }
 
-# fnotes           : fuzzy full-text search markdown notes and open in sublime
-#                  : TODO test against obsidian notes
-# -----------------:------------------------------------------------------------
+# fuzzy full-text search of markdown notes
+# TODO: improve
 fnotes() {
-  bdir=$pwd
-  ndir="/home/mallain/Google Drive/05 Notes"
-  cd $ndir > /dev/null 2>&1
+    local bdir
+    bdir=$(pwd)
+    local ndir="/home/mallain/Google Drive/05 Notes"
+    cd "$ndir" > /dev/null 2>&1 || exit 1
 
-  # VSCODE DEFAULT
-  # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' code -g
+    local cmd="nvim"
+    ag --nobreak --noheading . \
+        | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" \
+        | cut -d':' -f1-2 | xargs -d '\n' $cmd
 
-  # SUBLIME DEFAULT
-  ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' subl
-
-  # n?vim
-  # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' subl
-  cd $bdir > /dev/null 2>&1
+    cd "$bdir" > /dev/null 2>&1 || return
 }
 
-# fthis            : fuzzy full-text search current directory and open in editor
-# -----------------:------------------------------------------------------------
+# fuzzy full-text search current directory and open in editor
 fthis() {
-  # VSCODE DEFAULT
-  # ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' code -g
-
-  # SUBLIME DEFAULT
-  ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' subl
+    local cmd="nvim"
+    ag --nobreak --noheading . | fzf -m --delimiter=":" --preview "set -x && cat -n {1}" | cut -d':' -f1-2 | xargs -d '\n' $cmd
 }
 
-# fif              : find-in-file - usage: fif <searchTerm>
-# -----------------:------------------------------------------------------------
+# find-in-file - usage: fif <searchTerm>
 fif() {
-  if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-  rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+    if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+    rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
 }
 
 fcd() {
-  local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune \
-    -o -type d -print 2> /dev/null | fzf +m --preview="tree -L 2 {}") &&
-    cd "$dir"
-}
-
-# fsubld           : open directory in sublime
-# -----------------:-----------------------------------------------------------------
-fsubld() {
-  local dirs
-  dirs=$(find ${1:-.} -path '*/\.*' -prune \
-    -o -type d -print 2> /dev/null | fzf -m --preview="tree -L 2 {}") &&
-  for var in $dirs; do
-    (subl "$var" > /dev/null 2>&1 &)
-  done
-}
+    local dir
+    dir=$(find "${1:-.}" -path '*/\.*' -prune \
+        -o -type d -print 2> /dev/null | fzf +m --preview="tree -L 2 {}") &&
+        cd "$dir" || exit 1
+    }
 
 # fopen            : open one or more files with xdg-open
 #                  : use tab to multi-select in fzf view
 # -----------------:-----------------------------------------------------------------
 fopen() {
-  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && xopen "${files[@]}"
+    IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+    [[ -n "$files" ]] && xopen "${files[@]}"
 }
 
 # fedit            : Select a file from fuzzy listing to edit
@@ -299,12 +279,12 @@ fopen() {
 #                  :   - CTRL-E or Enter key to open with the $EDITOR
 # -----------------:-----------------------------------------------------------------
 fedit () {
-  IFS=$'\n' out=("$(fzf-tmux --query="$1" --exit-0 --expect=ctrl-o,ctrl-e)")
-  key=$(head -1 <<< "$out")
-  file=$(head -2 <<< "$out" | tail -1)
-  if [ -n "$file" ]; then
-    [ "$key" = ctrl-o ] && subl "$file" || ${EDITOR:-vim} "$file"
-  fi
+    IFS=$'\n' out=("$(fzf-tmux --query="$1" --exit-0 --expect=ctrl-o,ctrl-e)")
+    key=$(head -1 <<< "$out")
+    file=$(head -2 <<< "$out" | tail -1)
+    if [ -n "$file" ]; then
+        [ "$key" = ctrl-o ] && subl "$file" || ${EDITOR:-vim} "$file"
+    fi
 }
 
 # fe               : Open selected file(s) with vim in multiple tabs
@@ -312,70 +292,76 @@ fedit () {
 #                  :   - Exit if there's no match (--exit-0)
 # -----------------:-----------------------------------------------------------------
 fe() {
-  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  # [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+    IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+    # [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 
   # use vim over $EDITOR so that -p option can be passed reliably
   [[ -n "$files" ]] && vim -p  "${files[@]}"
 }
 
-# fkill            : kill processes - list only the ones you can kill
-# -----------------:-----------------------------------------------------------------
+# fuzzy search list of processes owned by current user and SIGKILL selections
+# Args:
+#     $1: signal to send to selected processes (default: 9/SIGKILL)
 fkill() {
-  local pid
-  if [ "$UID" != "0" ]; then
-    pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
-  else
-    pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
-  fi
+    local pid
+    if [ "$UID" != "0" ]; then
+        pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+    else
+        pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+    fi
 
-  if [ "x$pid" != "x" ]
-  then
-    echo $pid | xargs kill -${1:-9}
-  fi
+    if [ "x$pid" != "x" ]
+    then
+        echo "$pid" | xargs kill "-${1:-9}"
+    fi
 }
 
 # fuzzy grep open via ag with line number
 fvim() {
-  local file
-  local line
+    local file
+    local line
 
-  read -r file line <<<"$(ag --nobreak --noheading $@ | fzf -0 -1 | awk -F: '{print $1, $2}')"
+    read -r file line <<<"$(ag --nobreak --noheading $@ | fzf -0 -1 | awk -F: '{print $1, $2}')"
 
-  if [[ -n $file ]]
-  then
-    vim $file +$line
-  fi
+    if [[ -n $file ]]
+    then
+        vim "$file" +"$line"
+    fi
 }
 
 
 # ---------------------
 # FUZZY ROS
 # ---------------------
+
 frostopic() {
-  local topic=$(rostopic list | fzf --preview "rostopic info {}")
-  [[ -z "$topic" ]] && return
-  echo "rostopic echo $@ $topic"
-  rostopic echo $@ $topic
+    local topic
+    topic=$(rostopic list | fzf --preview "rostopic info {}")
+    [[ -z "$topic" ]] && return
+    echo "rostopic echo $* $topic"
+    rostopic echo "$@" "$topic"
 }
 
 frosnode() {
-  local node=$(rosnode list | fzf --preview "rosnode info -q {}")
+  local node
+  node=$(rosnode list | fzf --preview "rosnode info -q {}")
   [[ -z "$node" ]] && return
-  echo "rosnode info -q $@ $node"
-  rosnode info -q $@ $node
+  echo "rosnode info -q $* $node"
+  rosnode info -q "$@" "$node"
 }
 
 frospack() {
-  local pack=$(rospack list | fzf --preview "cat {2}/package.xml" | awk '{print $2}')
-  echo "cd $path"
-  cd $pack
+  local pack
+  pack=$(rospack list | fzf --preview "cat {2}/package.xml" | awk '{print $2}')
+  echo "cd $pack"
+  cd "$pack" || exit 1
 }
 
 frosparam() {
-  local param=$(rosparam list | fzf --preview "rosparam get {}")
+  local param
+  param=$(rosparam list | fzf --preview "rosparam get {}")
   [[ -z "$param" ]] && return
   echo "rosparam get $param"
-  rosparam get $param
+  rosparam get "$param"
 }
 

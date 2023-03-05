@@ -91,7 +91,8 @@ unset color_prompt force_color_prompt
 if [ -L "/usr/bin/editor" ] && [ -e "/usr/bin/editor" ] ; then
     export EDITOR=/usr/bin/editor
 elif command -v nvim &> /dev/null; then
-    export EDITOR=$(command -v nvim)
+    EDITOR=$(command -v nvim)
+    export EDITOR
 else
     export EDITOR=/usr/bin/vi
 fi
@@ -118,7 +119,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # unbind "readline arguments" to use meta + digits as hotkey
 # https://stackoverflow.com/a/50123018/3885499
 for i in - {0..9} ; do
-    bind -r '\e'$i
+    bind -r '\e'"$i"
 done
 
 # setup fzf before bash_aliases
@@ -126,8 +127,8 @@ done
 
 # machine-id specific environment loaders
 id=$(cat /etc/machine-id)
-if [ -f ~/.machines/$id.sh ]; then
-    . ~/.machines/$id.sh
+if [ -f ~/.machines/"$id".sh ]; then
+    . ~/.machines/"$id".sh
 fi
 
 # Alias definitions.
