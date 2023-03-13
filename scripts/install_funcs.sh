@@ -3,7 +3,14 @@
 install_core_utils () {
     # gnome tweaks for theming and keyboard modifications
     sudo add-apt-repository universe
-    sudo apt install gnome-tweak-tool
+
+    if [ "$(lsb_release -rs)" = "22.04" ]; then
+        sudo apt install \
+            gnome-tweaks
+    elif [ "$(lsb_release -rs)" = "20.04" ]; then
+        sudo apt install \
+            gnome-tweak-tool
+    fi
 
     sudo apt install \
         bat \
@@ -17,7 +24,9 @@ install_core_utils () {
 
     # bat is installed as batcat due to clash with another package
     mkdir -p ~/.local/bin
-    ln -s /usr/bin/batcat ~/.local/bin/bat
+    if [ -f ~/usr/bin/batcat ] && [ ! -f ~/.local/bin/bat ]; then
+        ln -s /usr/bin/batcat ~/.local/bin/bat
+    fi
 }
 
 install_cpp_tools () {
@@ -53,9 +62,13 @@ install_ros_tools () {
 
 # offline documentation browser
 install_zeal () {
-    sudo add-apt-repository ppa:zeal-developers/ppa
-    sudo apt update
-    sudo apt install zeal
+    if [ "$(lsb_release -rs)" = "22.04" ]; then
+        sudo apt install zeal
+    elif [ "$(lsb_release -rs)" = "20.04" ]; then
+        sudo add-apt-repository ppa:zeal-developers/ppa
+        sudo apt update
+        sudo apt install zeal
+    fi
 }
 
 # fzf - fuzzy command line finder
@@ -72,8 +85,11 @@ install_forgit () {
 # https://albertlauncher.github.io/installing/
 # https://software.opensuse.org/download.html?project=home:manuelschneid3r&package=albert
 install_alfred () {
-    echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_18.04/ /' | sudo tee /etc/apt/sources.list.d/home:manuelschneid3r.list
-    curl -fsSL https://download.opensuse.org/repositories/home:manuelschneid3r/xUbuntu_18.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_manuelschneid3r.gpg > /dev/null
+    echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_18.04/ /' \
+        | sudo tee /etc/apt/sources.list.d/home:manuelschneid3r.list
+    curl -fsSL https://download.opensuse.org/repositories/home:manuelschneid3r/xUbuntu_18.04/Release.key \
+        | gpg --dearmor \
+        | sudo tee /etc/apt/trusted.gpg.d/home_manuelschneid3r.gpg > /dev/null
     sudo apt update
     sudo apt install albert
 }
@@ -81,8 +97,8 @@ install_alfred () {
 
 # gitbatch - multiple git repository management tool
 install_gitbatch () {
-    gitbatchv = "0.5.0"
-    cd ~/Downloads
+    gitbatchv="0.5.0"
+    cd ~/Downloads || exit 1
     curl -OL https://github.com/isacikgoz/gitbatch/releases/download/vi${gitbatchv}/gitbatch_${gitbatchv}_linux_amd64.tar.gz
     tar xzf gitbatch_${gitbatchv}_linux_amd64.tar.gz
     sudo mv gitbatch /usr/local/bin
@@ -91,21 +107,21 @@ install_gitbatch () {
 # dotfiles setup
 install_dotfiles () {
     git clone git@github.com:mitchallain/dotfiles.git ~/dotfiles
-    cd ~/dotfiles
+    cd ~/dotfiles || exit 1
     git submodule update --recursive --init
     ./install
 }
 
 # theme setup
 install_whitesur_theme () {
-    cd ~/dev
+    mkdir -p ~/dev && cd ~/dev || exit 1
     git clone git@github.com:vinceliuice/WhiteSur-gtk-theme.git
     git clone git@github.com:vinceliuice/WhiteSur-icon-theme.git
     git clone git@github.com:vinceliuice/WhiteSur-wallpapers.git
-    cd WhiteSur-gtk-theme
+    cd WhiteSur-gtk-theme || exit 1
     ./install.sh  # note requires sudo
     sudo ./tweaks.sh -g -c Dark
-    cd ../WhiteSur-icon-theme
+    cd ../WhiteSur-icon-theme || exit 1
     ./install.sh
 }
 
@@ -142,18 +158,23 @@ install_node_16 () {
 install_nf_meslo_font () {
     mkdir ~/.local/share/fonts
     wget -P ~/.local/share/fonts/ "https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Meslo.zip"
-    cd ~/.local/share/fonts/
+    local cdir
+    cdir=$(pwd)
+    cd ~/.local/share/fonts/ || exit 1
     unzip Meslo.zip
     fc-cache -f -v
     rm Meslo.zip
+    cd "$cdir" || exit 1
 }
 
 # sublime merge
 # https://www.sublimemerge.com/docs/linux_repositories
 install_sublime_merge () {
-    wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+    wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg \
+        | sudo apt-key add -
     sudo apt-get install apt-transport-https
-    echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+    echo "deb https://download.sublimetext.com/ apt/stable/" \
+        | sudo tee /etc/apt/sources.list.d/sublime-text.list
     sudo apt update
     sudo apt install sublime-merge
 }
@@ -161,10 +182,28 @@ install_sublime_merge () {
 install_ros_noetic () {
     sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
     sudo apt install curl # if you haven't already installed curl
-    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc \
+        | sudo apt-key add -
     sudo apt update
     sudo apt install ros-noetic-desktop-full
 }
+
+# https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html
+install_ros_humble () {
+    sudo apt install software-properties-common
+    sudo add-apt-repository universe
+    sudo apt update && sudo apt install curl
+    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
+        -o /usr/share/keyrings/ros-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] \
+        http://packages.ros.org/ros2/ubuntu \
+        $(. /etc/os-release && echo $UBUNTU_CODENAME) main" \
+        | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+    sudo apt update
+    sudo apt upgrade
+    sudo apt install -y ros-humble-desktop ros-dev-tools
+}
+
 
 install_appimagelauncher () {
     sudo add-apt-repository ppa:appimagelauncher-team/stable

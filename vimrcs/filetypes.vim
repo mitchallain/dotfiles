@@ -26,24 +26,21 @@ au FileType cpp setlocal shiftwidth=2 tabstop=2 softtabstop=0 expandtab
 au FileType cpp let b:dispatch = 'make -C build'
 " au FileType cpp nnoremap <leader>c :Dispatch! make -C build<cr>
 
-" TODO: remove in favor of null-ls integration
-" apply clang-format to selection with Ctrl K
-" see https://clang.llvm.org/docs/ClangFormat.html#vim-integration
-" au Filetype cpp map <leader>fo :pyf ~/bin/clang-format.py<cr>
-
 " automatic clang-format on save
-function! Formatonsave()
-  let l:formatdiff = 1
-  " this is a symlink
-  pyf ~/bin/clang-format.py
-endfunction
+" disabled in favor of LSP integration with clangd or null-ls with clang-format
+" function! Formatonsave()
+"   let l:formatdiff = 1
+"   " this is a symlink
+"   pyf ~/bin/clang-format.py
+" endfunction
 " autocmd BufWritePre *.h,*.cc,*.cpp call Formatonsave()
 
 """"""""""""""""""""""""""""""
 " => CMake section
 """"""""""""""""""""""""""""""
-" this doesn't really work when build already exists
-au filetype cmake let b:dispatch = 'mkdir build; cd build; cmake ..'
+" TODO: convert this to vimux
+au filetype cmake let b:dispatch = 'mkdir -p build; cd build; cmake ..'
+au FileType cmake setlocal tabstop=2 shiftwidth=0 softtabstop=0 expandtab
 
 """"""""""""""""""""""""""""""
 " => Rust section
