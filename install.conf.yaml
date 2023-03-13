@@ -38,7 +38,7 @@
     ~/.tmux.conf: tmux.conf
     ~/.tmux.powerline.conf: tmux.powerline.conf
     ~/.tmux/plugins/tpm: tpm
-    ~/.tmuxp: tmuxp
+    ~/.tmuxp: private/tmuxp
     ~/.vimrcs: vimrcs
     ~/.vimrc: vimrcs/vimrc
     ~/.zshrc: zshrc
