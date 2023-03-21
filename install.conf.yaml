@@ -15,6 +15,7 @@
     ~/.bashrc: bashrc
     ~/.bastianrc: private/bastianrc.sh
     ~/.clang-format: clang/.clang-format
+    ~/.colcon: colcon
     ~/.config/alacritty: alacritty
     ~/.config/albert/albert.conf: albert/albert.conf
     ~/.config/albert/org.albert.extension.snippets/snippets.db: albert/snippets.db
