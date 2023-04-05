@@ -139,6 +139,12 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# Secrets - API keys, etc.
+# Not in version control
+if [ -f ~/dotfiles/secrets.sh ]; then
+    . ~/dotfiles/secrets.sh
+fi
+
 # Bastian-Specific Environment Setup
 # Currently needs to run after to ~/.bash_aliases due to
 # nested sourcing of private aliases which use env variables
@@ -212,6 +218,13 @@ export TERM=xterm-256color
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# ruby gem installation directory
+# Install Ruby Gems to ~/gems
+if [ -d "$HOME/gems" ]; then
+    export GEM_HOME="$HOME/gems"
+    export PATH="$HOME/gems/bin:$PATH"
+fi
 
 #eval "$(starship init bash)"
 

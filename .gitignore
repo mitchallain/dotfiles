@@ -22,4 +22,6 @@ tags
 # Persistent undo
 [._]*.un~
 
+secrets.sh
+
 # End of https://www.toptal.com/developers/gitignore/api/vim

@@ -192,6 +192,16 @@ lspconfig["pyright"].setup({
     flags = lsp_flags,
     capabilities = capabilities,
 })
+lspconfig["sourcery"].setup({
+    init_options = {
+        token = vim.env.SOURCERY_TOKEN,
+        extension_version = 'vim.lsp',
+        editor_version = 'vim',
+    },
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
 lspconfig["clangd"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
@@ -205,6 +215,11 @@ lspconfig["rust_analyzer"].setup({
     settings = {
         ["rust-analyzer"] = {},
     },
+})
+lspconfig["tsserver"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
 })
 lspconfig["lua_ls"].setup({
     on_attach = on_attach,
