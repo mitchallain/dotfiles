@@ -25,3 +25,6 @@ esac
 # . "$HOME/.bashrc"
 # fi
 
+if [ -r "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi

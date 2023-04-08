@@ -234,3 +234,6 @@ if [ -x "$(command -v direnv)" ]; then
     eval "$(direnv hook bash)"
 fi
 
+if [ -r "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi

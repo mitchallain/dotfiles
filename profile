@@ -10,11 +10,6 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-# set PATH if cargo installed
-if [ -d "$HOME/.cargo/bin" ] ; then
-    PATH="$HOME/.cargo/bin:$PATH"
-fi
-
 # set PATH if poetry installed
 if [ -d "$HOME/.poetry/bin" ] ; then
     PATH="$HOME/.poetry/bin:$PATH"
@@ -33,4 +28,9 @@ fi
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
+fi
+
+# set PATH if cargo installed
+if [ -r "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
 fi
