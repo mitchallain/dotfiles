@@ -126,9 +126,11 @@ done
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # machine-id specific environment loaders
-id=$(cat /etc/machine-id)
-if [ -f ~/.machines/"$id".sh ]; then
-    . ~/.machines/"$id".sh
+if [ -f /etc/machine-id ]; then
+    id=$(cat /etc/machine-id)
+    if [ -f ~/.machines/"$id".sh ]; then
+        . ~/.machines/"$id".sh
+    fi
 fi
 
 # Alias definitions.
