@@ -156,8 +156,9 @@ install_node_16 () {
 
 # nerd fonts meslo - da best
 install_nf_meslo_font () {
+    # rm ~/.local/share/fonts/Meslo*.ttf
     mkdir ~/.local/share/fonts
-    wget -P ~/.local/share/fonts/ "https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Meslo.zip"
+    wget -P ~/.local/share/fonts/ "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Meslo.zip"
     local cdir
     cdir=$(pwd)
     cd ~/.local/share/fonts/ || exit 1
@@ -211,8 +212,10 @@ install_appimagelauncher () {
 }
 
 install_obsidian () {
-    wget -P ~/Downloads/ "https://github.com/obsidianmd/obsidian-releases/releases/download/v0.15.9/Obsidian-0.15.9.AppImage"
-    chmod +x ~/Downloads/Obsidian-0.15.9.AppImage
+    obsidian_version="1.3.4"
+    wget -P ~/Downloads/ "https://github.com/obsidianmd/obsidian-releases/releases/download/v$obsidian_version/Obsidian-$obsidian_version.AppImage"
+    chmod +x ~/Downloads/Obsidian-$obsidian_version.AppImage
+    ail-cli integrate ~/Downloads/Obsidian-$obsidian_version.Appimage
 }
 
 # newer versions of flameshot are not always available through apt

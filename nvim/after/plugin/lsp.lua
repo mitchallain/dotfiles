@@ -280,6 +280,8 @@ null_ls.setup({
         }),
     },
     on_attach = on_attach,
+
+    -- debug = true,
     log_level = "warn",
     -- log_level = "debug",
 })
