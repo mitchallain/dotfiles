@@ -275,6 +275,9 @@ nnoremap <leader>qr :cfdo %s/
 " open sublime merge
 nnoremap <silent> <leader>me :!smerge %s<cr><cr>
 
+" goto 80
+nnoremap <leader>\ 80\|
+
 " Move text in visual mode
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv
