@@ -129,6 +129,17 @@ install_whitesur_theme () {
 # requires setup_python
 install_nvim () {
     nvim_version="0.9.1"
+
+    # remove symlink if already existing
+    if [[ -L ~/bin/nvim ]]; then
+        rm ~/bin/nvim
+    fi
+
+    # remove previous versions
+    if [[ -f ~/bin/nvim.appimage ]]; then
+        rm ~/bin/nvim.appimage
+    fi
+
     wget -P ~/bin/ "https://github.com/neovim/neovim/releases/download/v$nvim_version/nvim.appimage"
     chmod u+x ~/bin/nvim.appimage
     ln -s ~/bin/nvim.appimage ~/bin/nvim
