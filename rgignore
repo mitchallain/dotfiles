@@ -5,3 +5,4 @@
 .git
 .pytest_cache
 .cache
+.ruff_cache
