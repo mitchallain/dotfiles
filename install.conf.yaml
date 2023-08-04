@@ -29,6 +29,7 @@
     ~/.config/yapf/style: yapf/style
     ~/.gitconfig: gitconfig
     ~/.ipython/profile_default/startup: ipython/profile_default/startup
+    ~/.lnav/formats: lnav/formats
     ~/.machines: private/machines
     ~/.mermaid.json: mermaid.json
     ~/.pandoc: pandoc
