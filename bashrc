@@ -222,10 +222,11 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # ruby gem installation directory
-# Install Ruby Gems to ~/gems
-if [ -d "$HOME/gems" ]; then
-    export GEM_HOME="$HOME/gems"
-    export PATH="$HOME/gems/bin:$PATH"
+# Install Ruby Gems to ~/.gems
+export BUNDLE_PATH="$HOME/.gems"
+export GEM_HOME="$HOME/.gems"
+if [ -d "$HOME/.gems" ]; then
+    export PATH="$HOME/.gems/bin:$PATH"
 fi
 
 #eval "$(starship init bash)"

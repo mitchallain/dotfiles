@@ -121,7 +121,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'rcarriga/nvim-dap-ui'
 
   Plug 'nvim-lua/plenary.nvim'  " Lua function library
-  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.2' }
   Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main', }
   Plug 'kkharji/sqlite.lua'
   Plug 'nvim-telescope/telescope-frecency.nvim'

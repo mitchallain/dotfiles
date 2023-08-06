@@ -195,7 +195,7 @@ unmvgitmv () {
 alias pylintrc="pylint --rcfile=~/.pylintrc"
 
 # #   ROS aliases
-alias rosenv='printenv | grep ROS'
+alias rosenv='printenv | grep -i ROS'
 alias rosgdb="rosrun --prefix 'gdb -ex run --args' "
 alias rosprofile="rosrun --prefix 'valgrind --tool=callgrind' "
 alias rosmemcheck="rosrun --prefix 'valgrind --tool=memcheck' "

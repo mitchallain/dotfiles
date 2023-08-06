@@ -34,6 +34,13 @@ install_cpp_tools () {
         cppcheck
 }
 
+install_clang () {
+    sudo apt install \
+        clang \
+        clang-tools \
+        clangd
+}
+
 install_dev_tools () {
     sudo apt install -y \
         direnv \
@@ -48,7 +55,7 @@ setup_python () {
     python3 -m pip install --upgrade pip
 }
 
-install_ros_tools () {
+install_ros1_tools () {
     sudo apt install \
         python-is-python3 \
         catkin-lint \
@@ -59,6 +66,14 @@ install_ros_tools () {
         build-essential \
         python3-catkin-tools
 }
+
+# apt show python3-colcon-common-extensions for a list of included extensions
+install_ros2_tools () {
+    sudo apt install \
+        python3-colcon-common-extensions \
+        python3-colcon-clean
+}
+
 
 # offline documentation browser
 install_zeal () {
@@ -169,7 +184,7 @@ install_node_16 () {
 install_nf_meslo_font () {
     # rm ~/.local/share/fonts/Meslo*.ttf
     mkdir ~/.local/share/fonts
-    wget -P ~/.local/share/fonts/ "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/Meslo.zip"
+    wget -P ~/.local/share/fonts/ "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/Meslo.zip"
     local cdir
     cdir=$(pwd)
     cd ~/.local/share/fonts/ || exit 1
