@@ -27,6 +27,7 @@
     ~/.config/nvim: nvim
     ~/.config/.rgignore: rgignore
     ~/.config/terminator/config: terminator/config
+    ~/.config/quicktile.cfg: quicktile.cfg
     ~/.config/yapf/style: yapf/style
     ~/.gitconfig: gitconfig
     ~/.ipython/profile_default/startup: ipython/profile_default/startup

@@ -119,6 +119,21 @@ install_gitbatch () {
     sudo mv gitbatch /usr/local/bin
 }
 
+# quicktile - simple tiling
+# http://ssokolow.com/quicktile/installation.html#b-install-sh-from-a-local-folder
+# note: this will disable the built-in window moving shortcut
+# quicktile is added as a daemon on next boot, can start manually after installation
+# with `quicktile -d`
+install_quicktile () {
+    cd ~/Downloads || exit 1
+    git clone git@github.com:ssokolow/quicktile.git
+    cd quicktile || exit 1
+    ./install.sh
+
+    # TODO: disable built-in keybindings
+    # gsettings set org.gnome.desktop.wm.keybindings move-to-side-w
+}
+
 # dotfiles setup
 install_dotfiles () {
     git clone git@github.com:mitchallain/dotfiles.git ~/dotfiles
