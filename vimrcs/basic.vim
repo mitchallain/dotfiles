@@ -299,6 +299,9 @@ nnoremap <leader>y "+y
 vnoremap <leader>y "+y
 nnoremap <leader>Y "+Y
 
+" yank current buffer path into clipboard
+nnoremap <leader>cp :let @+ = expand("%")<cr>
+
 " Don't ever press capital Q, it's the worst place in the universe - the primeagen
 nnoremap Q <nop>
 
@@ -327,6 +330,8 @@ endfun
 if has("autocmd")
     autocmd BufWritePre *.txt,*.h,*.cpp,*.cc,*.py,*.sh,*.md :call CleanExtraSpaces()
 endif
+
+nnoremap <leader>tw :call CleanExtraSpaces()<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

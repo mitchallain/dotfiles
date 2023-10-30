@@ -15,7 +15,7 @@
     ~/.bashrc: bashrc
     ~/.bastianrc: private/bastianrc.sh
     ~/.clang-format: clang/.clang-format
-    ~/.clangd: clang/clangd
+    ~/.config/clangd/config.yaml: clang/clangd.yaml
     ~/.colcon: colcon
     ~/.config/alacritty: alacritty
     ~/.config/albert/albert.conf: albert/albert.conf

@@ -253,7 +253,7 @@ install_appimagelauncher () {
 }
 
 install_obsidian () {
-    obsidian_version="1.3.4"
+    obsidian_version="1.4.16"
     wget -P ~/Downloads/ "https://github.com/obsidianmd/obsidian-releases/releases/download/v$obsidian_version/Obsidian-$obsidian_version.AppImage"
     chmod +x ~/Downloads/Obsidian-$obsidian_version.AppImage
     ail-cli integrate ~/Downloads/Obsidian-$obsidian_version.Appimage

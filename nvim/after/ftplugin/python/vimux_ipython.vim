@@ -116,7 +116,7 @@ endpython
 " noremap <silent> <C-b> :python run_tmux_python_cell(False)<CR>
 " noremap <silent> <C-g> :python run_tmux_python_cell(True)<CR>
 
-vmap <silent> <leader>vp :python run_tmux_python_chunk()<CR>
-nnoremap <silent> <leader>vp V:python run_tmux_python_chunk()<CR>
+vmap <silent> <leader>vpy :python run_tmux_python_chunk()<CR>
+nnoremap <silent> <leader>vpy V:python run_tmux_python_chunk()<CR>
 " noremap <silent> <C-b> :python run_tmux_python_cell(False)<CR>
 " noremap <silent> <C-g> :python run_tmux_python_cell(True)<CR>
