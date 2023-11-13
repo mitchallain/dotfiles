@@ -20,13 +20,54 @@
 \usepackage{fancyhdr}
 
 \usepackage{listings}
+\usepackage{courier}
+\usepackage{vhistory}
+
+% $if(highlighting-macros)$
+% $highlighting-macros$
+% $endif$
+
+\usepackage{xcolor}
+\definecolor{base00}{rgb}{0.395,0.480,0.512}
+\definecolor{base01}{rgb}{0.344,0.430,0.457}
+\definecolor{green}{rgb}{0.520,0.598,0}
+\definecolor{cyan}{rgb}{0.164,0.629,0.594}
+\definecolor{blue}{rgb}{0.148,0.543,0.820}
+
+\lstset{basicstyle=\small\ttfamily,breaklines=true}
+\lstset{framextopmargin=50pt,frame=bottomline}
+
+\lstdefinelanguage{iecst}{
+    morekeywords={IF,THEN,ELSE,ELSIF,CASE,OF,AND,NOT,OR,
+    VAR,VAR_EXTERNAL,END_VAR,END_IF,LREAL,BOOL,TIME,
+    INT,UINT,PROGRAM,VECTOR,TON,TOF,FALSE,TRUE,TYPE,STRUCT,
+    END_STRUCT,END_TYPE},
+    sensitive=false,
+    morecomment=[s]{(*}{*)},
+    morestring=[b]",
+}
+
+\lstdefinestyle{mystyle}{
+    % backgroundcolor=\color{backcolour},
+    % identifierstyle=\color{blue},
+    commentstyle=\color{base01},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{cyan},
+    stringstyle=\color{cyan}
+}
+
+\lstset{
+    style=mystyle,
+    language=iecst
+}
+
 \newcommand{\passthrough}[1]{#1}  % required from pandoc to provide inline
 
 % Adds microtypography features: character protrusion, for XeTeX.
 \usepackage{microtype}
 
 % Allows links.
-\usepackage[usenames,dvipsnames]{color}
+% \usepackage[usenames,dvipsnames]{color}
 \usepackage[xetex, bookmarks, colorlinks, breaklinks]{hyperref}
 \hypersetup{colorlinks=true, urlcolor=NavyBlue, linkcolor=NavyBlue}
 
@@ -75,6 +116,16 @@
         }}
     }
 
+\newcommand{\revisionlog}{
+    \begin{versionhistory}
+        \vhEntry{1.0}{22.01.04}{JPW|KW}{created}
+        \vhEntry{1.1}{23.01.04}{DP|JPW}{correction}
+        \vhEntry{1.2}{03.02.04}{DP|JPW}{revised after review}
+    \end{versionhistory}
+
+}
+
+
 $if(draft)$
 \usepackage{draftwatermark}
 \SetWatermarkLightness{0.9}
@@ -83,6 +134,8 @@ $endif$
 \begin{document}
 
 \header
+
+% \revisionlog
 
 $body$
 
