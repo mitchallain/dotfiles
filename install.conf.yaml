@@ -9,6 +9,7 @@
     ~/.albertignore: albert/albertignore
     ~/.aliases/bastian_aliases.sh: private/bastian_aliases.sh
     ~/.aliases/fzf_functions.sh: fzf_functions.sh
+    ~/.andurilrc: private/andurilrc.sh
     ~/.bash_aliases: bash_aliases.sh
     ~/.bash_profile: bash_profile.sh
     ~/.bash_logout: bash_logout

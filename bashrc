@@ -155,6 +155,11 @@ if [ -f ~/.bastianrc ] && [ -f ~/.aliases/bastian_aliases.sh ]; then
     . ~/.aliases/bastian_aliases.sh
 fi
 
+# Anduril Environment Setup - Private Repo
+if [ -f ~/.andurilrc ]; then
+    . ~/.andurilrc
+fi
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).

@@ -49,6 +49,12 @@ autocmd BufNewFile,BufRead *.rs set filetype=rust
 au FileType rust setlocal shiftwidth=0 tabstop=4 softtabstop=0 expandtab
 
 """"""""""""""""""""""""""""""
+" => Nix section
+""""""""""""""""""""""""""""""
+autocmd BufNewFile,BufRead *.nix set filetype=nix
+au FileType nix setlocal shiftwidth=2 tabstop=2 softtabstop=0 expandtab
+
+""""""""""""""""""""""""""""""
 " => XML section
 """"""""""""""""""""""""""""""
 autocmd BufNewFile,BufRead *.launch set filetype=xml

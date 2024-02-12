@@ -121,7 +121,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'rcarriga/nvim-dap-ui'
 
   Plug 'nvim-lua/plenary.nvim'  " Lua function library
-  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.2' }
+  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
   Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main', }
   Plug 'kkharji/sqlite.lua'
   Plug 'nvim-telescope/telescope-frecency.nvim'
@@ -170,6 +170,7 @@ set rtp+=~/.fzf
 " Custom fzf command always shows basename, does not care about case,
 " and searches basename first, before falling back to complete pathname
 nnoremap <c-p> :FZF --keep-right -i --delimiter / --nth -1,..<cr>
+inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
 
 " nnoremap <leader>st :BTags<cr>
 " nnoremap <leader>sa :Tags<cr>

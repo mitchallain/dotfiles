@@ -158,7 +158,7 @@ install_whitesur_theme () {
 # nvim setup
 # requires setup_python
 install_nvim () {
-    nvim_version="0.9.1"
+    nvim_version="0.9.5"
 
     # remove symlink if already existing
     if [[ -L ~/bin/nvim ]]; then
@@ -253,7 +253,7 @@ install_appimagelauncher () {
 }
 
 install_obsidian () {
-    obsidian_version="1.4.16"
+    obsidian_version="1.5.3"
     wget -P ~/Downloads/ "https://github.com/obsidianmd/obsidian-releases/releases/download/v$obsidian_version/Obsidian-$obsidian_version.AppImage"
     chmod +x ~/Downloads/Obsidian-$obsidian_version.AppImage
     ail-cli integrate ~/Downloads/Obsidian-$obsidian_version.Appimage

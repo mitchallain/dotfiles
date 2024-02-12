@@ -425,8 +425,11 @@ fi
 alias docker_clean_images='docker rmi $(docker images -a --filter=dangling=true -q)'
 alias docker_clean_ps='docker rm $(docker ps --filter=status=exited --filter=status=created -q)'
 
+# LAUNCH OBSIDIAN FLATPAK WITHOUT NETWORK
+alias obsidian='flatpak run --unshare=network --user md.obsidian.Obsidian'
+
 # MERMAID DIAGRAM GENERATION
-alias mmdc="/home/mallain/dev/node_modules/.bin/mmdc"
+# alias mmdc="/home/mallain/dev/node_modules/.bin/mmdc"
 
 
 # Use text in clipboard as input to mmdc to generate mermaid diagrams
@@ -435,7 +438,7 @@ alias mmdc="/home/mallain/dev/node_modules/.bin/mmdc"
 #
 # Example: 'mmdclip -w 1000 -o test.svg'
 mmdclip() {
-  xclip -o | mmdc -i /dev/stdin -c ~/.mermaid.json "$@"
+  xclip -selection clipboard -o | mmdc -i /dev/stdin -c ~/.mermaid.json "$@"
 }
 
 # Extract most known archives with one command
@@ -535,3 +538,26 @@ if [ -x "$(command -v pandoc)" ] && [ -x "$(command -v xmlstarlet)" ]; then
         xmlstarlet unesc | fmt -80 | iconv -t US
     }
 fi
+
+# test terminal color scheme
+# \033[ is the control sequence introducer
+# attributes are separated by semicolons and terminated by m to Select Graphic Rendition
+# empty attributes are interpreted as 0 (reset/normal)
+function termcolors() {
+    printf "          "
+    for b in 0 1 2 3 4 5 6 7; do printf "  4%sm " "$b"; done
+    echo
+    for f in "" 30 31 32 33 34 35 36 37; do
+        for s in "" "1;"; do
+            printf "%4sm" "${s}${f}"
+            printf " \033[%sm%s\033[0m" "$s$f" "gYw "
+            for b in 0 1 2 3 4 5 6 7; do
+                printf " \033[4%s;%sm%s\033[0m" "$b" "$s$f" " gYw "
+            done
+            echo
+         done
+    done
+}
+
+# shorter cmake -G ninja
+alias nmake="cmake -G Ninja"

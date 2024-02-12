@@ -5,6 +5,11 @@ source ~/.vimrcs/basic.vim
 source ~/.vimrcs/filetypes.vim
 source ~/.vimrcs/plugins.vim
 
+" Anduril-specific private config
+if filereadable(expand("~/.vimrcs/anduril.vim"))
+    source ~/.vimrcs/anduril.vim
+endif
+
 " Edit or reload this file
 nnoremap <leader>e :e ~/.vimrc<CR>
 nnoremap <leader>ev :vsplit ~/.vimrc<CR>

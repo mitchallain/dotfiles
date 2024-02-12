@@ -249,7 +249,6 @@ set laststatus=2
 " Format the status line
 set statusline=\ %{HasPaste()}%f%m%r%h\ %w\ \ \ \ %l/%L,\ %c
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
