@@ -192,20 +192,21 @@ lspconfig["pyright"].setup({
     flags = lsp_flags,
     capabilities = capabilities,
 })
-lspconfig["sourcery"].setup({
-    init_options = {
-        token = vim.env.SOURCERY_TOKEN,
-        extension_version = 'vim.lsp',
-        editor_version = 'vim',
-    },
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-})
+-- lspconfig["sourcery"].setup({
+--     init_options = {
+--         token = vim.env.SOURCERY_TOKEN,
+--         extension_version = 'vim.lsp',
+--         editor_version = 'vim',
+--     },
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+--     capabilities = capabilities,
+-- })
 lspconfig["clangd"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
+    filetypes = {"c", "cpp", "objc", "objcpp"},  -- remove proto
 })
 lspconfig["rust_analyzer"].setup({
     on_attach = on_attach,
@@ -217,6 +218,21 @@ lspconfig["rust_analyzer"].setup({
     },
 })
 lspconfig["tsserver"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
+lspconfig["gopls"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
+lspconfig["nil_ls"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
+lspconfig["bufls"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
@@ -247,6 +263,16 @@ lspconfig["lua_ls"].setup({
         }
     },
 })
+lspconfig["rnix"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
+-- TODO: 'enable_cody = false' currently throws errors
+-- require("sg").setup({
+--     enable_cody = false,
+--     on_attach = on_attach,
+-- })
 
 local null_ls = require("null-ls")
 

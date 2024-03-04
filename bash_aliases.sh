@@ -426,7 +426,7 @@ alias docker_clean_images='docker rmi $(docker images -a --filter=dangling=true 
 alias docker_clean_ps='docker rm $(docker ps --filter=status=exited --filter=status=created -q)'
 
 # LAUNCH OBSIDIAN FLATPAK WITHOUT NETWORK
-alias obsidian='flatpak run --unshare=network --user md.obsidian.Obsidian'
+alias obsidian='flatpak run --unshare=network md.obsidian.Obsidian >/dev/null 2>&1 &'
 
 # MERMAID DIAGRAM GENERATION
 # alias mmdc="/home/mallain/dev/node_modules/.bin/mmdc"
@@ -456,6 +456,7 @@ extract () {
       *.gz)        gunzip "$1"      ;;
       *.tar)       tar xf "$1"      ;;
       *.tar.xz)    tar xf "$1"      ;;
+      *.tar.zst)   tar xaf "$1"     ;;
       *.tbz2)      tar xjf "$1"     ;;
       *.tgz)       tar xzf "$1"     ;;
       *.zip)       unzip "$1"       ;;
