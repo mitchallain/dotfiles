@@ -9,27 +9,31 @@
     ~/.albertignore: albert/albertignore
     ~/.aliases/bastian_aliases.sh: private/bastian_aliases.sh
     ~/.aliases/fzf_functions.sh: fzf_functions.sh
+    ~/.aliases/nix_aliases.sh: aliases/nix_aliases.sh
     ~/.andurilrc: private/andurilrc.sh
     ~/.bash_aliases: bash_aliases.sh
-    ~/.bash_profile: bash_profile.sh
     ~/.bash_logout: bash_logout
+    ~/.bash_profile: bash_profile.sh
     ~/.bashrc: bashrc
     ~/.bastianrc: private/bastianrc.sh
     ~/.clang-format: clang/.clang-format
-    ~/.config/clangd/config.yaml: clang/clangd.yaml
+    ~/.cmake-format.py: cmake/.cmake-format.py
     ~/.colcon: colcon
+    ~/.config/.rgignore: rgignore
     ~/.config/alacritty: alacritty
     ~/.config/albert/albert.conf: albert/albert.conf
     ~/.config/albert/org.albert.extension.snippets/snippets.db: albert/snippets.db
     ~/.config/catkin: ros/catkin
+    ~/.config/clangd/config.yaml: clang/clangd.yaml
     ~/.config/flameshot/flameshot.ini: flameshot.ini
-    ~/.flake8: flake8
     ~/.config/matplotlib/stylelib: matplotlib/stylelib
     ~/.config/nvim: nvim
-    ~/.config/.rgignore: rgignore
-    ~/.config/terminator/config: terminator/config
     ~/.config/quicktile.cfg: quicktile.cfg
+    ~/.config/systemd/user/nixseparatedebuginfod.service: systemd/user/nixseparatedebuginfod.service
+    ~/.config/terminator/config: terminator/config
     ~/.config/yapf/style: yapf/style
+    ~/.flake8: flake8
+    ~/.gdbinit: .gdbinit
     ~/.gitconfig: gitconfig
     ~/.ipython/profile_default/startup: ipython/profile_default/startup
     ~/.lnav/formats: lnav/formats
@@ -37,15 +41,15 @@
     ~/.mermaid.json: mermaid.json
     ~/.pandoc: pandoc
     ~/.profile: profile
-    ~/.pylintrc: pylintrc
     ~/.projects: private/projects
+    ~/.pylintrc: pylintrc
     ~/.ssh/config: private/ssh/config
     ~/.tmux.conf: tmux.conf
     ~/.tmux.powerline.conf: tmux.powerline.conf
     ~/.tmux/plugins/tpm: tpm
     ~/.tmuxp: private/tmuxp
-    ~/.vimrcs: vimrcs
     ~/.vimrc: vimrcs/vimrc
+    ~/.vimrcs: vimrcs
     ~/.zshrc: zshrc
     ~/catkin_ws/src/.envrc: ros/.envrc
     ~/rosconsole.config: ros/rosconsole.config

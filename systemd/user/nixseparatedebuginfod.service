@@ -1,0 +1,12 @@
+# https://blog.victormendonca.com/2018/05/14/creating-a-simple-systemd-user-service/
+[Unit]
+Description=A debuginfod implementation that fetches debuginfo and sources from nix binary caches
+
+[Service]
+Type=simple
+StandardOutput=journal
+ExecStart=/home/mallain/.nix-profile/bin/nixseparatedebuginfod
+
+[Install]
+WantedBy=default.target
+

@@ -208,6 +208,11 @@ nnoremap <leader>t :TagbarToggle<CR>
 let g:gitgutter_enabled=0
 nnoremap <silent> <leader>g :GitGutterToggle<cr>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Open in GitHub with openingh.nvim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <silent> <leader>gh :OpenInGHFileLines<cr>
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => markdownpreview

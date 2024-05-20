@@ -139,6 +139,30 @@ fco() {
   git checkout $(awk '{print $2}' <<<"$target" )
 }
 
+# fsco              : checkout git branch/tag with autostash
+# -----------------:-----------------------------------------------------------------
+fsco() {
+  local tags branches target
+  branches=$(
+  git --no-pager branch --all \
+    --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
+    | sed '/^$/d') || return
+  tags=$(
+  git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
+  target=$(
+  (echo "$branches"; echo "$tags") |
+    fzf --no-hscroll --no-multi -n 2 \
+    --ansi) || return
+  # if uncommitted work
+  if [[ $(git status --porcelain) ]]; then
+    git stash --untracked
+    git checkout $(awk '{print $2}' <<<"$target" )
+    git stash pop
+  else
+    git checkout $(awk '{print $2}' <<<"$target" )
+  fi
+
+}
 
 # fco_preview      : checkout git branch/tag, with a preview showing the commits
 #                  : between the tag/branch and HEAD

@@ -1,4 +1,7 @@
 require("todo-comments").setup {
+    keywords = {
+        TODO = { icon = " ", color = "todo" },
+    },
     -- gui_style = {
     --     fg = "NONE",
     --     bg = "BOLD",
@@ -9,7 +12,8 @@ require("todo-comments").setup {
         info = { "DiagnosticInfo", "#2563EB" },
         hint = { "DiagnosticHint", "#10B981" },
         default = { "Identifier", "#7C3AED" },
-        test = { "Identifier", "#FF00FF" }
+        test = { "Identifier", "#FF00FF" },
+        todo = { "TODO", "#d33682" }
     },
     highlight = {
         keyword = "wide_fg",

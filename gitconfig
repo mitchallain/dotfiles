@@ -10,7 +10,7 @@
 [format]
     pretty = format:%C(yellow)%h %Cblue%>(12)%ad %Cgreen%<(7)%aN%Cred%d %Creset%s
 [core]
-    editor = vi
+    editor = nvim
 [github]
     user = mitchallain
 [alias]
@@ -25,3 +25,6 @@
     pushf = push --force-with-lease
     cme = commit --amend
     cma = commit --amend --no-edit
+    desc = describe --tag --always
+    rpo = remote prune origin
+    root = rev-parse --show-toplevel

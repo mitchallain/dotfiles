@@ -256,6 +256,7 @@ set statusline=\ %{HasPaste()}%f%m%r%h\ %w\ \ \ \ %l/%L,\ %c
 " map 0 ^  " this is a bad habit
 
 " Sort selection
+nnoremap <leader>so vip:sort<cr>
 vnoremap <leader>so :sort<cr>
 
 " normal mode replaces word under cursor

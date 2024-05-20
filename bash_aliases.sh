@@ -22,6 +22,7 @@
 
 alias cp='cp -iv'                                   # prompt before overwrite (-i) and verbose (-v)
 alias mv='mv -iv'                                   # prompt before overwrite (-i) and verbose (-v)
+# TODO: launch nautilus in background
 alias nt='nautilus'                                 # nautilus file browser shortcut
 alias mkdir='mkdir -pv'                             # make parents (-p) and verbose (-v)
 
@@ -54,7 +55,7 @@ ch() {
   # fi
 }
 
-alias which='type -a'                  # which:        Find executables
+# alias which='type -a'                  # which:        Find executables
 alias path='echo -e ${PATH//:/\\n}'    # path:         Echo all executable Paths
 alias fix_stty='stty sane'             # fix_stty:     Restore terminal settings when screwed up
 mcd () { mkdir -p "$1" && cd "$1"; }   # mcd:          Makes new Dir and jumps inside
@@ -80,6 +81,14 @@ gitstat () {
         sed "s/\(.\{$((COLUMNS - 3))\}\).*/\1.../")\033[00m"
     (cd "$1" && git status -s)
     echo ""
+}
+
+# Stash, checkout, apply stash
+# If stash returns a non-zero exit status, don't apply
+gitsco () {
+    git stash
+    git checkout "$1"
+    git stash pop
 }
 
 
@@ -417,6 +426,13 @@ if [ -x "$(command -v fzf)" ] && [ -f ~/.aliases/fzf_functions.sh ]; then
     . ~/.aliases/fzf_functions.sh
 fi
 
+# nix related aliases
+if [ -f ~/.aliases/nix_aliases.sh ]; then
+    # shellcheck source=/home/mallain/.aliases/nix_aliases.sh
+    . ~/.aliases/nix_aliases.sh
+fi
+
+
 # -------------------------------
 # 4. SPECIALIZED TOOLS
 # -------------------------------
@@ -426,7 +442,10 @@ alias docker_clean_images='docker rmi $(docker images -a --filter=dangling=true 
 alias docker_clean_ps='docker rm $(docker ps --filter=status=exited --filter=status=created -q)'
 
 # LAUNCH OBSIDIAN FLATPAK WITHOUT NETWORK
-alias obsidian='flatpak run --unshare=network md.obsidian.Obsidian >/dev/null 2>&1 &'
+obsidian() {
+    flatpak run --unshare=network md.obsidian.Obsidian >/dev/null 2>&1 &
+    disown
+}
 
 # MERMAID DIAGRAM GENERATION
 # alias mmdc="/home/mallain/dev/node_modules/.bin/mmdc"
