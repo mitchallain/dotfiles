@@ -66,10 +66,56 @@ anix-build-input-cd () {
     elif [ $# -eq 0 ]; then
         echo "error: provide an input name as an argument"
         return
-    # if buildInputs is set, then pipe it to anix-get-log
+    # if buildInputs is set, then pipe it to anix-get-store-path
     else
         cd "$(echo "$buildInputs" | anix-get-store-path "$1")" || return
     fi
+}
+
+anix-native-build-input-cd () {
+    # if no args, then just print the buildInputs
+    if [ -z "${nativeBuildInputs}" ]; then
+        echo "error: nativeBuildInputs not set, are you in a nix dev shell?"
+    elif [ $# -eq 0 ]; then
+        echo "error: provide an input name as an argument"
+        return
+    # if set, then pipe it to anix-get-store-path
+    else
+        cd "$(echo "$nativeBuildInputs" | anix-get-store-path "$1")" || return
+    fi
+}
+
+# show the shell script for a phase by first checking for the bash variable
+# and then for a bash function, similar to how nixpkgs runPhase works
+# e.g., eval '${!configurePhase:-$configurePhase}'
+showPhase () {
+    command=$1
+    if [ -n "${!1}" ]; then
+        echo "$1=\"${!1}\""
+        command=${!1}
+    fi
+
+    # if command is a bash function, then
+    if [ -n "$(type -a "$command" 2>/dev/null)" ]; then
+        type -a "$command"
+    else
+        echo "$1 is not a bash variable or bash function"
+    fi
+}
+
+# TODO: this doesn't stop if a phase fails, and runPhase doesn't give useful
+# exit codes
+runPhases () {
+    # if arg doesn't end in Phase, sub it
+    for phase in "$@"; do
+        actphase=${phase}
+        if [[ "$phase" != *Phase ]]; then
+            actphase="${phase}Phase"
+        fi
+        runPhase "$actphase"
+    done
+    alert "Nix phase(s) completed!"
+
 }
 
 # useful in combination with nix-direnv

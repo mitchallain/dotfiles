@@ -48,8 +48,8 @@ call plug#begin('~/.vim/plugged')
   " Specific language/framework support plug-ins
   Plug 'mitchallain/IEC.vim'
   Plug 'vimjas/vim-python-pep8-indent'
-  Plug 'taketwo/vim-ros'  " gotos
-  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+  " Plug 'taketwo/vim-ros'  " gotos
+  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'], 'tag': 'v0.0.10'}
   Plug 'mzlogin/vim-markdown-toc'
   " Re-execute :call mkdp#util#install() if the above fails to install
 
@@ -119,6 +119,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'mfussenegger/nvim-dap-python'
   Plug 'theHamsta/nvim-dap-virtual-text'
   Plug 'rcarriga/nvim-dap-ui'
+  Plug 'nvim-neotest/nvim-nio'
 
   Plug 'nvim-lua/plenary.nvim'  " Lua function library
   Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
@@ -142,7 +143,15 @@ call plug#begin('~/.vim/plugged')
   " Plug 'liuchengxu/vista.vim'
   Plug 'preservim/tagbar'
 
-  Plug 'github/copilot.vim', { 'branch': 'release' }
+  " Plug 'github/copilot.vim', { 'branch': 'release' }
+  " anduril tings
+  Plug 'Exafunction/codeium.vim', { 'tag': '1.8.10' }
+  Plug 'sourcegraph/sg.nvim', { 'do': 'nvim -l build/init.lua' }
+
+  Plug 'jamestthompson3/nvim-remote-containers'
+  Plug 'Almo7aya/openingh.nvim'
+
+  Plug 'epwalsh/obsidian.nvim'
 call plug#end()
 
 """""""""""""""""""""""""""""""
@@ -171,6 +180,15 @@ set rtp+=~/.fzf
 " and searches basename first, before falling back to complete pathname
 nnoremap <c-p> :FZF --keep-right -i --delimiter / --nth -1,..<cr>
 inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
+
+" :Rga - Ripgrep search all files, including VCS ignored
+command! -bang -nargs=* Rga
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --no-ignore-vcs ' 
+  \  . (len(<q-args>) > 0 ? <q-args> : '""'), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
 
 " nnoremap <leader>st :BTags<cr>
 " nnoremap <leader>sa :Tags<cr>
@@ -250,8 +268,10 @@ nnoremap <leader>mm :SignatureToggle<cr>
 " => vim-doge
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:doge_doc_standard_python = 'google'
-let g:doge_mapping_comment_jump_forward = '<Tab>'
-let g:doge_mapping_comment_jump_backward = '<S-Tab>'
+" These will override codeium completion
+" let g:doge_mapping_comment_jump_forward = '<Tab>'
+" let g:doge_mapping_comment_jump_backward = '<S-Tab>'
+let g:doge_comment_jump_modes = ['n', 's']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -265,11 +285,11 @@ nnoremap  <leader>bl :BlamerToggle<CR>
 " => copilot 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " alternative keymaps for copilot
-let g:copilot_enabled = 0
-nmap <leader>ce :Copilot enable<CR>
-nmap <leader>cc :Copilot disable<CR>
-imap <silent> <C-s> <Plug>(copilot-suggest)
-imap <silent> <C-d> <Plug>(copilot-dismiss)
+" let g:copilot_enabled = 0
+" nmap <leader>ce :Copilot enable<CR>
+" nmap <leader>cc :Copilot disable<CR>
+" imap <silent> <C-s> <Plug>(copilot-suggest)
+" imap <silent> <C-d> <Plug>(copilot-dismiss)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => undotree 

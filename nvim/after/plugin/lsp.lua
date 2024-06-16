@@ -284,7 +284,8 @@ null_ls.setup({
         -- null_ls.builtins.formatting.clang_format,
         null_ls.builtins.diagnostics.cmake_lint,
         null_ls.builtins.diagnostics.cppcheck.with({
-            extra_args = { "--language=c++" },
+            extra_args = { "--language=c++", "--inline-suppr" },
+            temp_dir = "/tmp",
         }),
         null_ls.builtins.diagnostics.shellcheck,
         null_ls.builtins.diagnostics.ruff,
