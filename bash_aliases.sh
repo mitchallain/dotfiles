@@ -70,6 +70,17 @@ alias xclipv="xclip -selection clipboard -o"
 alias gitl="git log"
 alias gits="git status"
 
+# print some info about local repo
+gitcleanup () {
+    echo "Local branches without an upstream tracking branch:"
+    git branch -vv | grep ': gone]' | awk '{print $1}'
+    echo "------------------------------------"
+    echo "Stale remote tracking branches (i.e., git remote prune origin):"
+    # skip frist two lines of output
+    git remote prune origin --dry-run | tail -n +3
+
+}
+
 
 # Print a compact git status, log, and diff for the provided directory
 # Args:
@@ -364,6 +375,12 @@ if [[ -n $(command -v compdb) ]]; then
 
     build_compdb() {
         catkin build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON "$@"
+    }
+
+    # regenerate compile_commands.json from the build/ folder, which will add
+    # header-only libraries (INTERFACE libraries)
+    compdb_list() {
+        compdb -p build/ list > compile_commands.json
     }
 fi
 

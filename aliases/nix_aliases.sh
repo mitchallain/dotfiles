@@ -59,62 +59,111 @@ anix-build-input-log () {
     fi
 }
 
-anix-build-input-cd () {
-    # if no args, then just print the buildInputs
-    if [ -z "${buildInputs}" ]; then
-        echo "error: buildInputs not set, are you in a nix dev shell?"
-    elif [ $# -eq 0 ]; then
-        echo "error: provide an input name as an argument"
-        return
-    # if buildInputs is set, then pipe it to anix-get-store-path
-    else
-        cd "$(echo "$buildInputs" | anix-get-store-path "$1")" || return
-    fi
+
+showPhaseFooter2 ()
+{
+    local phase="$1";
+    local startTime="$2";
+    local endTime="$3";
+    local delta=$(( endTime - startTime ));
+    local H=$((delta/3600));
+    local M=$((delta%3600/60));
+    local S=$((delta%60));
+    echo -n "$phase completed in ";
+    (( H > 0 )) && echo -n "$H hours ";
+    (( M > 0 )) && echo -n "$M minutes ";
+    echo "$S seconds"
 }
 
-anix-native-build-input-cd () {
-    # if no args, then just print the buildInputs
-    if [ -z "${nativeBuildInputs}" ]; then
-        echo "error: nativeBuildInputs not set, are you in a nix dev shell?"
-    elif [ $# -eq 0 ]; then
-        echo "error: provide an input name as an argument"
-        return
-    # if set, then pipe it to anix-get-store-path
-    else
-        cd "$(echo "$nativeBuildInputs" | anix-get-store-path "$1")" || return
+# nixpkgs made me do this
+runPhase2() {
+    local status=0
+    local curPhase="$*"
+    if [[ "$curPhase" = unpackPhase && -n "${dontUnpack:-}" ]]; then return; fi
+    if [[ "$curPhase" = patchPhase && -n "${dontPatch:-}" ]]; then return; fi
+    if [[ "$curPhase" = configurePhase && -n "${dontConfigure:-}" ]]; then return; fi
+    if [[ "$curPhase" = buildPhase && -n "${dontBuild:-}" ]]; then return; fi
+    if [[ "$curPhase" = checkPhase && -z "${doCheck:-}" ]]; then return; fi
+    if [[ "$curPhase" = installPhase && -n "${dontInstall:-}" ]]; then return; fi
+    if [[ "$curPhase" = fixupPhase && -n "${dontFixup:-}" ]]; then return; fi
+    if [[ "$curPhase" = installCheckPhase && -z "${doInstallCheck:-}" ]]; then return; fi
+    if [[ "$curPhase" = distPhase && -z "${doDist:-}" ]]; then return; fi
+
+    if [[ -n $NIX_LOG_FD ]]; then
+        echo "@nix { \"action\": \"setPhase\", \"phase\": \"$curPhase\" }" >&"$NIX_LOG_FD"
     fi
+
+    showPhaseHeader "$curPhase"
+    dumpVars
+
+    local startTime=$(date +"%s")
+
+    # trap handler for phase run errors
+    trap 'status=1; trap - ERR' ERR
+
+    # Evaluate the variable named $curPhase if it exists, otherwise the
+    # function named $curPhase.
+    # eval uses a subshell, set errtrace to pass ERR trap handler
+    eval "set -o errtrace; ${!curPhase:-$curPhase}"
+
+    local endTime=$(date +"%s")
+
+    showPhaseFooter2 "$curPhase" "$startTime" "$endTime"
+
+    if [ "$curPhase" = unpackPhase ]; then
+        # make sure we can cd into the directory
+        [ -n "${sourceRoot:-}" ] && chmod +x "${sourceRoot}"
+
+        cd "${sourceRoot:-.}"
+    fi
+
+    return $status
 }
 
-# show the shell script for a phase by first checking for the bash variable
-# and then for a bash function, similar to how nixpkgs runPhase works
-# e.g., eval '${!configurePhase:-$configurePhase}'
-showPhase () {
-    command=$1
-    if [ -n "${!1}" ]; then
-        echo "$1=\"${!1}\""
-        command=${!1}
-    fi
-
-    # if command is a bash function, then
-    if [ -n "$(type -a "$command" 2>/dev/null)" ]; then
-        type -a "$command"
-    else
-        echo "$1 is not a bash variable or bash function"
-    fi
-}
-
-# TODO: this doesn't stop if a phase fails, and runPhase doesn't give useful
-# exit codes
 runPhases () {
-    # if arg doesn't end in Phase, sub it
+    local status=0
+    toplevel=$(git rev-parse --show-toplevel)
     for phase in "$@"; do
+        # if arg doesn't end in -Phase, append it
         actphase=${phase}
         if [[ "$phase" != *Phase ]]; then
             actphase="${phase}Phase"
         fi
-        runPhase "$actphase"
+
+        # if previous failure, skip this phase
+        if [ "$status" -ne 0 ]; then
+            echo "Skipping '$actphase'..."
+            continue
+        fi
+
+        # if build phase, step into $(git rev-parse --show-toplevel)/build
+        if [ "$actphase" = "cleanPhase" ]; then
+            echo "Entering $toplevel"
+            cd "$toplevel" || (echo "Failed to enter $toplevel" && return 1)
+            rm -rf build
+            continue
+        elif [ "$actphase" = "buildPhase" ]; then
+            echo "Entering $toplevel/build"
+            cd "$toplevel/build" || (echo "Failed to enter $toplevel/build" && return 1)
+        else
+            cd "$toplevel" || (echo "Failed to enter $toplevel" && return 1)
+        fi
+
+        # run phase and capture exit status
+        runPhase2 "$actphase"
+        status=$?
+
+        if [ "$status" -ne 0 ]; then
+            alert "'$actphase' failed!"
+        fi
     done
-    alert "Nix phase(s) completed!"
+
+    # if all successful, alert
+    if [ "$status" -eq 0 ]; then
+        alert "Nix phase(s) succeeded!"
+    fi
+
+    return $status
 
 }
 
@@ -139,5 +188,31 @@ direnv-start() {
     _direnv_hook_enabled=1
 }
 
+if command -v fzf &> /dev/null; then
+    anix-build-input-cd () {
+        # if no args, then just print the buildInputs
+        if [ -z "${buildInputs}" ]; then
+            echo "error: buildInputs not set, are you in a nix dev shell?"
+        elif [ $# -ne 0 ]; then
+            cd "$(echo "$buildInputs" | anix-get-store-path "$1")" || return
+        else
+            cd "$(echo "$buildInputs" | tr ' ' '\n' | fzf --preview 'ls -AFGhlp {}')"
+        fi
+    }
 
+    anix-native-build-input-cd () {
+        # if no args, then just print the buildInputs
+        if [ -z "${nativeBuildInputs}" ]; then
+            echo "error: nativeBuildInputs not set, are you in a nix dev shell?"
+        elif [ $# -ne 0 ]; then
+            cd "$(echo "$nativeBuildInputs" | anix-get-store-path "$1")" || return
+        else
+            cd "$(echo "$nativeBuildInputs" | tr ' ' '\n' | fzf --preview 'ls -AFGhlp {}')"
+        fi
+    }
 
+    # try to print some helpful info about the store path
+    anix-store-explore () {
+        ls /nix/store/ | fzf --preview 'if [[ /nix/store/{} == *.drv ]]; then nix derivation show /nix/store/{}; else ls -AFGhlp /nix/store/{}; fi'
+    }
+fi

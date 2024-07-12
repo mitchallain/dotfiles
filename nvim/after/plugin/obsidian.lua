@@ -1,4 +1,4 @@
-require('obsidian').setup({
+require("obsidian").setup({
     workspaces = {
         {
             name = "work",
@@ -11,4 +11,5 @@ require('obsidian').setup({
     ui = {
         enable = false,
     },
+    disable_frontmatter = true,
 })
