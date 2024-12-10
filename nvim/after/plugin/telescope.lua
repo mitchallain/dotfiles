@@ -23,10 +23,6 @@ vim.keymap.set('n', '<leader>ft', builtin.current_buffer_tags, {})
 
 local telescope = require("telescope")
 local telescope_config = require("telescope.config")
--- https://github.com/nvim-telescope/telescope-fzf-native.nvim#telescope-setup-and-configuration
--- default options will override the telescope builtin sorter
-telescope.load_extension('fzf')
-telescope.load_extension('frecency')
 
 -- Clone the default Telescope configuration
 local vimgrep_arguments = { unpack(telescope_config.values.vimgrep_arguments) }
@@ -60,4 +56,9 @@ telescope.setup({
     }
 })
 
-
+-- WARN: these must be loaded after the setup() call above otherwise extensions will not be 
+-- configured properly
+-- https://github.com/nvim-telescope/telescope-fzf-native.nvim#telescope-setup-and-configuration
+-- default options will override the telescope builtin sorter
+telescope.load_extension('fzf')
+telescope.load_extension('frecency')

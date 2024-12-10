@@ -6,3 +6,7 @@
 .pytest_cache
 .cache
 .ruff_cache
+.mypy_cache
+build
+_docs
+outputs

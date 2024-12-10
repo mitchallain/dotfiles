@@ -1,3 +1,5 @@
+require("trouble").setup()
+
 -- Inserted from https://github.com/neovim/nvim-lspconfig#suggested-configuration
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -8,7 +10,7 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
 -- Testing trouble.nvim
 -- vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
-vim.keymap.set("n", "<leader>qq", "<cmd>TroubleToggle document_diagnostics<cr>", opts)
+vim.keymap.set("n", "<leader>qq", "<cmd>Trouble diagnostics toggle<cr>", opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -36,6 +38,11 @@ local on_attach = function(client, bufnr)
         vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
     end
 
+    if client.name == "ruff" then
+        -- Disable hover in favor of Pyright
+        client.server_capabilities.hoverProvider = false
+    end
+
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
     vim.keymap.set("n", "<leader>k", vim.lsp.buf.signature_help, bufopts)
 
@@ -53,14 +60,16 @@ local on_attach = function(client, bufnr)
 
     -- Testing trouble.nvim
     vim.keymap.set("n", "<leader>sr", vim.lsp.buf.references, bufopts)
-    vim.keymap.set("n", "gr", "<cmd>TroubleToggle lsp_references<cr>", bufopts)
+    vim.keymap.set("n", "gr", "<cmd>Trouble lsp_references toggle<cr>", bufopts)
 
     -- Format whole file asynchronously
-    vim.keymap.set("n", "<leader>fo", function () vim.lsp.buf.format { async = true } end, bufopts)
+    vim.keymap.set("n", "<leader>fo", function()
+        vim.lsp.buf.format({ async = true })
+    end, bufopts)
 
     -- Format a range from visual mode
     if client.server_capabilities.rangeFormatting then
-        print('Supports range formatting')
+        print("Supports range formatting")
         vim.keymap.set("v", "<leader>fo", vim.lsp.buf.format, bufopts)
     end
 end
@@ -191,7 +200,23 @@ lspconfig["pyright"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
+    settings = {
+        pyright = {
+            disableOrganizeImports = true,
+        },
+        python = {
+            analysis = {
+                ignore = { "*" },
+            },
+        },
+    },
 })
+lspconfig["ruff"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
+
 -- lspconfig["sourcery"].setup({
 --     init_options = {
 --         token = vim.env.SOURCERY_TOKEN,
@@ -206,7 +231,7 @@ lspconfig["clangd"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
-    filetypes = {"c", "cpp", "objc", "objcpp"},  -- remove proto
+    filetypes = { "c", "cpp", "objc", "objcpp" }, -- remove proto
 })
 lspconfig["rust_analyzer"].setup({
     on_attach = on_attach,
@@ -217,7 +242,7 @@ lspconfig["rust_analyzer"].setup({
         ["rust-analyzer"] = {},
     },
 })
-lspconfig["tsserver"].setup({
+lspconfig["ts_ls"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
@@ -231,8 +256,15 @@ lspconfig["nil_ls"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
+    settings = {
+        ["nil"] = {
+            formatting = {
+                command = { "nixfmt" },
+            },
+        },
+    },
 })
-lspconfig["bufls"].setup({
+lspconfig["buf_ls"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
@@ -245,11 +277,11 @@ lspconfig["lua_ls"].setup({
         Lua = {
             runtime = {
                 -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                version = 'LuaJIT',
+                version = "LuaJIT",
             },
             diagnostics = {
                 -- Get the language server to recognize the `vim` global
-                globals = { 'vim' },
+                globals = { "vim" },
             },
             workspace = {
                 -- Make the server aware of Neovim runtime files
@@ -260,13 +292,8 @@ lspconfig["lua_ls"].setup({
             telemetry = {
                 enable = false,
             },
-        }
+        },
     },
-})
-lspconfig["rnix"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
 })
 -- TODO: 'enable_cody = false' currently throws errors
 -- require("sg").setup({
@@ -288,8 +315,6 @@ null_ls.setup({
             temp_dir = "/tmp",
         }),
         null_ls.builtins.diagnostics.shellcheck,
-        null_ls.builtins.diagnostics.ruff,
-        null_ls.builtins.diagnostics.flake8,
         -- null_ls.builtins.diagnostics.markdownlint,
         null_ls.builtins.formatting.cmake_format,
 
@@ -302,9 +327,13 @@ null_ls.setup({
             extra_args = { "--indent-type", "Spaces" },
         }),
         -- null_ls.builtins.formatting.yapf,
-        null_ls.builtins.formatting.black.with({
-            extra_args = { "--line-length", "99" },
-        }),
+
+        -- THESE ALL SHOULD BE REPLACED BY RUFF LSP SERVER
+        -- null_ls.builtins.diagnostics.ruff,
+        -- null_ls.builtins.diagnostics.flake8,
+        -- null_ls.builtins.formatting.black.with({
+        --     extra_args = { "--line-length", "99" },
+        -- }),
     },
     on_attach = on_attach,
 
@@ -351,6 +380,5 @@ require("toggle_lsp_diagnostics").init({
 vim.keymap.set("n", "<leader>dd", "<Plug>(toggle-lsp-diag)")
 vim.keymap.set("n", "<leader>dT", "<Plug>(toggle-lsp-diag-vtext)")
 vim.keymap.set("n", "<leader>de", vim.diagnostic.enable)
-
 
 -- require('lspfuzzy').setup {}

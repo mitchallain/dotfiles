@@ -158,7 +158,7 @@ install_whitesur_theme () {
 # nvim setup
 # requires setup_python
 install_nvim () {
-    nvim_version="0.9.5"
+    nvim_version="0.10.2"
 
     # remove symlink if already existing
     if [[ -L ~/bin/nvim ]]; then

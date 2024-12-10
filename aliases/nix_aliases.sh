@@ -18,7 +18,7 @@ anix-start-debuginfod () {
 }
 
 anix-log-debuginfod () {
-    journalctl -fu --user nixseparatedebuginfod.service
+    journalctl -f --user-unit nixseparatedebuginfod.service
 }
 
 anix-get-store-path () {
@@ -121,6 +121,10 @@ runPhase2() {
 }
 
 runPhases () {
+    if [ -z "${IN_NIX_SHELL:-}" ]; then
+        echo "error: IN_NIX_SHELL is unset, please run from a devshell"
+    fi
+
     local status=0
     toplevel=$(git rev-parse --show-toplevel)
     for phase in "$@"; do
@@ -142,8 +146,13 @@ runPhases () {
             cd "$toplevel" || (echo "Failed to enter $toplevel" && return 1)
             rm -rf build
             continue
-        elif [ "$actphase" = "buildPhase" ]; then
+        elif [ "$actphase" = "buildPhase" ] || [ "$actphase" = "checkPhase" ] \
+            || [ "$actphase" = "installPhase" ] || [ "$actphase" = "fixupPhase" ]; then
             echo "Entering $toplevel/build"
+            if [ "$actphase" = "installPhase" ] && [ -n "${prefix:-}" ]; then
+                echo "Removing $prefix directory"
+                rm -rf "$prefix"
+            fi
             cd "$toplevel/build" || (echo "Failed to enter $toplevel/build" && return 1)
         else
             cd "$toplevel" || (echo "Failed to enter $toplevel" && return 1)
@@ -191,12 +200,12 @@ direnv-start() {
 if command -v fzf &> /dev/null; then
     anix-build-input-cd () {
         # if no args, then just print the buildInputs
-        if [ -z "${buildInputs}" ]; then
+        if [ -z "${buildInputs}" ] || [ -z "${propagatedBuildInputs}" ]; then
             echo "error: buildInputs not set, are you in a nix dev shell?"
         elif [ $# -ne 0 ]; then
-            cd "$(echo "$buildInputs" | anix-get-store-path "$1")" || return
+            cd "$(echo "$buildInputs $propagatedBuildInputs" | anix-get-store-path "$1")" || return
         else
-            cd "$(echo "$buildInputs" | tr ' ' '\n' | fzf --preview 'ls -AFGhlp {}')"
+            cd "$(echo "$buildInputs $propagatedBuildInputs" | tr ' ' '\n' | fzf --preview 'ls -AFGhlp {}')"
         fi
     }
 
@@ -213,6 +222,32 @@ if command -v fzf &> /dev/null; then
 
     # try to print some helpful info about the store path
     anix-store-explore () {
-        ls /nix/store/ | fzf --preview 'if [[ /nix/store/{} == *.drv ]]; then nix derivation show /nix/store/{}; else ls -AFGhlp /nix/store/{}; fi'
+        ls /nix/store/ | fzf --preview 'if [[ /nix/store/{} == *.drv ]]; then nix derivation show /nix/store/{}; else ls -AFGhlp /nix/store/{}/; fi' \
+            | xargs -I {} echo "/nix/store/{}"
+    }
+
+    anix-store-cd () {
+        cd "$(anix-store-explore)" || exit
     }
 fi
+
+anix-show-derivation () {
+    storepath=$(anix-store-explore)
+    # if ends in .drv then show it
+    # else get the derivation using nix-store --query --deriver
+    if [[ "$storepath" == *.drv ]]; then
+        drvpath="$storepath"
+    else
+        echo "Given path is not a derivation, using nix-store --query --deriver to get drv path"
+        drvpath=$(nix-store --query --deriver "$storepath")
+    fi
+
+    echo "nix derivation show $drvpath | jq -C | less"
+    nix derivation show "$drvpath" | jq -C | less
+}
+
+anix-get-locked-ref () {
+    echo "Getting locked ref for '$1' with 'nix flake metadata --json | jq '.locks.nodes.\"$1\"'"
+    jq_filter=".locks.nodes.\"$1\""
+    nix flake metadata --json . | jq -C "$jq_filter"
+}

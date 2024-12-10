@@ -107,7 +107,7 @@ call plug#begin('~/.vim/plugged')
 
   " Prettier listings of diagnostics, LSP refs, etc.
   Plug 'kyazdani42/nvim-web-devicons'
-  Plug 'folke/trouble.nvim', Cond(has('nvim'), { 'branch': 'main' })
+  Plug 'folke/trouble.nvim', Cond(has('nvim'), { 'tag': 'v3.6.0' })
   Plug 'folke/todo-comments.nvim', Cond(has('nvim'), { 'branch': 'main' })
 
   Plug 'mitchallain/toggle-lsp-diagnostics.nvim', { 'branch': 'main' }  " easily toggle virtual text diagnostics on and off
@@ -122,7 +122,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'nvim-neotest/nvim-nio'
 
   Plug 'nvim-lua/plenary.nvim'  " Lua function library
-  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
+  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.8' }
   Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main', }
   Plug 'kkharji/sqlite.lua'
   Plug 'nvim-telescope/telescope-frecency.nvim'
@@ -145,13 +145,14 @@ call plug#begin('~/.vim/plugged')
 
   " Plug 'github/copilot.vim', { 'branch': 'release' }
   " anduril tings
-  Plug 'Exafunction/codeium.vim', { 'tag': '1.8.10' }
+  Plug 'Exafunction/codeium.vim', { 'tag': '1.12.0' }
   Plug 'sourcegraph/sg.nvim', { 'do': 'nvim -l build/init.lua' }
 
   Plug 'jamestthompson3/nvim-remote-containers'
   Plug 'Almo7aya/openingh.nvim'
 
   Plug 'epwalsh/obsidian.nvim'
+  Plug 'peterhoeg/vim-qml'
 call plug#end()
 
 """""""""""""""""""""""""""""""
@@ -184,7 +185,7 @@ inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
 " :Rga - Ripgrep search all files, including VCS ignored
 command! -bang -nargs=* Rga
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --no-ignore-vcs ' 
+  \   'rg --column --line-number --no-heading --color=always --no-ignore-vcs --hidden ' 
   \  . (len(<q-args>) > 0 ? <q-args> : '""'), 1,
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),

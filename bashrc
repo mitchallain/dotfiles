@@ -21,9 +21,9 @@ HISTFILESIZE=2000
 
 # After each command, append to the history file and reread it
 # stolen from `direnv hook bash --help`
-if ! [[ "${PROMPT_COMMAND:-}" =~ "history -a; history -c; history -r" ]]; then
-    PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-fi
+# if ! [[ "${PROMPT_COMMAND:-}" =~ "history -a; history -c; history -r" ]]; then
+#     PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+# fi
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.

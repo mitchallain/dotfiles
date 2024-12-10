@@ -20,8 +20,9 @@
 #   2. DEFAULT OPTIONS AND USEFUL ALIASES
 #   ----------------------------------------
 
-alias cp='cp -iv'                                   # prompt before overwrite (-i) and verbose (-v)
-alias mv='mv -iv'                                   # prompt before overwrite (-i) and verbose (-v)
+# unfortunately, prompting by default (-i) breaks some scripting
+alias cp='cp -v'                                   # verbose
+alias mv='mv -v'                                   # verbose
 # TODO: launch nautilus in background
 alias nt='nautilus'                                 # nautilus file browser shortcut
 alias mkdir='mkdir -pv'                             # make parents (-p) and verbose (-v)
@@ -101,6 +102,32 @@ gitsco () {
     git checkout "$1"
     git stash pop
 }
+
+# compare two commits for common histories, returning if one is an ancestor of the other
+gitcompare () {
+    if [ $# -eq 0 ]; then
+        commit1=$(fcommit)
+        if [ -z "$commit1" ]; then
+            exit 1
+        fi
+        commit2=$(fcommit)
+        if [ -z "$commit2" ]; then
+            exit 1
+        fi
+    else
+        commit1=$1
+        commit2=$2
+    fi
+
+    if git merge-base --is-ancestor "$commit1" "$commit2"; then
+        echo "$commit1 is an ancestor of $commit2"
+    elif git merge-base --is-ancestor "$commit2" "$commit1"; then
+        echo "$commit2 is an ancestor of $commit1"
+    else
+        echo "$commit1 and $commit2 do not share a common history"
+    fi
+}
+
 
 
 # bd - back to parent directory

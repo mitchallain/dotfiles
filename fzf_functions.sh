@@ -209,6 +209,12 @@ fcoc_preview() {
     git checkout $(echo "$commit" | sed "s/ .*//")
 }
 
+# fcommit          : browse commits and return the shortened sha1
+fcommit() {
+  glNoGraph | fzf --no-sort --reverse --tiebreak=index --no-multi \
+    --ansi --preview="$_viewGitLogLine" | sed "s/ .*//"
+}
+
 # fshow_preview - git commit browser with previews
 # -----------------:-----------------------------------------------------------------
 fshow_preview() {
