@@ -239,7 +239,14 @@ lspconfig["rust_analyzer"].setup({
     capabilities = capabilities,
     -- Server-specific settings...
     settings = {
-        ["rust-analyzer"] = {},
+        ["rust-analyzer"] = {
+            check = {
+                -- override default usage of `cargo check` to use `cargo clippy`
+                -- which encompasses check and adds lints
+                command = "clippy",
+                -- extra_args = { "--all-targets" },
+            },
+        },
     },
 })
 lspconfig["ts_ls"].setup({

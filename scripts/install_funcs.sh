@@ -188,9 +188,9 @@ install_nvim () {
 }
 
 # https://askubuntu.com/a/1291854
-install_node_16 () {
+install_node_22 () {
     sudo apt update
-    curl -sL https://deb.nodesource.com/setup_16.x | sudo bash -
+    curl -sL https://deb.nodesource.com/setup_22.x | sudo bash -
     sudo apt install -y nodejs
 }
 
