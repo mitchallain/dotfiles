@@ -132,7 +132,12 @@ cmp.setup({
             { "i", "c" }
         ),
 
-        ["<tab>"] = cmp.config.disable,
+        -- ["<tab>"] = cmp.config.disable,
+        -- ["<tab>"] = cmp.mapping(function(fallback)
+        --     fallback()
+        -- end, { "i", "s" }),
+        ["<tab>"] = vim.NIL,
+        ["<S-tab>"] = vim.NIL,
     },
     sources = {
         -- note that order here dictates priority
@@ -302,6 +307,22 @@ lspconfig["lua_ls"].setup({
         },
     },
 })
+
+-- https://github.com/kitten/prosemd-lsp
+lspconfig["prosemd_lsp"].setup({ on_attach = on_attach })
+
+lspconfig["cmake"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
+
+-- lspconfig["qmlls"].setup({
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+--     capabilities = capabilities,
+-- })
+
 -- TODO: 'enable_cody = false' currently throws errors
 -- require("sg").setup({
 --     enable_cody = false,
@@ -346,6 +367,7 @@ null_ls.setup({
 
     -- debug = true,
     log_level = "warn",
+    -- log_level = "info",
     -- log_level = "debug",
 })
 

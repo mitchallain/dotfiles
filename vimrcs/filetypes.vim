@@ -6,7 +6,7 @@
 " => Source Code Files
 """"""""""""""""""""""""""""""
 " Strip whitespace
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h,*.cpp match BadWhitespace /\s\+$/
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h,*.cpp,*.inl match BadWhitespace /\s\+$/
 
 """"""""""""""""""""""""""""""
 " => Python section
@@ -58,6 +58,7 @@ au FileType nix setlocal shiftwidth=2 tabstop=2 softtabstop=0 expandtab
 " => XML section
 """"""""""""""""""""""""""""""
 autocmd BufNewFile,BufRead *.launch set filetype=xml
+autocmd BufNewFile,BufRead *.qrc set filetype=xml
 au FileType xml setlocal shiftwidth=0 tabstop=2 softtabstop=0 expandtab
 
 """"""""""""""""""""""""""""""

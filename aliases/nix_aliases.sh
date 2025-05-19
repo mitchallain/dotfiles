@@ -60,6 +60,34 @@ anix-build-input-log () {
 }
 
 
+showPhase () {
+    if [ $# -ne 1 ]; then
+        echo "usage: showPhase <phase>"
+        return
+    fi
+
+    local actphase=$1
+    if [[ "$actphase" != *Phase ]]; then
+        actphase="$1Phase"
+    fi
+
+    # if actphase is a variable, expand it
+    local origphase=$actphase
+    if [ -v "${actphase}" ]; then
+        actphase="${!actphase}"
+        echo "$origphase is a variable which expands to $actphase"
+    fi
+
+    if [ "$(type -t "${actphase}")" = "function" ]; then
+        type -a "${actphase}"
+    elif [ "$actphase" = "$origphase" ]; then
+        echo "$actphase is not a function or a variable"
+    else
+        echo "$actphase is not a function"
+    fi
+}
+
+
 showPhaseFooter2 ()
 {
     local phase="$1";
@@ -99,12 +127,17 @@ runPhase2() {
     local startTime=$(date +"%s")
 
     # trap handler for phase run errors
-    trap 'status=1; trap - ERR' ERR
+    # trap 'set +x; trap - ERR' ERR
+    # trap 'trap - ERR; return' ERR
 
     # Evaluate the variable named $curPhase if it exists, otherwise the
     # function named $curPhase.
     # eval uses a subshell, set errtrace to pass ERR trap handler
-    eval "set -o errtrace; ${!curPhase:-$curPhase}"
+    (
+        set -e
+        eval "${!curPhase:-$curPhase}"
+    )
+    status=$?
 
     local endTime=$(date +"%s")
 
@@ -126,10 +159,23 @@ runPhases () {
     fi
 
     local status=0
-    toplevel=$(git rev-parse --show-toplevel)
+
+    # TODO: auto-cd to git repo root causes issues where derivation sourceRoot
+    # is not the same as git root (e.g., flake with many derivations)
+    # toplevel=$(git rev-parse --show-toplevel)
+
+    # for now, can run from sourceRoot or sourceRoot/build
+    local toplevel
+    toplevel=$(pwd)
+    if [ "$(basename "$toplevel")" = "build" ]; then
+        toplevel=$(dirname "$toplevel")
+        echo "Entering $toplevel with 'cd ..'"
+        cd ..
+    fi
+
     for phase in "$@"; do
         # if arg doesn't end in -Phase, append it
-        actphase=${phase}
+        local actphase=${phase}
         if [[ "$phase" != *Phase ]]; then
             actphase="${phase}Phase"
         fi
@@ -140,9 +186,7 @@ runPhases () {
             continue
         fi
 
-        # if build phase, step into $(git rev-parse --show-toplevel)/build
         if [ "$actphase" = "cleanPhase" ]; then
-            echo "Entering $toplevel"
             cd "$toplevel" || (echo "Failed to enter $toplevel" && return 1)
             rm -rf build
             continue
@@ -159,8 +203,11 @@ runPhases () {
         fi
 
         # run phase and capture exit status
-        runPhase2 "$actphase"
-        status=$?
+        # runPhase2 "$actphase"
+        runPhase2 "$actphase" 2>&1 | tee /tmp/nix_runphase_out.txt
+
+        # exit status of first part of previous pipeline
+        status=${PIPESTATUS[0]}
 
         if [ "$status" -ne 0 ]; then
             alert "'$actphase' failed!"
@@ -173,8 +220,14 @@ runPhases () {
     fi
 
     return $status
-
 }
+
+# if llm is executable
+if [ -x "$(command -v llm)" ]; then
+    splain () {
+        llm "Please explain this error" < /tmp/nix_runphase_out.txt
+    }
+fi
 
 # useful in combination with nix-direnv
 # Copied from "direnv hook bash" output:
@@ -200,7 +253,7 @@ direnv-start() {
 if command -v fzf &> /dev/null; then
     anix-build-input-cd () {
         # if no args, then just print the buildInputs
-        if [ -z "${buildInputs}" ] || [ -z "${propagatedBuildInputs}" ]; then
+        if [ -z "${buildInputs}" ] && [ -z "${propagatedBuildInputs}" ]; then
             echo "error: buildInputs not set, are you in a nix dev shell?"
         elif [ $# -ne 0 ]; then
             cd "$(echo "$buildInputs $propagatedBuildInputs" | anix-get-store-path "$1")" || return
@@ -250,4 +303,13 @@ anix-get-locked-ref () {
     echo "Getting locked ref for '$1' with 'nix flake metadata --json | jq '.locks.nodes.\"$1\"'"
     jq_filter=".locks.nodes.\"$1\""
     nix flake metadata --json . | jq -C "$jq_filter"
+}
+
+# build a package.nix expression, by importing nixpkgs and callPackage'ing it
+anix-build () {
+    nix-build --expr "with import <nixpkgs> { }; callPackage ./$1 { }"
+}
+
+anix-shell () {
+    nix-shell --expr "with import <nixpkgs> { }; callPackage ./$1 { }"
 }

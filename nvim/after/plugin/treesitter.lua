@@ -9,6 +9,7 @@ require'nvim-treesitter.configs'.setup {
       "latex",
       "lua",
       "markdown",
+      "markdown_inline",
       "rust",
       "python",
       "vim",
@@ -52,6 +53,8 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+
+vim.keymap.set("n", "<leader>hh", "<cmd>TSBufToggle highlight<cr>", { noremap = true, silent = true })
 
 require'nvim-treesitter.configs'.setup {
   textobjects = {

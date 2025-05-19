@@ -51,11 +51,14 @@ call plug#begin('~/.vim/plugged')
   " Plug 'taketwo/vim-ros'  " gotos
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'], 'tag': 'v0.0.10'}
   Plug 'mzlogin/vim-markdown-toc'
+  Plug 'MeanderingProgrammer/render-markdown.nvim'
+  " Plug 'OXY2DEV/markview.nvim'
   " Re-execute :call mkdp#util#install() if the above fails to install
 
   " Git plug-ins
   Plug 'tpope/vim-fugitive'
-  Plug 'airblade/vim-gitgutter'
+  " Plug 'airblade/vim-gitgutter'
+  Plug 'lewis6991/gitsigns.nvim'
   Plug 'APZelos/blamer.nvim'
 
   Plug 'tpope/vim-surround'
@@ -146,6 +149,7 @@ call plug#begin('~/.vim/plugged')
   " Plug 'github/copilot.vim', { 'branch': 'release' }
   " anduril tings
   Plug 'Exafunction/codeium.vim', { 'tag': '1.12.0' }
+  Plug 'olimorris/codecompanion.nvim'
   Plug 'sourcegraph/sg.nvim', { 'do': 'nvim -l build/init.lua' }
 
   Plug 'jamestthompson3/nvim-remote-containers'
@@ -224,8 +228,8 @@ nnoremap <leader>t :TagbarToggle<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Git gutter (Git diff)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:gitgutter_enabled=0
-nnoremap <silent> <leader>g :GitGutterToggle<cr>
+" let g:gitgutter_enabled=0
+" nnoremap <silent> <leader>g :GitGutterToggle<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Open in GitHub with openingh.nvim
@@ -303,5 +307,26 @@ let g:undotree_WindowLayout = 2
 map <leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vp :VimuxPromptCommand<CR>
 " map <Leader>vt :VimuxRunCommand("pytest " . bufname("%"))<CR>
-map <Leader>vt :VimuxPromptCommand("pytest " . bufname("%"))<CR>
-map <Leader>vb :VimuxRunCommand("cd " . fnamemodify(bufname("%"), ":p:h") . " && catkin build --this")<CR>
+" map <Leader>vt :VimuxPromptCommand("pytest " . bufname("%"))<CR>
+map <Leader>vt :VimuxRunCommand("runPhases build check")<CR>
+" map <Leader>vb :VimuxRunCommand("cd " . fnamemodify(bufname("%"), ":p:h") . " && catkin build --this")<CR>
+map <Leader>vb :VimuxRunCommand("runPhases build")<CR> 
+map <Leader>vc :VimuxRunCommand("runPhases clean configure build")<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => sourcegraph 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" TODO: replicate <leader>fi with sourcegraph
+" vnoremap <leader>fs 
+" nnoremap <leader>fs <cmd>lua require('sg.extensions.telescope').fuzzy_search_results()<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => devcontainers
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" hi Container guifg=#BADA55 guibg=Black
+" if g:currentContainer is set
+" TODO: this doesn't work as intended
+if exists('g:currentContainer')
+    set statusline+=%#Container#%{g:currentContainer}
+endif
+

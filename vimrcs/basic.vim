@@ -96,7 +96,9 @@ set foldcolumn=1
 let mapleader = " "
 
 " Fast saving
-nmap <leader>w :w!<cr>
+nmap <leader>w :w<cr>
+" Original file used force write, but that will "edit" read-only files!! (Delete and re-create them)
+" nmap <leader>w :w!<cr>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
@@ -227,7 +229,7 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Specify the behavior when switching between buffers
 try
-  set switchbuf=useopen,usetab,newtab
+  set switchbuf=useopen,usetab
   set stal=2
 catch
 endtry

@@ -34,6 +34,7 @@ alias llt='ls -AFGhlpt'
 
 # clear screen (-c), exit if only one screen (-F), raw control chars (-R)
 # truncate long lines (-S), no termcap init (-X)
+alias celar='clear'
 alias less='less -cFRSX'
 
 alias cd..='cd ../'                                 # Go back 1 directory level (for fast typers)
@@ -509,24 +510,94 @@ mmdclip() {
 #    $1: archive file
 #
 # Example: 'extract archive.tar.gz'
+# extract () {
+#   if [ -f "$1" ] ; then
+#     case "$1" in
+#       *.tar.bz2)   tar xjf "$1"     ;;
+#       *.tar.gz)    tar xzf "$1"     ;;
+#       *.bz2)       bunzip2 "$1"     ;;
+#       *.rar)       unrar e "$1"     ;;
+#       *.gz)        gunzip "$1"      ;;
+#       *.tar)       tar xf "$1"      ;;
+#       *.tar.xz)    tar xf "$1"      ;;
+#       *.tar.zst)   tar xaf "$1"     ;;
+#       *.tbz2)      tar xjf "$1"     ;;
+#       *.tgz)       tar xzf "$1"     ;;
+#       *.zip)       unzip "$1"       ;;
+#       *.Z)         uncompress "$1"  ;;
+#       *.7z)        7z x "$1"        ;;
+#       *)     echo "'$1' cannot be extracted via extract()" ;;
+#     esac
+#   else
+#     echo "'$1' is not a valid file"
+#   fi
+# }
+
+# Extract most known archives with one command
+# Args:
+#    $1: archive file
+#
+# Example: 'extract archive.tar.gz'
 extract () {
   if [ -f "$1" ] ; then
+    # Function to get basename without extension
+    get_basename() {
+      local filename=$(basename -- "$1")
+      echo "${filename%.*}"
+    }
+
+    # Function to prompt user for confirmation
+    confirm_command() {
+      local cmd="$1"
+      read -p "Run command: $cmd [Y/n] " response
+      case "$response" in
+        [nN][oO]|[nN]) return 1 ;;
+        *) return 0 ;;
+      esac
+    }
+
+    # Create a temporary directory
+    local temp_dir=$(mktemp -d)
+    local original_dir=$(pwd)
+    local extract_command=""
+
     case "$1" in
-      *.tar.bz2)   tar xjf "$1"     ;;
-      *.tar.gz)    tar xzf "$1"     ;;
-      *.bz2)       bunzip2 "$1"     ;;
-      *.rar)       unrar e "$1"     ;;
-      *.gz)        gunzip "$1"      ;;
-      *.tar)       tar xf "$1"      ;;
-      *.tar.xz)    tar xf "$1"      ;;
-      *.tar.zst)   tar xaf "$1"     ;;
-      *.tbz2)      tar xjf "$1"     ;;
-      *.tgz)       tar xzf "$1"     ;;
-      *.zip)       unzip "$1"       ;;
-      *.Z)         uncompress "$1"  ;;
-      *.7z)        7z x "$1"        ;;
-      *)     echo "'$1' cannot be extracted via extract()" ;;
+      *.tar.bz2)   extract_command="tar xjf '$1' -C '$temp_dir'"     ;;
+      *.tar.gz)    extract_command="tar xzf '$1' -C '$temp_dir'"     ;;
+      *.bz2)       extract_command="bunzip2 -c '$1' > '$temp_dir/$(get_basename "$1")'"     ;;
+      *.rar)       extract_command="unrar x '$1' '$temp_dir'"        ;;
+      *.gz)        extract_command="gunzip -c '$1' > '$temp_dir/$(get_basename "$1")'"      ;;
+      *.tar)       extract_command="tar xf '$1' -C '$temp_dir'"      ;;
+      *.tar.xz)    extract_command="tar xf '$1' -C '$temp_dir'"      ;;
+      *.tar.zst)   extract_command="tar xaf '$1' -C '$temp_dir'"     ;;
+      *.tbz2)      extract_command="tar xjf '$1' -C '$temp_dir'"     ;;
+      *.tgz)       extract_command="tar xzf '$1' -C '$temp_dir'"     ;;
+      *.zip)       extract_command="unzip '$1' -d '$temp_dir'"       ;;
+      *.Z)         extract_command="uncompress -c '$1' > '$temp_dir/$(get_basename "$1")'"  ;;
+      *.7z)        extract_command="7z x '$1' -o'$temp_dir'"         ;;
+      *)           echo "'$1' cannot be extracted via extract()" && return 1 ;;
     esac
+
+    if confirm_command "$extract_command"; then
+      eval "$extract_command"
+
+      # Check if there's more than one file/directory in the temp dir
+      if [ $(ls -A "$temp_dir" | wc -l) -gt 1 ]; then
+        local target_dir="$original_dir/$(get_basename "$1")"
+        mkdir -p "$target_dir"
+        mv "$temp_dir"/* "$target_dir"
+        echo "Extracted to $target_dir"
+      else
+        mv "$temp_dir"/* "$original_dir"
+        echo "Extracted to current directory"
+      fi
+
+      # Clean up
+      rm -rf "$temp_dir"
+    else
+      echo "Extraction cancelled."
+      rm -rf "$temp_dir"
+    fi
   else
     echo "'$1' is not a valid file"
   fi
@@ -625,3 +696,14 @@ function termcolors() {
 
 # shorter cmake -G ninja
 alias nmake="cmake -G Ninja"
+
+# for each arg, check if last character is a newline, if not, add one
+function addnewlines() {
+    for arg in "$@"; do
+        if [[ -n $(tail -c 1 "$arg") && -s "$arg" ]]; then
+            echo >> "$arg"
+        fi
+    done
+}
+
+

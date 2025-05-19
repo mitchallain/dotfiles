@@ -266,3 +266,9 @@ install_flameshot () {
     wget -P ~/Downloads/ "https://github.com/flameshot-org/flameshot/releases/download/v12.1.0/flameshot-12.1.0-1.ubuntu-20.04.amd64.deb"
     sudo dpkg -i ~/Downloads/flameshot-12.1.0-1.ubuntu-20.04.amd64.deb
 }
+
+install_diff_so_fancy () {
+    diff_so_fancy_version="v1.4.4"
+    wget -P ~/bin/ "https://github.com/so-fancy/diff-so-fancy/releases/download/v${diff_so_fancy_version}/diff-so-fancy"
+    chmod u+x ~/bin/diff-so-fancy
+}
