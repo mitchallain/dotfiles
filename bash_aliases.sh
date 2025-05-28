@@ -377,7 +377,8 @@ if [[ -n $(command -v compdb) ]]; then
     # Args:
     #     $@: additional arguments to pass to catkin build
     #
-    # Example: 'catkin clean -y && wscompdb'
+    # Example: 'catkin clean -y && link_compdb'
+    # TODO: check that -DCMAKE_EXPORT_COMPILE_COMMANDS=1 is set in catkin profile
     link_compdb() {
         local wspath
         wspath=$(catkin locate 2>/dev/null)
@@ -475,6 +476,11 @@ fi
 if [ -f ~/.aliases/nix_aliases.sh ]; then
     # shellcheck source=/home/mallain/.aliases/nix_aliases.sh
     . ~/.aliases/nix_aliases.sh
+fi
+
+if [ -f ~/.aliases/llm_aliases.sh ]; then
+    # shellcheck source=/home/mallain/.aliases/llm_aliases.sh
+    . ~/.aliases/llm_aliases.sh
 fi
 
 
