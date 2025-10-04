@@ -155,17 +155,9 @@ if [ -f ~/dotfiles/secrets.sh ]; then
     . ~/dotfiles/secrets.sh
 fi
 
-# Bastian-Specific Environment Setup
-# Currently needs to run after to ~/.bash_aliases due to
-# nested sourcing of private aliases which use env variables
-if [ -f ~/.bastianrc ] && [ -f ~/.aliases/bastian_aliases.sh ]; then
-    . ~/.bastianrc
-    . ~/.aliases/bastian_aliases.sh
-fi
-
 # Anduril Environment Setup - Private Repo
-if [ -f ~/.andurilrc ]; then
-    . ~/.andurilrc
+if [ -f ~/dotfiles/private/andurilrc.sh ]; then
+    . ~/dotfiles/private/andurilrc.sh
 fi
 
 # enable programmable completion features (you don't need to enable

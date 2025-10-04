@@ -59,6 +59,10 @@ anix-build-input-log () {
     fi
 }
 
+anix-cd-site-packages () {
+    cd $(python -c "import site; print(site.getsitepackages()[0])")
+}
+
 
 showPhase () {
     if [ $# -ne 1 ]; then

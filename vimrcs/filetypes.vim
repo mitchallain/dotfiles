@@ -40,7 +40,8 @@ au FileType cpp let b:dispatch = 'make -C build'
 """"""""""""""""""""""""""""""
 " TODO: convert this to vimux
 au filetype cmake let b:dispatch = 'mkdir -p build; cd build; cmake ..'
-au FileType cmake setlocal tabstop=2 shiftwidth=0 softtabstop=0 expandtab
+au FileType cmake setlocal tabstop=4 shiftwidth=4 softtabstop=0 expandtab
+au BufNewFile,BufRead *CMakeLists.txt.in set syntax=cmake
 
 """"""""""""""""""""""""""""""
 " => Rust section
@@ -53,6 +54,9 @@ au FileType rust setlocal shiftwidth=0 tabstop=4 softtabstop=0 expandtab
 """"""""""""""""""""""""""""""
 autocmd BufNewFile,BufRead *.nix set filetype=nix
 au FileType nix setlocal shiftwidth=2 tabstop=2 softtabstop=0 expandtab
+
+" Noogle some nix code, replace dots (.) in visual selection with slashes (/)
+au FileType nix vnoremap <C-n> y:let @" = substitute(@", '\.', '/', 'g')<cr>:sil !google-chrome "https://noogle.dev/f/<C-r>""<cr>
 
 """"""""""""""""""""""""""""""
 " => XML section

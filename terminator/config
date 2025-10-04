@@ -14,10 +14,10 @@
 [profiles]
   [[default]]
     background_color = "#002b36"
-    background_darkness = 0.96
+    background_darkness = 0.97
     background_type = transparent
     cursor_color = "#eee8d5"
-    font = MesloLGM Nerd Font Mono 10
+    font = MesloLGM Nerd Font Mono 9
     foreground_color = "#eee8d5"
     show_titlebar = False
     scrollback_lines = 100000

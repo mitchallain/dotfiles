@@ -307,15 +307,34 @@ lspconfig["lua_ls"].setup({
         },
     },
 })
-
--- https://github.com/kitten/prosemd-lsp
-lspconfig["prosemd_lsp"].setup({ on_attach = on_attach })
-
-lspconfig["cmake"].setup({
+lspconfig["yamlls"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
+    settings = {
+        redhat = {
+            telemetry = {
+                enable = false,
+            },
+        },
+        yaml = {
+            schemas = {
+                ["https://raw.githubusercontent.com/CircleCI-Public/circleci-yaml-language-server/refs/heads/main/schema.json"] =
+                "/.circleci/config.{yml,yaml}",
+            },
+        },
+    },
 })
+
+-- https://github.com/kitten/prosemd-lsp
+-- lspconfig["prosemd_lsp"].setup({ on_attach = on_attach })
+
+-- this appeared to be really slow - 2025-06-06
+-- lspconfig["cmake"].setup({
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+--     capabilities = capabilities,
+-- })
 
 -- lspconfig["qmlls"].setup({
 --     on_attach = on_attach,

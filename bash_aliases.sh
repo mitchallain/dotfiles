@@ -37,6 +37,9 @@ alias llt='ls -AFGhlpt'
 alias celar='clear'
 alias less='less -cFRSX'
 
+# default pager man alias
+alias manp='man -Pless'
+
 alias cd..='cd ../'                                 # Go back 1 directory level (for fast typers)
 alias ..='cd ../'                                   # Go back 1 directory level
 alias ...='cd ../../'                               # Go back 2 directory levels
@@ -71,6 +74,10 @@ alias xclipv="xclip -selection clipboard -o"
 # note git <alias> type commands can be defined in .gitconfig
 alias gitl="git log"
 alias gits="git status"
+
+# copy short and long SHA1 to clipboard
+alias shaclip="git rev-parse --short HEAD | tr -d '\n' | xclipc"
+alias shlongclip="git rev-parse HEAD | tr -d '\n' | xclipc"
 
 # print some info about local repo
 gitcleanup () {
