@@ -8,3 +8,6 @@
 [submodule "private"]
 	path = private
 	url = git@github.com:MitchAllain/dotfiles_private.git
+[submodule "anduril-private-dotfiles"]
+	path = anduril-private-dotfiles
+	url = git@ghe.anduril.dev:mallain/anduril-private-dotfiles.git

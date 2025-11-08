@@ -19,6 +19,7 @@
     ~/.bastianrc: private/bastianrc.sh
     ~/.clang-format: clang/.clang-format
     ~/.claude: anduril-private-dotfiles/claude
+    ~/.claude.json: anduril-private-dotfiles/claude.json
     ~/.cmake-format.py: cmake/.cmake-format.py
     ~/.colcon: colcon
     ~/.config/.rgignore: rgignore
