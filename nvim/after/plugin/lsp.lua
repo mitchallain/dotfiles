@@ -362,6 +362,7 @@ null_ls.setup({
             temp_dir = "/tmp",
         }),
         null_ls.builtins.diagnostics.shellcheck,
+        null_ls.builtins.code_actions.shellcheck,
         -- null_ls.builtins.diagnostics.markdownlint,
         null_ls.builtins.formatting.cmake_format,
 

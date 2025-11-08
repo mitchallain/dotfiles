@@ -10,3 +10,13 @@
 build
 _docs
 outputs
+node_modules
+
+# claude logs
+**/claude/debug
+**/claude/file-history
+**/claude/projects
+**/claude/session-env
+**/claude/shell-snapshots
+**/claude/todos
+**/claude/history.jsonl

@@ -148,7 +148,7 @@ call plug#begin('~/.vim/plugged')
 
   " Plug 'github/copilot.vim', { 'branch': 'release' }
   " anduril tings
-  Plug 'Exafunction/codeium.vim', { 'tag': '1.12.0' }
+  Plug 'Exafunction/windsurf.vim'
   Plug 'olimorris/codecompanion.nvim'
   Plug 'sourcegraph/sg.nvim', { 'do': 'nvim -l build/init.lua' }
 
@@ -183,7 +183,10 @@ let g:colorizer_auto_filetype='vim,lua,css,html'
 set rtp+=~/.fzf
 " Custom fzf command always shows basename, does not care about case,
 " and searches basename first, before falling back to complete pathname
+" see FZF_DEFAULT_COMMAND for rg default options
 nnoremap <c-p> :FZF --keep-right -i --delimiter / --nth -1,..<cr>
+" Do not respect ignored files, --no-ignore implies --no-ignore-dot, --no-ignore-exclude, --no-ignore-global, no-ignore-parent and --no-ignore-vcs
+nnoremap <c-[> :call fzf#run(fzf#wrap({'source': 'rg -i --files --no-ignore --hidden'}))<cr>
 inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
 
 " :Rga - Ripgrep search all files, including VCS ignored
@@ -243,12 +246,19 @@ nnoremap <silent> <leader>gh :OpenInGHFileLines<cr>
 " set to 1, nvim will open the preview window after entering the markdown buffer
 " default: 0
 " let g:mkdp_auto_start = 1
+let g:mkdp_auto_close = 0
+let g:mkdp_preview_options = {
+    \ 'disable_sync_scroll': 1,
+    \ }
 
 " set to 1, echo preview page url in command line when open preview page
 let g:mkdp_echo_preview_url = 1
 
 " specify browser to open preview page
 let g:mkdp_browser = 'google-chrome'
+
+" leader mp open preview page
+nnoremap <leader>mp :MarkdownPreview<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

@@ -356,7 +356,7 @@ map <leader>ss :setlocal spell!<cr>
 " noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Toggle paste mode on and off
-map <leader>pp :setlocal paste!<cr>
+" map <leader>pp :setlocal paste!<cr>
 
 " Select recently pasted text
 " https://vim.fandom.com/wiki/Selecting_your_pasted_text

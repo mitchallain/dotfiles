@@ -1,1 +1,1 @@
-../private/anduril.vim
+/home/mallain/dotfiles/anduril-private-dotfiles/anduril.vim

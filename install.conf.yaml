@@ -3,20 +3,22 @@
       create: true
       relink: true
 
-- clean: ['~', '~/.config']
+- clean: ["~", "~/.config"]
 
 - link:
     ~/.albertignore: albert/albertignore
     ~/.aliases/bastian_aliases.sh: private/bastian_aliases.sh
     ~/.aliases/fzf_functions.sh: fzf_functions.sh
     ~/.aliases/nix_aliases.sh: aliases/nix_aliases.sh
-    ~/.andurilrc: private/andurilrc.sh
+    ~/.aliases/llm_aliases.sh: aliases/llm_aliases.sh
+    ~/.andurilrc: anduril-private-dotfiles/andurilrc.sh
     ~/.bash_aliases: bash_aliases.sh
     ~/.bash_logout: bash_logout
     ~/.bash_profile: bash_profile.sh
     ~/.bashrc: bashrc
     ~/.bastianrc: private/bastianrc.sh
     ~/.clang-format: clang/.clang-format
+    ~/.claude: anduril-private-dotfiles/claude
     ~/.cmake-format.py: cmake/.cmake-format.py
     ~/.colcon: colcon
     ~/.config/.rgignore: rgignore

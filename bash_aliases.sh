@@ -471,6 +471,10 @@ if [ -x "$(command -v entr)" ]; then
         packpath="$(rospackpath "$1")"
         find "$packpath"/test -name "test*.py" -o -name "test*.launch" | entr -c catkin test "${@:2}" "$1"
     }
+
+    entr_ninja() {
+        find .. -name "*.cc" -o -name "*.h" -o -name "*.cpp" -o -name "CMakeLists.txt" -o -name "*.cmake" | entr -c ninja "$@"
+    }
 fi
 
 # fzf dependent functions and aliases
