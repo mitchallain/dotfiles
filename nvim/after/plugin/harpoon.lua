@@ -6,7 +6,7 @@ vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
 
 require("harpoon").setup({
     menu = {
-        width = 100,
+        width = 150,
     }
 })
 

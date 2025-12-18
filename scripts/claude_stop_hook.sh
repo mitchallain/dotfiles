@@ -1,49 +1,88 @@
 #!/usr/bin/env bash
 
-# Check if stdin is available and not a terminal
-if [ -t 0 ]; then
-  echo "Error: This script expects JSON data from Claude Code via stdin"
+# Source helper functions
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/claude_hook_helpers.sh"
+
+# Validate stdin and get JSON input
+if ! validate_stdin_json; then
   exit 1
 fi
 
-# Read all of stdin into a variable safely
-input=$(cat)
-
-# Validate JSON input
-if ! echo "$input" | jq -e . >/dev/null 2>&1; then
-  echo "Error: Invalid JSON input"
-  exit 1
-fi
-
-# Minimal debug log
-debug_log="/tmp/claude_notify_debug.log"
-echo "$(date) - Script running" > "$debug_log"
+# Initialize debug log
+debug_log="/tmp/claude_hook_stop.log"
+init_debug_log "$debug_log"
 
 # Get the path to the conversation transcript
 transcript_path=$(echo "$input" | jq -r '.transcript_path')
-echo "Transcript path: $transcript_path" >> "$debug_log"
+log_debug "$debug_log" "Transcript path: $transcript_path"
 
 # Check if transcript path exists
 if [ ! -f "$transcript_path" ]; then
-  echo "Error: Transcript file not found: $transcript_path" >> "$debug_log"
-  notify-send "ClaudeCode Error" "Transcript file not found" --icon=terminal
+  log_debug "$debug_log" "Error: Transcript file not found: $transcript_path"
+  icon=$(get_notification_icon "error")
+  notify-send "ClaudeCode Error" "Transcript file not found" --icon="$icon" --expire-time="$NOTIFICATION_EXPIRE_TIME"
   exit 1
 fi
 
 # Get the content of the very first user prompt in the session
-# Transcripts are JSONL, so we read the first line.
-first_line=$(head -n 1 "$transcript_path")
+# Transcripts are JSONL, find the first line with "type":"user"
+user_line=$(grep -m 1 '"type":"user"' "$transcript_path")
 
-# Extract the prompt content - message.content is a string, not an array
-summary=$(echo "$first_line" | jq -r '.message.content' 2>/dev/null | cut -c 1-100)
+# Extract the prompt content
+summary=$(echo "$user_line" | jq -r '.message.content' 2>/dev/null | cut -c 1-100)
 
 # If summary extraction fails, provide a fallback
-if [ -z "$summary" ]; then
+if [ -z "$summary" ] || [ "$summary" = "null" ]; then
   summary="Unknown prompt"
-  echo "Failed to extract summary from transcript" >> "$debug_log"
+  log_debug "$debug_log" "Failed to extract summary from transcript"
 else
-  echo "Successfully extracted summary" >> "$debug_log"
+  log_debug "$debug_log" "Successfully extracted summary: $summary"
 fi
 
-# Send the notification
-notify-send "ClaudeCode Finished" "Prompt starting with '$summary...' is complete." --icon=terminal
+# Check if the session ended with a 429 error
+# Look for either:
+# 1. An assistant message with isApiErrorMessage=true containing "429"
+# 2. A system api_error with status 429
+# Exclude the stop_hook_summary line
+last_lines=$(tail -n 10 "$transcript_path" | grep -v '"subtype":"stop_hook_summary"')
+
+# Check for assistant API error message
+is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="assistant" and .isApiErrorMessage==true and (.message.content[0].text | contains("429"))) | "true"' 2>/dev/null)
+
+# If not found, check for system api_error
+if [ "$is_429_error" != "true" ]; then
+  is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="system" and .subtype=="api_error" and .error.status==429) | "true"' 2>/dev/null)
+fi
+
+error_message=""
+if [ "$is_429_error" = "true" ]; then
+  error_message="Too many tokens, please wait before trying again."
+  log_debug "$debug_log" "Session ended with 429 error"
+fi
+
+# Get tmux pane info if running in tmux
+tmux_info=$(get_tmux_info)
+if [ -n "$tmux_info" ]; then
+  log_debug "$debug_log" "Tmux info: $tmux_info"
+fi
+
+# Send the notification with optional tmux info and error status
+if [ "$is_429_error" = "true" ]; then
+  notification_title="ClaudeCode Stopped (429 Error)"
+  notification_message="Prompt: '$summary...'\n$error_message"
+  notification_type="warning"
+else
+  notification_title="ClaudeCode Finished"
+  notification_message="Prompt starting with '$summary...' is complete."
+  notification_type="success"
+fi
+
+if [ -n "$tmux_info" ]; then
+  notification_message="$notification_message ($tmux_info)"
+fi
+
+icon=$(get_notification_icon "$notification_type")
+notify-send "$notification_title" "$notification_message" --icon="$icon" --expire-time="$NOTIFICATION_EXPIRE_TIME"
+
+exit 0

@@ -20,3 +20,6 @@ node_modules
 **/claude/shell-snapshots
 **/claude/todos
 **/claude/history.jsonl
+
+# embedded worktrees should not be searched
+worktrees/

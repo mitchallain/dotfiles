@@ -54,6 +54,8 @@ au FileType rust setlocal shiftwidth=0 tabstop=4 softtabstop=0 expandtab
 """"""""""""""""""""""""""""""
 autocmd BufNewFile,BufRead *.nix set filetype=nix
 au FileType nix setlocal shiftwidth=2 tabstop=2 softtabstop=0 expandtab
+" Disable smartindent for Nix files - it removes indentation when typing #
+au FileType nix setlocal nosmartindent
 
 " Noogle some nix code, replace dots (.) in visual selection with slashes (/)
 au FileType nix vnoremap <C-n> y:let @" = substitute(@", '\.', '/', 'g')<cr>:sil !google-chrome "https://noogle.dev/f/<C-r>""<cr>
