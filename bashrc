@@ -156,8 +156,8 @@ if [ -f ~/dotfiles/secrets.sh ]; then
 fi
 
 # Anduril Environment Setup - Private Repo
-if [ -f ~/dotfiles/private/andurilrc.sh ]; then
-    . ~/dotfiles/private/andurilrc.sh
+if [ -f ~/dotfiles/anduril-private-dotfiles/andurilrc.sh ]; then
+    . ~/dotfiles/anduril-private-dotfiles/andurilrc.sh
 fi
 
 # enable programmable completion features (you don't need to enable

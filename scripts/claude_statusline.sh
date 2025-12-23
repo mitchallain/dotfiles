@@ -2,9 +2,24 @@
 
 # Custom statusline combining PS1 prompt format with token tracking
 # Format: username@laptop shortened-path (git-branch) [model] | tokens | percentage%
+# Uses actual API token usage from transcript files for accurate context tracking
 
-# Configurable threshold (default: 160K tokens = 80% of 200K context)
-THRESHOLD=${CLAUDE_AUTO_COMPACT_THRESHOLD:-160000}
+# ============================================================================
+# Context Budget Configuration
+# ============================================================================
+# Claude Code manages a 200K token context window with auto-compact protection.
+# Auto-compact buffer is reserved space that:
+#   1. Prevents performance degradation as context fills
+#   2. Provides working space for the summarization/compaction operation
+#   3. Triggers auto-compact before hitting hard limits
+#
+# When usage reaches THRESHOLD (155K), auto-compact activates to condense
+# conversation history while preserving important information.
+# ============================================================================
+
+TOTAL_BUDGET=200000        # Total context window size
+AUTO_COMPACT_BUFFER=45000  # Reserved space for compaction operation and safety margin
+THRESHOLD=$((TOTAL_BUDGET - AUTO_COMPACT_BUFFER))  # Auto-compact triggers at 155K
 
 # Read JSON input from stdin if available
 if [ ! -t 0 ]; then
@@ -55,7 +70,30 @@ if [ -n "$model_short" ]; then
     model_short=$(echo "$model_short" | sed 's/-[0-9]\{8\}.*//; s/anthropic\.//; s/claude-sonnet/sonnet/; s/claude-haiku/haiku/; s/claude-opus/opus/; s/Claude Sonnet/sonnet/; s/Claude Haiku/haiku/; s/Claude Opus/opus/')
 fi
 
-# Calculate tokens from transcript
+# ============================================================================
+# Token Calculation from Transcript
+# ============================================================================
+# Each API response in the transcript contains usage data with four fields:
+#
+#   1. cache_read_input_tokens: System context (MCP tools, CLAUDE.md, instructions)
+#      These ARE in the context window, just cached for efficiency. Reused each turn.
+#
+#   2. cache_creation_input_tokens: New tokens added to cache when system context changes
+#      This is an amortized cost metric, not a direct context usage measure.
+#
+#   3. input_tokens: Fresh user input for this turn (not previously cached)
+#
+#   4. output_tokens: Assistant's response for this turn
+#
+# Context window at any point = cached system context + all conversation history
+#
+# Calculation approach:
+#   - Get most recent API call's cache_read (system context size)
+#   - Sum all output_tokens (entire conversation history)
+#   - Add most recent input_tokens (current user message)
+#   - Total = cache_read + sum(outputs) + latest_input
+# ============================================================================
+
 TOTAL_TOKENS=0
 TOKEN_DISPLAY=""
 PERCENTAGE_DISPLAY=""
@@ -65,23 +103,52 @@ if [ -n "$input" ]; then
     if [ -n "$SESSION_ID" ] && [ "$SESSION_ID" != "null" ]; then
         TRANSCRIPT_PATH=$(find ~/.claude/projects -name "${SESSION_ID}.jsonl" 2>/dev/null | head -1)
         if [ -f "$TRANSCRIPT_PATH" ]; then
-            # Estimate tokens (rough approximation: 1 token per 4 characters)
-            TOTAL_CHARS=$(wc -c < "$TRANSCRIPT_PATH" 2>/dev/null || echo 0)
-            TOTAL_TOKENS=$((TOTAL_CHARS / 4))
+            # Calculate total tokens using actual API usage data
+            TOTAL_TOKENS=$(cat "$TRANSCRIPT_PATH" | jq -s '
+                # Extract all API responses with usage data
+                map(select(.message.usage)) as $responses |
 
-            # Calculate percentage
+                # Get the most recent cached system context size
+                ($responses | last | .message.usage.cache_read_input_tokens // 0) as $system_context |
+
+                # Sum all conversation outputs (assistant responses across all turns)
+                ($responses | map(.message.usage.output_tokens) | add // 0) as $conversation_history |
+
+                # Get the latest user input
+                ($responses | last | .message.usage.input_tokens // 0) as $latest_input |
+
+                # Total context = system + conversation + current input
+                $system_context + $conversation_history + $latest_input
+            ' 2>/dev/null || echo 0)
+
+            # ================================================================
+            # Format Display
+            # ================================================================
+            # Calculate percentage relative to auto-compact threshold (155K)
+            # When this reaches 100%, auto-compact will trigger
+            # ================================================================
+
             PERCENTAGE=$((TOTAL_TOKENS * 100 / THRESHOLD))
             if [ $PERCENTAGE -gt 100 ]; then
                 PERCENTAGE=100
             fi
 
-            # Format token count with K notation
+            # Format current usage with K notation (e.g., "42.5K")
             if [ $TOTAL_TOKENS -ge 1000 ]; then
-                TOKEN_DISPLAY=$(echo "scale=1; $TOTAL_TOKENS / 1000" | bc 2>/dev/null || echo "$((TOTAL_TOKENS / 1000))")"K"
+                CURRENT_DISPLAY=$(echo "scale=1; $TOTAL_TOKENS / 1000" | bc 2>/dev/null || echo "$((TOTAL_TOKENS / 1000))")"K"
             else
-                TOKEN_DISPLAY="$TOTAL_TOKENS"
+                CURRENT_DISPLAY="$TOTAL_TOKENS"
             fi
 
+            # Format auto-compact threshold (155K)
+            THRESHOLD_DISPLAY=$(echo "scale=0; $THRESHOLD / 1000" | bc 2>/dev/null || echo "$((THRESHOLD / 1000))")"K"
+
+            # Format total budget (200K)
+            BUDGET_DISPLAY=$(echo "scale=0; $TOTAL_BUDGET / 1000" | bc 2>/dev/null || echo "$((TOTAL_BUDGET / 1000))")"K"
+
+            # Display format: Current/Threshold/Total | Percentage
+            # Example: 42.5K/155K/200K | 27%
+            TOKEN_DISPLAY="${CURRENT_DISPLAY}/${THRESHOLD_DISPLAY}/${BUDGET_DISPLAY}"
             PERCENTAGE_DISPLAY="${PERCENTAGE}%"
         fi
     fi
