@@ -6,7 +6,7 @@ require("obsidian").setup({
         },
     },
     daily_notes = {
-        folder = "03-daily/2025",
+        folder = "03-daily/2026",
         date_format = "%Y-%m-%d",
         template = "00-meta/templates/daily-notes.md",
     },

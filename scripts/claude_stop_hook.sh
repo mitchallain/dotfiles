@@ -55,10 +55,33 @@ if [ "$is_429_error" != "true" ]; then
   is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="system" and .subtype=="api_error" and .error.status==429) | "true"' 2>/dev/null)
 fi
 
-error_message=""
 if [ "$is_429_error" = "true" ]; then
-  error_message="Too many tokens, please wait before trying again."
-  log_debug "$debug_log" "Session ended with 429 error"
+  log_debug "$debug_log" "Session ended with 429 error - blocking stop and continuing"
+
+  # Get tmux pane info for notification
+  tmux_info=$(get_tmux_info)
+  notification_message="Rate limit hit, automatically retrying..."
+  if [ -n "$tmux_info" ]; then
+    notification_message="$notification_message ($tmux_info)"
+  fi
+
+  # Send notification to user
+  icon=$(get_notification_icon "warning")
+  notify-send "ClaudeCode Rate Limited (429)" "$notification_message" --icon="$icon" --expire-time="$NOTIFICATION_EXPIRE_TIME"
+
+  # Block the stop and tell Claude to continue
+  # Output JSON to prevent Claude from stopping
+  jq -n \
+    --arg reason "Continue" \
+    --arg sysmsg "🔄 Rate limit encountered (429). Automatically continuing..." \
+    '{
+      "decision": "block",
+      "reason": $reason,
+      "systemMessage": $sysmsg
+    }'
+
+  log_debug "$debug_log" "Sent block decision with Continue prompt"
+  exit 0
 fi
 
 # Get tmux pane info if running in tmux
@@ -67,22 +90,15 @@ if [ -n "$tmux_info" ]; then
   log_debug "$debug_log" "Tmux info: $tmux_info"
 fi
 
-# Send the notification with optional tmux info and error status
-if [ "$is_429_error" = "true" ]; then
-  notification_title="ClaudeCode Stopped (429 Error)"
-  notification_message="Prompt: '$summary...'\n$error_message"
-  notification_type="warning"
-else
-  notification_title="ClaudeCode Finished"
-  notification_message="Prompt starting with '$summary...' is complete."
-  notification_type="success"
-fi
+# Send the notification for normal completion
+notification_title="ClaudeCode Finished"
+notification_message="Prompt starting with '$summary...' is complete."
 
 if [ -n "$tmux_info" ]; then
   notification_message="$notification_message ($tmux_info)"
 fi
 
-icon=$(get_notification_icon "$notification_type")
+icon=$(get_notification_icon "success")
 notify-send "$notification_title" "$notification_message" --icon="$icon" --expire-time="$NOTIFICATION_EXPIRE_TIME"
 
 exit 0
