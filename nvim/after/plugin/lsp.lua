@@ -259,6 +259,17 @@ lspconfig["ts_ls"].setup({
     flags = lsp_flags,
     capabilities = capabilities,
 })
+
+-- Using new nvim 0.11 vim.lsp.config API for tombi (TOML language server)
+-- This is the recommended way going forward
+vim.lsp.config.tombi = {
+    cmd = { 'tombi', 'lsp' },
+    filetypes = { 'toml' },
+    root_markers = { 'tombi.toml', 'pyproject.toml', '.git' },
+}
+-- Enable it with the new API
+vim.lsp.enable('tombi')
+
 lspconfig["gopls"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
@@ -325,6 +336,13 @@ lspconfig["yamlls"].setup({
         },
     },
 })
+lspconfig["bashls"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+    -- bashls provides diagnostics via shellcheck integration
+    -- Install: npm i -g bash-language-server
+})
 
 -- https://github.com/kitten/prosemd-lsp
 -- lspconfig["prosemd_lsp"].setup({ on_attach = on_attach })
@@ -348,6 +366,8 @@ lspconfig["yamlls"].setup({
 --     on_attach = on_attach,
 -- })
 
+-- none-ls: Community fork of null-ls with nvim 0.11+ support
+-- none-ls provides "null-ls" module for backward compatibility
 local null_ls = require("null-ls")
 
 null_ls.setup({
@@ -361,8 +381,10 @@ null_ls.setup({
             extra_args = { "--language=c++", "--inline-suppr" },
             temp_dir = "/tmp",
         }),
-        null_ls.builtins.diagnostics.shellcheck,
-        null_ls.builtins.code_actions.shellcheck,
+        -- Shellcheck was removed from none-ls builtins
+        -- Use bashls (bash-language-server) LSP instead for shell script diagnostics
+        -- null_ls.builtins.diagnostics.shellcheck,
+        -- null_ls.builtins.code_actions.shellcheck,
         -- null_ls.builtins.diagnostics.markdownlint,
         null_ls.builtins.formatting.cmake_format,
 
