@@ -1,123 +1,159 @@
-require'nvim-treesitter.configs'.setup {
-  -- A list of parser names, or "all"
-  ensure_installed = { 
-      "cmake",
-      "cpp",
-      "dockerfile",
-      "vimdoc",
-      "json",
-      "latex",
-      "lua",
-      "markdown",
-      "markdown_inline",
-      "rust",
-      "python",
-      "vim",
+-- ============================================================================
+-- Nvim-Treesitter Setup (for nvim 0.11+)
+-- ============================================================================
+-- Note: nvim-treesitter had a major rewrite for nvim 0.11
+-- The old 'nvim-treesitter.configs' module no longer exists
+-- ============================================================================
+
+-- Setup nvim-treesitter for parser installation
+require'nvim-treesitter'.setup {
+  -- Directory to install parsers and queries to (prepended to `runtimepath`)
+  install_dir = vim.fn.stdpath('data') .. '/site'
+}
+
+-- Install parsers for languages we use
+-- This replaces the old 'ensure_installed' option
+local parsers_to_install = {
+  "bash",
+  "cmake",
+  "cpp",
+  "dockerfile",
+  "vimdoc",
+  "json",
+  "latex",
+  "lua",
+  "markdown",
+  "markdown_inline",
+  "rust",
+  "python",
+  "vim",
+}
+
+-- Install parsers asynchronously (this is a no-op if already installed)
+require('nvim-treesitter').install(parsers_to_install)
+
+-- ============================================================================
+-- Treesitter Highlighting (now built into Neovim)
+-- ============================================================================
+-- NOTE: Treesitter highlighting is DISABLED by default (matching your original config)
+-- You can enable it per-buffer with <leader>hh or per-filetype below
+--
+-- Treesitter highlighting disabled due to issues with C++ and Python
+-- Using traditional Vim syntax highlighting instead
+
+-- Optional: Enable treesitter for specific filetypes only
+-- Uncomment and customize this list if you want treesitter for certain languages:
+-- local treesitter_enabled_fts = { "lua", "rust", "markdown" }
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = treesitter_enabled_fts,
+--   callback = function(args)
+--     -- Skip large files (> 100 KB)
+--     local max_filesize = 100 * 1024
+--     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+--     if ok and stats and stats.size > max_filesize then
+--       return
+--     end
+--     pcall(vim.treesitter.start, args.buf)
+--   end,
+-- })
+
+-- Toggle treesitter highlighting for current buffer
+vim.keymap.set("n", "<leader>hh", function()
+  local buf = vim.api.nvim_get_current_buf()
+  -- Check if treesitter is currently active for this buffer
+  if vim.treesitter.highlighter.active[buf] then
+    vim.treesitter.stop(buf)
+    print("Treesitter highlighting disabled")
+  else
+    vim.treesitter.start(buf)
+    print("Treesitter highlighting enabled")
+  end
+end, { noremap = true, silent = false, desc = "Toggle treesitter highlighting" })
+
+-- ============================================================================
+-- Nvim-Treesitter-Textobjects Setup (separate plugin)
+-- ============================================================================
+require("nvim-treesitter-textobjects").setup {
+  select = {
+    -- Automatically jump forward to textobj, similar to targets.vim
+    lookahead = true,
+
+    -- You can choose the select mode (default is charwise 'v')
+    selection_modes = {
+      ['@parameter.outer'] = 'v', -- charwise
+      ['@function.outer'] = 'V', -- linewise
+      ['@class.outer'] = '<c-v>', -- blockwise
+    },
+
+    -- Include surrounding whitespace
+    include_surrounding_whitespace = true,
   },
-
-  -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = false,
-
-  -- Automatically install missing parsers when entering buffer
-  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-  auto_install = true,
-
-  -- List of parsers to ignore installing (for "all")
-  -- ignore_install = { },
-
-  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-
-  highlight = {
-    -- `false` will disable the whole extension
-    enable = false,
-
-    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-    -- the name of the parser)
-    -- list of language that will be disabled
-    -- disable = { "python", "c", "rust" },
-    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-    disable = function(lang, buf)
-        local max_filesize = 100 * 1024 -- 100 KB
-        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-        if ok and stats and stats.size > max_filesize then
-            return true
-        end
-    end,
-
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
+  swap = {
+    enable = true,
   },
 }
 
-vim.keymap.set("n", "<leader>hh", "<cmd>TSBufToggle highlight<cr>", { noremap = true, silent = true })
+-- Textobject keymaps (now set manually)
+local ts_select = require("nvim-treesitter-textobjects.select")
 
-require'nvim-treesitter.configs'.setup {
-  textobjects = {
-    select = {
-      enable = true,
+-- Select textobjects
+vim.keymap.set({ "x", "o" }, "af", function()
+  ts_select.select_textobject("@function.outer", "textobjects")
+end, { desc = "Select outer function" })
 
-      -- Automatically jump forward to textobj, similar to targets.vim
-      lookahead = true,
+vim.keymap.set({ "x", "o" }, "if", function()
+  ts_select.select_textobject("@function.inner", "textobjects")
+end, { desc = "Select inner function" })
 
-      keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        -- You can optionally set descriptions to the mappings (used in the desc parameter of
-        -- nvim_buf_set_keymap) which plugins like which-key display
-        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-        -- You can also use captures from other query groups like `locals.scm`
-        ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
-      },
-      -- You can choose the select mode (default is charwise 'v')
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * method: eg 'v' or 'o'
-      -- and should return the mode ('v', 'V', or '<c-v>') or a table
-      -- mapping query_strings to modes.
-      selection_modes = {
-        ['@parameter.outer'] = 'v', -- charwise
-        ['@function.outer'] = 'V', -- linewise
-        ['@class.outer'] = '<c-v>', -- blockwise
-      },
-      -- If you set this to `true` (default is `false`) then any textobject is
-      -- extended to include preceding or succeeding whitespace. Succeeding
-      -- whitespace has priority in order to act similarly to eg the built-in
-      -- `ap`.
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * selection_mode: eg 'v'
-      -- and should return true of false
-      include_surrounding_whitespace = true,
-    },
-    swap = {
-      enable = true,
-      swap_next = {
-        ["<leader>sal"] = "@parameter.inner",
-        ["<leader>saj"] = "@parameter.inner",
-        ["<leader>scj"] = "@class.outer",
-        ["<leader>sfj"] = "@function.outer",
-      },
-      swap_previous = {
-        ["<leader>sah"] = "@parameter.inner",
-        ["<leader>sak"] = "@parameter.inner",
-        ["<leader>sck"] = "@class.outer",
-        ["<leader>sfk"] = "@function.outer",
-      },
-    },
-    sort = {
-      enable = true,
-      sort = {
-        ["<leader>soc"] = "@call.outer",
-      },
-    },
-  },
-}
+vim.keymap.set({ "x", "o" }, "ac", function()
+  ts_select.select_textobject("@class.outer", "textobjects")
+end, { desc = "Select outer class" })
+
+vim.keymap.set({ "x", "o" }, "ic", function()
+  ts_select.select_textobject("@class.inner", "textobjects")
+end, { desc = "Select inner class" })
+
+vim.keymap.set({ "x", "o" }, "as", function()
+  ts_select.select_textobject("@scope", "locals")
+end, { desc = "Select language scope" })
+
+-- Swap textobjects
+local ts_swap = require("nvim-treesitter-textobjects.swap")
+
+vim.keymap.set("n", "<leader>sal", function()
+  ts_swap.swap_next("@parameter.inner")
+end, { desc = "Swap parameter with next (left)" })
+
+vim.keymap.set("n", "<leader>saj", function()
+  ts_swap.swap_next("@parameter.inner")
+end, { desc = "Swap parameter with next (down)" })
+
+vim.keymap.set("n", "<leader>scj", function()
+  ts_swap.swap_next("@class.outer")
+end, { desc = "Swap class with next" })
+
+vim.keymap.set("n", "<leader>sfj", function()
+  ts_swap.swap_next("@function.outer")
+end, { desc = "Swap function with next" })
+
+vim.keymap.set("n", "<leader>sah", function()
+  ts_swap.swap_previous("@parameter.inner")
+end, { desc = "Swap parameter with previous (left)" })
+
+vim.keymap.set("n", "<leader>sak", function()
+  ts_swap.swap_previous("@parameter.inner")
+end, { desc = "Swap parameter with previous (up)" })
+
+vim.keymap.set("n", "<leader>sck", function()
+  ts_swap.swap_previous("@class.outer")
+end, { desc = "Swap class with previous" })
+
+vim.keymap.set("n", "<leader>sfk", function()
+  ts_swap.swap_previous("@function.outer")
+end, { desc = "Swap function with previous" })
+
+-- Sort textobjects
+vim.keymap.set("n", "<leader>soc", function()
+  local ts_sort = require("nvim-treesitter-textobjects.sort")
+  ts_sort.sort("@call.outer")
+end, { desc = "Sort function calls" })

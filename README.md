@@ -16,6 +16,24 @@ specific to my work. The `~/.bashrc` file checks the existence of most of these
 files prior to sourcing them and as such, should succeed without the private
 directory present.
 
+## NixOS
+
+This dotfiles repository works on both NixOS and non-NixOS systems.
+
+For NixOS-specific system configuration, see my separate nixos-config
+repository.
+
+Installation: `git clone && cd dotfiles && ./install`
+
+## TODO
+
+- [x] update lsp.lua to use vim.lsp.config over require('lspconfig')
+- [ ] ~switch to lazy plugin loading for performance~ wait for vim.pack in v0.12
+      and re-assess
+- [ ] let claude do some general performance optimization on neovim
+- [ ] let claude do some general performance optimization on bash
+- [ ] fix mixed vim/neovim config (vim should start with similar keybindings)
+
 ## References
 
 Credit to Nathaniel Landau's

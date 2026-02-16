@@ -32,7 +32,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/nvim-treesitter-context', Cond(has('nvim'))
   Plug 'nvim-treesitter/nvim-treesitter-textobjects', Cond(has('nvim'))
-  Plug 'nvim-treesitter/playground'
+  " Plug 'nvim-treesitter/playground'  " Deprecated - incompatible with nvim 0.11+
   " Plug '~/.vim/plugged/nvim-treesorter'
   Plug 'theprimeagen/harpoon'
   Plug 'mbbill/undotree'
@@ -40,6 +40,7 @@ call plug#begin('~/.vim/plugged')
   " A tree explorer plugin for vim.
   Plug 'preservim/nerdtree'
   Plug 'jistr/vim-nerdtree-tabs'  " Makes NERDTree independent of tabs
+  Plug 'stevearc/oil.nvim'
 
   " Seamless navigation between tmux panes and vim splits
   Plug 'christoomey/vim-tmux-navigator'
@@ -100,13 +101,13 @@ call plug#begin('~/.vim/plugged')
   Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
   Plug 'L3MON4D3/LuaSnip', Cond(has('nvim')) " Snippets plugin
 
-  " null-ls - Inject diagnostics and formatting through LSP from supported
+  " none-ls - Community fork of null-ls with nvim 0.11+ support
+  " Inject diagnostics and formatting through LSP from supported
   " binaries on PATH. Note this does not provide the binaries, which must be
   " installed seperately with system package manager or lang package manager.
   " Built-in support:
-  " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
-  " main branch no longer supports 0.7 as of 2022-12-07
-  Plug 'jose-elias-alvarez/null-ls.nvim', { 'branch': '0.7-compat' }
+  " https://github.com/nvimtools/none-ls.nvim/blob/main/doc/BUILTINS.md
+  Plug 'nvimtools/none-ls.nvim'
 
   " Prettier listings of diagnostics, LSP refs, etc.
   Plug 'kyazdani42/nvim-web-devicons'

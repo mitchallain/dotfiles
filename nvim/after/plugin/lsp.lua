@@ -5,74 +5,13 @@ require("trouble").setup()
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap = true, silent = true }
 vim.keymap.set("n", "<leader>di", vim.diagnostic.open_float, opts)
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+-- nvim 0.11 replaced goto_prev/goto_next with vim.diagnostic.jump()
+vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, opts)
+vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, opts)
 
 -- Testing trouble.nvim
 -- vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 vim.keymap.set("n", "<leader>qq", "<cmd>Trouble diagnostics toggle<cr>", opts)
-
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-    -- print('LSP attached - loading keymaps')
-    -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-
-    -- Mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local bufopts = { noremap = true, silent = true, buffer = bufnr }
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-
-    -- if the filetype is cpp, then use the clangd switch source header
-    vim.keymap.set("n", "gsv", "<cmd>vsplit<cr><cmd>ClangdSwitchSourceHeader<cr>", opts)
-    vim.keymap.set("n", "gss", "<cmd>split<cr><cmd>ClangdSwitchSourceHeader<cr>", opts)
-    vim.keymap.set("n", "gs", "<cmd>ClangdSwitchSourceHeader<cr>", opts)
-
-    -- goto split and goto vsplit
-    vim.keymap.set("n", "gv", "<cmd>vert winc ]<cr>", opts)
-    vim.keymap.set("n", "gl", "<cmd>winc ]<cr>", opts)
-
-    if client.server_capabilities.hoverProvider then
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-    end
-
-    if client.name == "ruff" then
-        -- Disable hover in favor of Pyright
-        client.server_capabilities.hoverProvider = false
-    end
-
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set("n", "<leader>k", vim.lsp.buf.signature_help, bufopts)
-
-    -- these may be useful but I need to change the keymaps so that <leader>w
-    -- is processed immediately for writing
-    -- vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-    -- vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-    -- vim.keymap.set("n", "<leader>wl", function()
-    --     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    -- end, bufopts)
-
-    vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
-    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
-
-    -- Testing trouble.nvim
-    vim.keymap.set("n", "<leader>sr", vim.lsp.buf.references, bufopts)
-    vim.keymap.set("n", "gr", "<cmd>Trouble lsp_references toggle<cr>", bufopts)
-
-    -- Format whole file asynchronously
-    vim.keymap.set("n", "<leader>fo", function()
-        vim.lsp.buf.format({ async = true })
-    end, bufopts)
-
-    -- Format a range from visual mode
-    if client.server_capabilities.rangeFormatting then
-        print("Supports range formatting")
-        vim.keymap.set("v", "<leader>fo", vim.lsp.buf.format, bufopts)
-    end
-end
 
 -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#luasnip
 local has_words_before = function()
@@ -188,23 +127,30 @@ cmp.setup({
 --   })
 -- })
 
-local lsp_flags = {
-    -- This is the default in Nvim 0.7+
-    debounce_text_changes = 150,
-}
-
--- From https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
--- Add additional capabilities supported by nvim-cmp
+-- Setup LSP capabilities for nvim-cmp integration
+-- default_capabilities() extends vim.lsp.protocol.make_client_capabilities()
+-- with completion capabilities that nvim-cmp can use
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
--- see https://github.com/jose-elias-alvarez/null-ls.nvim/issues/428#issuecomment-997226723
-capabilities.offsetEncoding = { "utf-16" }
 
-local lspconfig = require("lspconfig")
+-- Set position encoding preference to prevent "multiple different position encodings" warning
+-- The LSP spec uses general.positionEncodings (plural) to declare which encodings the client supports
+-- List in order of preference: utf-16 first (for clangd/none-ls), then utf-8 as fallback
+-- See: https://github.com/jose-elias-alvarez/null-ls.nvim/issues/428#issuecomment-997226723
+capabilities.general = capabilities.general or {}
+capabilities.general.positionEncodings = { "utf-16", "utf-8" }
 
-lspconfig["pyright"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
+-- Global configuration for all LSP servers
+-- These capabilities will be merged into each server's config
+-- ensuring nvim-cmp completion works across all language servers
+vim.lsp.config('*', {
     capabilities = capabilities,
+})
+
+-- Configure servers with custom settings
+-- nvim-lspconfig provides default cmd, filetypes, and root_markers
+-- We only override what we've customized
+
+vim.lsp.config.pyright = {
     settings = {
         pyright = {
             disableOrganizeImports = true,
@@ -215,34 +161,19 @@ lspconfig["pyright"].setup({
             },
         },
     },
-})
-lspconfig["ruff"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-})
+}
+vim.lsp.enable('pyright')
 
--- lspconfig["sourcery"].setup({
---     init_options = {
---         token = vim.env.SOURCERY_TOKEN,
---         extension_version = 'vim.lsp',
---         editor_version = 'vim',
---     },
---     on_attach = on_attach,
---     flags = lsp_flags,
---     capabilities = capabilities,
--- })
-lspconfig["clangd"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
+-- ruff uses all defaults, no custom settings needed
+vim.lsp.enable('ruff')
+
+-- Customize clangd to exclude 'proto' filetype
+vim.lsp.config.clangd = {
     filetypes = { "c", "cpp", "objc", "objcpp" }, -- remove proto
-})
-lspconfig["rust_analyzer"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-    -- Server-specific settings...
+}
+vim.lsp.enable('clangd')
+
+vim.lsp.config.rust_analyzer = {
     settings = {
         ["rust-analyzer"] = {
             check = {
@@ -253,32 +184,19 @@ lspconfig["rust_analyzer"].setup({
             },
         },
     },
-})
-lspconfig["ts_ls"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-})
-
--- Using new nvim 0.11 vim.lsp.config API for tombi (TOML language server)
--- This is the recommended way going forward
-vim.lsp.config.tombi = {
-    cmd = { 'tombi', 'lsp' },
-    filetypes = { 'toml' },
-    root_markers = { 'tombi.toml', 'pyproject.toml', '.git' },
 }
--- Enable it with the new API
+vim.lsp.enable('rust_analyzer')
+
+-- ts_ls uses all defaults
+vim.lsp.enable('ts_ls')
+
+-- tombi uses all defaults (TOML language server)
 vim.lsp.enable('tombi')
 
-lspconfig["gopls"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-})
-lspconfig["nil_ls"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
+-- gopls uses all defaults
+vim.lsp.enable('gopls')
+
+vim.lsp.config.nil_ls = {
     settings = {
         ["nil"] = {
             formatting = {
@@ -286,16 +204,13 @@ lspconfig["nil_ls"].setup({
             },
         },
     },
-})
-lspconfig["buf_ls"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-})
-lspconfig["lua_ls"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
+}
+vim.lsp.enable('nil_ls')
+
+-- buf_ls uses all defaults
+vim.lsp.enable('buf_ls')
+
+vim.lsp.config.lua_ls = {
     settings = {
         Lua = {
             runtime = {
@@ -317,11 +232,10 @@ lspconfig["lua_ls"].setup({
             },
         },
     },
-})
-lspconfig["yamlls"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
+}
+vim.lsp.enable('lua_ls')
+
+vim.lsp.config.yamlls = {
     settings = {
         redhat = {
             telemetry = {
@@ -335,30 +249,11 @@ lspconfig["yamlls"].setup({
             },
         },
     },
-})
-lspconfig["bashls"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-    -- bashls provides diagnostics via shellcheck integration
-    -- Install: npm i -g bash-language-server
-})
+}
+vim.lsp.enable('yamlls')
 
--- https://github.com/kitten/prosemd-lsp
--- lspconfig["prosemd_lsp"].setup({ on_attach = on_attach })
-
--- this appeared to be really slow - 2025-06-06
--- lspconfig["cmake"].setup({
---     on_attach = on_attach,
---     flags = lsp_flags,
---     capabilities = capabilities,
--- })
-
--- lspconfig["qmlls"].setup({
---     on_attach = on_attach,
---     flags = lsp_flags,
---     capabilities = capabilities,
--- })
+-- bashls uses all defaults
+vim.lsp.enable('bashls')
 
 -- TODO: 'enable_cody = false' currently throws errors
 -- require("sg").setup({
@@ -366,26 +261,127 @@ lspconfig["bashls"].setup({
 --     on_attach = on_attach,
 -- })
 
+-- LspAttach autocommand replaces the old on_attach function
+-- This runs whenever an LSP server attaches to a buffer
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('mallain-lsp-attach', { clear = true }),
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        local bufnr = args.buf
+
+        -- Guard against nil client
+        if not client then
+            return
+        end
+
+        -- Server-specific customizations (grouped together)
+        if client.name == "ruff" then
+            -- Disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+        end
+
+        -- Mappings.
+        -- See `:help vim.lsp.*` for documentation on any of the below functions
+        -- Use client:supports_method() to check capabilities before setting keymaps
+        local bufopts = { noremap = true, silent = true, buffer = bufnr }
+
+        -- Conditional keymaps based on server method support
+        if client:supports_method('textDocument/declaration') then
+            vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+        end
+
+        if client:supports_method('textDocument/definition') then
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+        end
+
+        if client:supports_method('textDocument/hover') then
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+        end
+
+        if client:supports_method('textDocument/implementation') then
+            vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+        end
+
+        if client:supports_method('textDocument/signatureHelp') then
+            vim.keymap.set("n", "<leader>k", vim.lsp.buf.signature_help, bufopts)
+        end
+
+        if client:supports_method('textDocument/typeDefinition') then
+            vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, bufopts)
+        end
+
+        if client:supports_method('textDocument/rename') then
+            vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
+        end
+
+        if client:supports_method('textDocument/codeAction') then
+            vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
+        end
+
+        if client:supports_method('textDocument/references') then
+            -- Testing trouble.nvim
+            vim.keymap.set("n", "<leader>sr", vim.lsp.buf.references, bufopts)
+            vim.keymap.set("n", "gr", "<cmd>Trouble lsp_references toggle<cr>", bufopts)
+        end
+
+        if client:supports_method('textDocument/formatting') then
+            -- Format whole file asynchronously
+            vim.keymap.set("n", "<leader>fo", function()
+                vim.lsp.buf.format({ async = true })
+            end, bufopts)
+        end
+
+        if client:supports_method('textDocument/rangeFormatting') then
+            -- Format a range from visual mode
+            vim.keymap.set("v", "<leader>fo", vim.lsp.buf.format, bufopts)
+        end
+
+        -- Server-specific keymaps (not LSP methods, so check by name)
+        if client.name == "clangd" then
+            vim.keymap.set("n", "gsv", "<cmd>vsplit<cr><cmd>ClangdSwitchSourceHeader<cr>", bufopts)
+            vim.keymap.set("n", "gss", "<cmd>split<cr><cmd>ClangdSwitchSourceHeader<cr>", bufopts)
+            vim.keymap.set("n", "gs", "<cmd>ClangdSwitchSourceHeader<cr>", bufopts)
+        end
+
+        -- Custom navigation (goto split and goto vsplit)
+        -- These are not LSP-specific, always set them
+        vim.keymap.set("n", "gv", "<cmd>vert winc ]<cr>", bufopts)
+        vim.keymap.set("n", "gl", "<cmd>winc ]<cr>", bufopts)
+    end,
+})
+
 -- none-ls: Community fork of null-ls with nvim 0.11+ support
 -- none-ls provides "null-ls" module for backward compatibility
 local null_ls = require("null-ls")
 
 null_ls.setup({
     sources = {
-        -- null_ls.builtins.code_actions.gitsigns,
-        -- null_ls.builtins.completion.spell,
-        -- null_ls.builtins.diagnostics.pylint,
+        -- use clangd over clang_format
         -- null_ls.builtins.formatting.clang_format,
+
+        -- use ruff/pylint instead of:
+        -- null_ls.builtins.diagnostics.pylint,
+        -- null_ls.builtins.diagnostics.ruff,
+        -- null_ls.builtins.diagnostics.flake8,
+        -- null_ls.builtins.formatting.black.with({
+        --     extra_args = { "--line-length", "99" },
+        -- }),
+
+        -- Shellcheck was removed from none-ls builtins
+        -- Use bashls (bash-language-server) LSP instead for shell script diagnostics
+        -- null_ls.builtins.diagnostics.shellcheck,
+        -- null_ls.builtins.code_actions.shellcheck,
+
+        -- TODO: retest
+        -- null_ls.builtins.code_actions.gitsigns,
+        -- null_ls.builtins.diagnostics.markdownlint,
+        -- null_ls.builtins.formatting.yapf,
+
         null_ls.builtins.diagnostics.cmake_lint,
         null_ls.builtins.diagnostics.cppcheck.with({
             extra_args = { "--language=c++", "--inline-suppr" },
             temp_dir = "/tmp",
         }),
-        -- Shellcheck was removed from none-ls builtins
-        -- Use bashls (bash-language-server) LSP instead for shell script diagnostics
-        -- null_ls.builtins.diagnostics.shellcheck,
-        -- null_ls.builtins.code_actions.shellcheck,
-        -- null_ls.builtins.diagnostics.markdownlint,
         null_ls.builtins.formatting.cmake_format,
 
         -- had to npm install --global prettier
@@ -396,16 +392,7 @@ null_ls.setup({
         null_ls.builtins.formatting.stylua.with({
             extra_args = { "--indent-type", "Spaces" },
         }),
-        -- null_ls.builtins.formatting.yapf,
-
-        -- THESE ALL SHOULD BE REPLACED BY RUFF LSP SERVER
-        -- null_ls.builtins.diagnostics.ruff,
-        -- null_ls.builtins.diagnostics.flake8,
-        -- null_ls.builtins.formatting.black.with({
-        --     extra_args = { "--line-length", "99" },
-        -- }),
     },
-    on_attach = on_attach,
 
     -- debug = true,
     log_level = "warn",
@@ -417,36 +404,31 @@ local format_diagnostic = function(diagnostic)
     return string.format("%s (%s)", diagnostic.message, diagnostic.code)
 end
 
-vim.diagnostic.config({
+-- Shared diagnostic display configuration
+-- Used by both vim.diagnostic.config() and toggle_lsp_diagnostics plugin
+local diagnostic_opts = {
     severity_sort = true,
     underline = true,
     update_in_insert = false,
-    virtual_text = {
+    virtual_text = {                -- Inline text at end of line with diagnostic
         spacing = 4,
         prefix = "●",
     },
-    float = {
-        source = "always",
-        format = format_diagnostic,
+    float = {                       -- Floating window (shown with <leader>di / vim.diagnostic.open_float)
+        source = true,              -- Always show which LSP server reported the diagnostic
+        format = format_diagnostic, -- Include diagnostic code in the message
     },
-})
+}
 
--- Plug-in allows easy toggling of diagnostics features
+-- Configure how LSP diagnostics are displayed globally
+vim.diagnostic.config(diagnostic_opts)
+
+-- Plugin that allows toggling diagnostics on/off with keymaps
+-- Uses the same diagnostic_opts to ensure toggling restores the correct display settings
 -- start_on currently does not work
-require("toggle_lsp_diagnostics").init({
+require("toggle_lsp_diagnostics").init(vim.tbl_extend('force', diagnostic_opts, {
     start_on = true,
-    severity_sort = true,
-    underline = true,
-    update_in_insert = false,
-    virtual_text = {
-        spacing = 4,
-        prefix = "●",
-    },
-    float = {
-        source = "always",
-        format = format_diagnostic,
-    },
-})
+}))
 
 vim.keymap.set("n", "<leader>dd", "<Plug>(toggle-lsp-diag)")
 vim.keymap.set("n", "<leader>dT", "<Plug>(toggle-lsp-diag-vtext)")

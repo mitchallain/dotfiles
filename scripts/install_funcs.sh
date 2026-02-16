@@ -158,7 +158,8 @@ install_whitesur_theme () {
 # nvim setup
 # requires setup_python
 install_nvim () {
-    nvim_version="0.10.2"
+    nvim_version="0.11.6"
+    fname="nvim-linux-x86_64.tar.gz"
 
     # remove symlink if already existing
     if [[ -L ~/bin/nvim ]]; then
@@ -166,13 +167,14 @@ install_nvim () {
     fi
 
     # remove previous versions
-    if [[ -f ~/bin/nvim.appimage ]]; then
-        rm ~/bin/nvim.appimage
+    if [[ -d ~/bin/nvim-linux-x86_64 ]]; then
+        rm -rf ~/bin/nvim-linux-x86_64
     fi
 
-    wget -P ~/bin/ "https://github.com/neovim/neovim/releases/download/v$nvim_version/nvim.appimage"
-    chmod u+x ~/bin/nvim.appimage
-    ln -s ~/bin/nvim.appimage ~/bin/nvim
+    wget -P ~/bin/ "https://github.com/neovim/neovim/releases/download/v$nvim_version/$fname"
+    cd ~/bin && tar xzf "$fname"
+    rm "$HOME/bin/$fname"
+    ln -s "$HOME/bin/nvim-linux-x86_64/bin/nvim" ~/bin/nvim
 
     # plug.vim
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
