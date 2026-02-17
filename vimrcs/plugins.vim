@@ -17,166 +17,171 @@ function! Cond(cond, ...)
 endfunction
 
 call plug#begin('~/.vim/plugged')
-  " Fuzzy searching
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SECTION 1: VIM-COMPATIBLE PLUGINS (work in both vim & nvim)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+  " === Fuzzy Finding ===
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
 
-  " Solarized for vim and nvim
-  Plug 'mitchallain/neosolarized.nvim', { 'branch': 'main' }  " I removed packer dependency
-  " Plug 'ishan9299/nvim-solarized-lua'
-  " Plug 'shaunsingh/solarized.nvim'
-  Plug 'tjdevries/colorbuddy.nvim'
-  " Plug 'altercation/solarized'
-  Plug 'norcalli/nvim-colorizer.lua', Cond(has('nvim'))  " colorizer for hex codes, etc
-
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/nvim-treesitter-context', Cond(has('nvim'))
-  Plug 'nvim-treesitter/nvim-treesitter-textobjects', Cond(has('nvim'))
-  " Plug 'nvim-treesitter/playground'  " Deprecated - incompatible with nvim 0.11+
-  " Plug '~/.vim/plugged/nvim-treesorter'
-  Plug 'theprimeagen/harpoon'
-  Plug 'mbbill/undotree'
-
-  " A tree explorer plugin for vim.
+  " === File Navigation ===
   Plug 'preservim/nerdtree'
-  Plug 'jistr/vim-nerdtree-tabs'  " Makes NERDTree independent of tabs
-  Plug 'stevearc/oil.nvim'
+  " Makes NERDTree independent of tabs
+  Plug 'jistr/vim-nerdtree-tabs'
 
-  " Seamless navigation between tmux panes and vim splits
+  " === Git ===
+  Plug 'tpope/vim-fugitive'
+  " vim-compatible despite .nvim suffix (requires vim 8+)
+  Plug 'APZelos/blamer.nvim'
+
+  " === Editing ===
+  Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-dispatch'
+  Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+
+  " === Tmux Integration ===
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'preservim/vimux'
 
-  " Specific language/framework support plug-ins
+  " === Language Support ===
   Plug 'mitchallain/IEC.vim'
   Plug 'vimjas/vim-python-pep8-indent'
-  " Plug 'taketwo/vim-ros'  " gotos
+  " vim-compatible despite .nvim suffix (requires vim 8+)
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'], 'tag': 'v0.0.10'}
   Plug 'mzlogin/vim-markdown-toc'
-  Plug 'MeanderingProgrammer/render-markdown.nvim'
-  " Plug 'OXY2DEV/markview.nvim'
   " Re-execute :call mkdp#util#install() if the above fails to install
 
-  " Git plug-ins
-  Plug 'tpope/vim-fugitive'
-  " Plug 'airblade/vim-gitgutter'
-  Plug 'lewis6991/gitsigns.nvim'
-  Plug 'APZelos/blamer.nvim'
-
-  Plug 'tpope/vim-surround'
-  Plug 'tpope/vim-dispatch'
-
-  " Commenting plugins
-  " Plug 'scrooloose/nerdcommenter'
-  " Plug 'tpope/vim-commentary'
-  Plug 'numToStr/Comment.nvim'  " current favorite
-  Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
-
-  " Show numbers in tab names
+  " === Utilities ===
+  Plug 'mbbill/undotree'
   Plug 'mkitt/tabline.vim'
+  " Shows marks next to line numbers
+  Plug 'kshenoy/vim-signature'
+  " ctags sidebar (ensure 'sudo snap/apt install universal-ctags')
+  Plug 'preservim/tagbar'
+  " Use offline documentation browser Zeal from Vim
+  Plug 'KabbAmine/zeavim.vim'
+  Plug 'vim-scripts/Tabmerge'
+  Plug 'peterhoeg/vim-qml'
 
-  " LSP PLUG-INS
-  " --------------------------------
-  " see https://github.com/VonHeikemen/lsp-zero.nvim
-  Plug 'neovim/nvim-lspconfig'  " Quickstart configs for built-in LSP client
-  Plug 'williamboman/mason.nvim', { 'branch': 'main' }
-  Plug 'williamboman/mason-lspconfig.nvim', { 'branch': 'main' } 
+  " === Color Schemes (vim-compatible) ===
+  " Solarized for vim
+  Plug 'altercation/vim-colors-solarized'
 
-  " Autocompletion
-  Plug 'hrsh7th/nvim-cmp', { 'branch': 'main' } " auto-completion plugin
-  Plug 'hrsh7th/cmp-buffer', { 'branch': 'main' } " nvim-cmp source for buffer words
-  Plug 'hrsh7th/cmp-path', { 'branch': 'main' }  " nvim-cmp source for filesystem paths
+  " === AI Tools (vim-compatible) ===
+  Plug 'Exafunction/windsurf.vim'
 
-  " Completion with nvim-cmp
-  " https://github.com/hrsh7th/nvim-cmp
-  Plug 'onsails/lspkind.nvim'  " prettier completion window
-  
-  " List of completion sources
-  " https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
-  Plug 'hrsh7th/cmp-nvim-lsp', { 'branch': 'main' }  " LSP source for nvim-cmp
-  Plug 'hrsh7th/cmp-nvim-lua', { 'branch': 'main' }  " LSP source for nvim-cmp
-  " Plug 'hrsh7th/cmp-cmdline', { 'branch': 'main' }  " nvim-cmp source for vim's cmdline, found this to be intrusive
-  Plug 'aspeddro/cmp-pandoc.nvim', { 'branch': 'main' } " nvim-cmp source for markdown / pandoc
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SECTION 2: NEOVIM-ONLY PLUGINS (require neovim APIs)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-  " For luasnip usage
-  Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
-  Plug 'L3MON4D3/LuaSnip', Cond(has('nvim')) " Snippets plugin
+  " === Color Schemes ===
+  " Solarized for neovim (removed packer dependency)
+  Plug 'mitchallain/neosolarized.nvim', Cond(has('nvim'), { 'branch': 'main' })
+  Plug 'tjdevries/colorbuddy.nvim', Cond(has('nvim'))
+  " Colorizer for hex codes, etc
+  Plug 'norcalli/nvim-colorizer.lua', Cond(has('nvim'))
 
-  " none-ls - Community fork of null-ls with nvim 0.11+ support
-  " Inject diagnostics and formatting through LSP from supported
-  " binaries on PATH. Note this does not provide the binaries, which must be
-  " installed seperately with system package manager or lang package manager.
-  " Built-in support:
-  " https://github.com/nvimtools/none-ls.nvim/blob/main/doc/BUILTINS.md
-  Plug 'nvimtools/none-ls.nvim'
+  " === Treesitter ===
+  Plug 'nvim-treesitter/nvim-treesitter', Cond(has('nvim'), {'do': ':TSUpdate'})
+  Plug 'nvim-treesitter/nvim-treesitter-context', Cond(has('nvim'))
+  Plug 'nvim-treesitter/nvim-treesitter-textobjects', Cond(has('nvim'))
 
-  " Prettier listings of diagnostics, LSP refs, etc.
-  Plug 'kyazdani42/nvim-web-devicons'
+  " === LSP ===
+  " Quickstart configs for built-in LSP client
+  Plug 'neovim/nvim-lspconfig', Cond(has('nvim'))
+  Plug 'williamboman/mason.nvim', Cond(has('nvim'), { 'branch': 'main' })
+  Plug 'williamboman/mason-lspconfig.nvim', Cond(has('nvim'), { 'branch': 'main' })
+  " Community fork of null-ls with nvim 0.11+ support
+  Plug 'nvimtools/none-ls.nvim', Cond(has('nvim'))
+  Plug 'mitchallain/toggle-lsp-diagnostics.nvim', Cond(has('nvim'), { 'branch': 'main' })
+  Plug 'ojroques/nvim-lspfuzzy', Cond(has('nvim'), { 'branch': 'main' })
+
+  " === Completion ===
+  " Auto-completion plugin
+  Plug 'hrsh7th/nvim-cmp', Cond(has('nvim'), { 'branch': 'main' })
+  " nvim-cmp source for buffer words
+  Plug 'hrsh7th/cmp-buffer', Cond(has('nvim'), { 'branch': 'main' })
+  " nvim-cmp source for filesystem paths
+  Plug 'hrsh7th/cmp-path', Cond(has('nvim'), { 'branch': 'main' })
+  " Prettier completion window
+  Plug 'onsails/lspkind.nvim', Cond(has('nvim'))
+  " LSP source for nvim-cmp
+  Plug 'hrsh7th/cmp-nvim-lsp', Cond(has('nvim'), { 'branch': 'main' })
+  " Lua source for nvim-cmp
+  Plug 'hrsh7th/cmp-nvim-lua', Cond(has('nvim'), { 'branch': 'main' })
+  " nvim-cmp source for markdown/pandoc
+  Plug 'aspeddro/cmp-pandoc.nvim', Cond(has('nvim'), { 'branch': 'main' })
+  " Snippets source for nvim-cmp
+  Plug 'saadparwaiz1/cmp_luasnip', Cond(has('nvim'))
+  " Snippets plugin
+  Plug 'L3MON4D3/LuaSnip', Cond(has('nvim'))
+
+  " === UI/Diagnostics ===
+  Plug 'kyazdani42/nvim-web-devicons', Cond(has('nvim'))
   Plug 'folke/trouble.nvim', Cond(has('nvim'), { 'tag': 'v3.6.0' })
   Plug 'folke/todo-comments.nvim', Cond(has('nvim'), { 'branch': 'main' })
 
-  Plug 'mitchallain/toggle-lsp-diagnostics.nvim', { 'branch': 'main' }  " easily toggle virtual text diagnostics on and off
-  Plug 'ojroques/nvim-lspfuzzy', { 'branch': 'main' }
-  " --------------------------------------
-  
-  " Debug Adapter Protocol
-  Plug 'mfussenegger/nvim-dap'
-  Plug 'mfussenegger/nvim-dap-python'
-  Plug 'theHamsta/nvim-dap-virtual-text'
-  Plug 'rcarriga/nvim-dap-ui'
-  Plug 'nvim-neotest/nvim-nio'
+  " === Git ===
+  Plug 'lewis6991/gitsigns.nvim', Cond(has('nvim'))
+  Plug 'Almo7aya/openingh.nvim', Cond(has('nvim'))
 
-  Plug 'nvim-lua/plenary.nvim'  " Lua function library
-  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.8' }
-  Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main', }
-  Plug 'kkharji/sqlite.lua'
-  Plug 'nvim-telescope/telescope-frecency.nvim'
+  " === Navigation ===
+  " Lua function library
+  Plug 'nvim-lua/plenary.nvim', Cond(has('nvim'))
+  Plug 'nvim-telescope/telescope.nvim', Cond(has('nvim'), { 'tag': '0.1.8' })
+  Plug 'nvim-telescope/telescope-fzf-native.nvim', Cond(has('nvim'), { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main' })
+  Plug 'kkharji/sqlite.lua', Cond(has('nvim'))
+  Plug 'nvim-telescope/telescope-frecency.nvim', Cond(has('nvim'))
+  Plug 'stevearc/oil.nvim', Cond(has('nvim'))
+  Plug 'theprimeagen/harpoon', Cond(has('nvim'))
 
-  Plug 'jbyuki/nabla.nvim'  " floating LaTeX equation rendered
+  " === Debug Adapter Protocol ===
+  Plug 'mfussenegger/nvim-dap', Cond(has('nvim'))
+  Plug 'mfussenegger/nvim-dap-python', Cond(has('nvim'))
+  Plug 'theHamsta/nvim-dap-virtual-text', Cond(has('nvim'))
+  Plug 'rcarriga/nvim-dap-ui', Cond(has('nvim'))
+  Plug 'nvim-neotest/nvim-nio', Cond(has('nvim'))
 
-  " Zeavim allows to use the offline documentation browser Zeal from Vim.
-  Plug 'KabbAmine/zeavim.vim'
+  " === Markdown ===
+  Plug 'MeanderingProgrammer/render-markdown.nvim', Cond(has('nvim'))
+  " Floating LaTeX equation renderer
+  Plug 'jbyuki/nabla.nvim', Cond(has('nvim'))
 
-  Plug 'vim-scripts/Tabmerge'
+  " === AI/Workflow ===
+  Plug 'olimorris/codecompanion.nvim', Cond(has('nvim'))
+  Plug 'sourcegraph/sg.nvim', Cond(has('nvim'), { 'do': 'nvim -l build/init.lua' })
+  Plug 'jamestthompson3/nvim-remote-containers', Cond(has('nvim'))
+  Plug 'epwalsh/obsidian.nvim', Cond(has('nvim'))
 
-  " Shows marks next to line numbers
-  Plug 'kshenoy/vim-signature'
+  " === Editing ===
+  Plug 'numToStr/Comment.nvim', Cond(has('nvim'))
 
-  " ctags and tagbar
-  " ensure that 'sudo snap/apt install universal-ctags'
-  " Plug 'ludovicchabant/vim-gutentags'
-  " Plug 'liuchengxu/vista.vim'
-  Plug 'preservim/tagbar'
-
-  " Plug 'github/copilot.vim', { 'branch': 'release' }
-  " anduril tings
-  Plug 'Exafunction/windsurf.vim'
-  Plug 'olimorris/codecompanion.nvim'
-  Plug 'sourcegraph/sg.nvim', { 'do': 'nvim -l build/init.lua' }
-
-  Plug 'jamestthompson3/nvim-remote-containers'
-  Plug 'Almo7aya/openingh.nvim'
-
-  Plug 'epwalsh/obsidian.nvim'
-  Plug 'peterhoeg/vim-qml'
 call plug#end()
 
 """""""""""""""""""""""""""""""
-" => NeoSolarized
+" => Solarized Color Scheme
 """"""""""""""""""""""""""""""
-" NeoSolarized works with neovim/vim but requires truecolor
-" support from the terminal, usually indicated by $COLORTERM
+" Use neosolarized for neovim, vim-colors-solarized for vim
+" Both require truecolor support from the terminal
 set termguicolors
-colorscheme neosolarized
+set background=dark
+
+" Try to load colorscheme, fail silently if not installed
+try
+  if has('nvim')
+    colorscheme neosolarized
+  else
+    colorscheme solarized
+  endif
+catch /^Vim\%((\a\+)\)\=:E185/
+  " Colorscheme not found, using default
+endtry
 
 " Make bg transparent
-set background=dark
 hi Normal ctermbg=NONE guibg=NONE
 " hi ColorColumn ctermbg=grey guibg=#002b36  " set by neosolarized now
-
-"""""""""""""""""""""""""""""""
-" => Colorizer
-""""""""""""""""""""""""""""""
-let g:colorizer_auto_filetype='vim,lua,css,html'
 
 """""""""""""""""""""""""""""""
 " => fzf - fuzzy finder
@@ -234,12 +239,6 @@ nnoremap <leader>t :TagbarToggle<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " let g:gitgutter_enabled=0
 " nnoremap <silent> <leader>g :GitGutterToggle<cr>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Open in GitHub with openingh.nvim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <silent> <leader>gh :OpenInGHFileLines<cr>
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => markdownpreview
@@ -325,19 +324,8 @@ map <Leader>vb :VimuxRunCommand("runPhases build")<CR>
 map <Leader>vc :VimuxRunCommand("runPhases clean configure build")<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => sourcegraph 
+" => sourcegraph
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " TODO: replicate <leader>fi with sourcegraph
-" vnoremap <leader>fs 
+" vnoremap <leader>fs
 " nnoremap <leader>fs <cmd>lua require('sg.extensions.telescope').fuzzy_search_results()<CR>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => devcontainers
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" hi Container guifg=#BADA55 guibg=Black
-" if g:currentContainer is set
-" TODO: this doesn't work as intended
-if exists('g:currentContainer')
-    set statusline+=%#Container#%{g:currentContainer}
-endif
-

@@ -138,9 +138,6 @@ autocmd BufRead *.twig set syntax=html filetype=html
 let vim_markdown_folding_disabled = 1
 au Filetype markdown setlocal wrap
 au FileType markdown setlocal shiftwidth=0 tabstop=2 softtabstop=0 expandtab
-au FileType markdown nnoremap <leader>p :lua require("nabla").popup()<CR>
-au FileType markdown nnoremap <leader>pe :lua require("nabla").enable_virt()<CR>
-au FileType markdown nnoremap <leader>pd :lua require("nabla").disable_virt()<CR>
 " paste with visual selection surrounds with [], adds (, pastes " buffer, then adds )
 au FileType markdown nnoremap <leader>pp viw<Esc>`<i[<Esc>`>la](<Esc>"*]pa)<Esc>
 au FileType markdown vnoremap <leader>pp <Esc>`<i[<Esc>`>la](<Esc>"*]pa)<Esc>
