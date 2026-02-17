@@ -66,8 +66,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'peterhoeg/vim-qml'
 
   " === Color Schemes (vim-compatible) ===
-  " Solarized for vim
-  Plug 'altercation/vim-colors-solarized'
+  " Solarized for vim (modern, actively maintained for vim 8+)
+  Plug 'lifepillar/vim-solarized8'
 
   " === AI Tools (vim-compatible) ===
   Plug 'Exafunction/windsurf.vim'
@@ -163,7 +163,7 @@ call plug#end()
 """""""""""""""""""""""""""""""
 " => Solarized Color Scheme
 """"""""""""""""""""""""""""""
-" Use neosolarized for neovim, vim-colors-solarized for vim
+" Use neosolarized for neovim, solarized8 for vim
 " Both require truecolor support from the terminal
 set termguicolors
 set background=dark
@@ -173,7 +173,7 @@ try
   if has('nvim')
     colorscheme neosolarized
   else
-    colorscheme solarized
+    colorscheme solarized8
   endif
 catch /^Vim\%((\a\+)\)\=:E185/
   " Colorscheme not found, using default
@@ -290,14 +290,14 @@ let g:doge_comment_jump_modes = ['n', 's']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => blamer 
+" => blamer
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:blamer_date_format = '%Y-%m-%d'
 nnoremap  <leader>bl :BlamerToggle<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => copilot 
+" => copilot
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " alternative keymaps for copilot
 " let g:copilot_enabled = 0
@@ -307,12 +307,22 @@ nnoremap  <leader>bl :BlamerToggle<CR>
 " imap <silent> <C-d> <Plug>(copilot-dismiss)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => undotree 
+" => windsurf/codeium
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Pre-define highlight group to avoid loading order issues
+if &t_Co == 256
+  hi def CodeiumSuggestion guifg=#808080 ctermfg=244
+else
+  hi def CodeiumSuggestion guifg=#808080 ctermfg=8
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => undotree
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:undotree_WindowLayout = 2
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vimux 
+" => vimux
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vp :VimuxPromptCommand<CR>

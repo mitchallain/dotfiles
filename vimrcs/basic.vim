@@ -20,7 +20,12 @@ set guicursor=i:block
 
 set rnu
 set nu
-set mouse=a
+" Disable mouse and focus events in vim to prevent escape sequence issues
+if !has('nvim')
+  set mouse=
+  set noesckeys
+  autocmd VimEnter * set t_fd= t_fe=
+endif
 set clipboard=unnamed
 
 " Set 7 lines to the cursor - when moving vertically using j/k
