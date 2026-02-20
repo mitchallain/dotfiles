@@ -132,12 +132,17 @@ cmp.setup({
 -- with completion capabilities that nvim-cmp can use
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
--- Set position encoding preference to prevent "multiple different position encodings" warning
--- The LSP spec uses general.positionEncodings (plural) to declare which encodings the client supports
--- List in order of preference: utf-16 first (for clangd/none-ls), then utf-8 as fallback
+-- Set position encoding to utf-16 to prevent "multiple different offset_encodings" warnings
+-- none-ls (null-ls fork) requires utf-16 and doesn't support utf-8
+-- By only declaring utf-16 support, we force ALL servers (including clangd) to use utf-16
+-- This prevents conflicts when multiple clients attach to the same buffer
+-- Two fields are set:
+--   1. general.positionEncodings: LSP 3.17 spec - what encodings the client supports
+--   2. offsetEncoding: Neovim's internal preference field
 -- See: https://github.com/jose-elias-alvarez/null-ls.nvim/issues/428#issuecomment-997226723
 capabilities.general = capabilities.general or {}
-capabilities.general.positionEncodings = { "utf-16", "utf-8" }
+capabilities.general.positionEncodings = { "utf-16" }
+capabilities.offsetEncoding = { "utf-16" }
 
 -- Global configuration for all LSP servers
 -- These capabilities will be merged into each server's config
@@ -167,9 +172,15 @@ vim.lsp.enable('pyright')
 -- ruff uses all defaults, no custom settings needed
 vim.lsp.enable('ruff')
 
--- Customize clangd to exclude 'proto' filetype
+-- Customize clangd to exclude 'proto' filetype and force utf-16 encoding
 vim.lsp.config.clangd = {
     filetypes = { "c", "cpp", "objc", "objcpp" }, -- remove proto
+    -- Must explicitly override offsetEncoding because lspconfig's clangd default
+    -- declares { "utf-8", "utf-16" } which makes clangd choose utf-8.
+    -- We need utf-16 to match none-ls and prevent encoding conflicts.
+    capabilities = vim.tbl_deep_extend('force', capabilities, {
+        offsetEncoding = { "utf-16" },
+    }),
 }
 vim.lsp.enable('clangd')
 
@@ -338,9 +349,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         -- Server-specific keymaps (not LSP methods, so check by name)
         if client.name == "clangd" then
-            vim.keymap.set("n", "gsv", "<cmd>vsplit<cr><cmd>ClangdSwitchSourceHeader<cr>", bufopts)
-            vim.keymap.set("n", "gss", "<cmd>split<cr><cmd>ClangdSwitchSourceHeader<cr>", bufopts)
-            vim.keymap.set("n", "gs", "<cmd>ClangdSwitchSourceHeader<cr>", bufopts)
+            -- nvim 0.11: lspconfig renamed ClangdSwitchSourceHeader -> LspClangdSwitchSourceHeader
+            -- This command is registered by lspconfig's on_attach (see /lsp/clangd.lua)
+            vim.keymap.set("n", "gsv", "<cmd>vsplit<cr><cmd>LspClangdSwitchSourceHeader<cr>", bufopts)
+            vim.keymap.set("n", "gss", "<cmd>split<cr><cmd>LspClangdSwitchSourceHeader<cr>", bufopts)
+            vim.keymap.set("n", "gs", "<cmd>LspClangdSwitchSourceHeader<cr>", bufopts)
         end
 
         -- Custom navigation (goto split and goto vsplit)
