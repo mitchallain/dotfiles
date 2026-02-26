@@ -51,7 +51,7 @@ telescope.setup({
     extensions = {
         default_workspace = "CWD",
         frecency = {
-            db_safe_mode = false,
+            db_safe_mode = true,  -- Prevents database corruption at slight performance cost
         },
     }
 })

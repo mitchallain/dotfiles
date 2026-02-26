@@ -128,12 +128,13 @@ call plug#begin('~/.vim/plugged')
   Plug 'Almo7aya/openingh.nvim', Cond(has('nvim'))
 
   " === Navigation ===
-  " Lua function library
+  " Lua function library (required by gitsigns, todo-comments, harpoon, etc.)
   Plug 'nvim-lua/plenary.nvim', Cond(has('nvim'))
-  Plug 'nvim-telescope/telescope.nvim', Cond(has('nvim'), { 'tag': '0.1.8' })
-  Plug 'nvim-telescope/telescope-fzf-native.nvim', Cond(has('nvim'), { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main' })
-  Plug 'kkharji/sqlite.lua', Cond(has('nvim'))
-  Plug 'nvim-telescope/telescope-frecency.nvim', Cond(has('nvim'))
+  " Telescope and related plugins - DISABLED
+  " Plug 'nvim-telescope/telescope.nvim', Cond(has('nvim'), { 'tag': '0.1.8' })
+  " Plug 'nvim-telescope/telescope-fzf-native.nvim', Cond(has('nvim'), { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main' })
+  " Plug 'kkharji/sqlite.lua', Cond(has('nvim'))
+  " Plug 'nvim-telescope/telescope-frecency.nvim', Cond(has('nvim'))
   Plug 'stevearc/oil.nvim', Cond(has('nvim'))
   Plug 'theprimeagen/harpoon', Cond(has('nvim'))
 

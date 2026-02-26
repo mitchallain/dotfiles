@@ -49,6 +49,7 @@ alias .5='cd ../../../../../'                       # Go back 5 directory levels
 alias .6='cd ../../../../../../'                    # Go back 6 directory levels
 alias ~="cd ~"                                      # ~:            Go Home
 alias c='clear'                                     # c:            Clear terminal display
+alias pathchop="tr ':' '\n'"                        # pathchop:     Remove colons from PATH
 
 # ch               : clear screen and tmux history if in tmux
 # -----------------:-----------------------------------------------------------------
@@ -713,6 +714,64 @@ function termcolors() {
 
 # shorter cmake -G ninja
 alias nmake="cmake -G Ninja"
+
+# ginja - ninja with glob patterns, list targets, match glob, build
+# Args:
+#    $1: (optional) glob pattern to match targets
+#    $@: (optional) additional arguments passed to ninja
+#
+# Example:
+#   'ginja'                    # list all targets
+#   'ginja test_*'             # build all targets starting with test_
+#   'ginja *_unittest'         # build all unittest targets
+#   'ginja lib* -v'            # build lib* targets with verbose output
+ginja() {
+    # Check if we're in a directory with a build.ninja file
+    if [ ! -f build.ninja ]; then
+        echo "Error: No build.ninja file found in current directory"
+        return 1
+    fi
+
+    # If no pattern provided, just list all targets
+    if [ $# -eq 0 ]; then
+        echo "Available ninja targets:"
+        ninja -t targets all | cut -d: -f1 | sort
+        return 0
+    fi
+
+    # Extract pattern (first arg) and additional ninja args
+    local pattern="$1"
+    shift
+    local ninja_args="$@"
+
+    # Convert shell glob to grep regex pattern
+    # * becomes .*, ? becomes ., escape special chars
+    local regex_pattern=$(echo "$pattern" | sed 's/\./\\./g; s/\*/.*g; s/?/./g')
+
+    # List all targets and filter by pattern
+    local targets=$(ninja -t targets all | cut -d: -f1 | grep -E "^${regex_pattern}$")
+
+    if [ -z "$targets" ]; then
+        echo "No targets match pattern: $pattern"
+        echo ""
+        echo "Available targets:"
+        ninja -t targets all | cut -d: -f1 | sort | head -20
+        [ $(ninja -t targets all | wc -l) -gt 20 ] && echo "... (showing first 20)"
+        return 1
+    fi
+
+    # Show matched targets
+    local target_count=$(echo "$targets" | wc -l)
+    echo "Building $target_count target(s) matching '$pattern':"
+    echo "$targets" | sed 's/^/  - /'
+    echo ""
+
+    # Build all matched targets
+    # shellcheck disable=SC2086
+    ninja $ninja_args $targets
+}
+
+alias bb="rm -rf build && mkdir build && cd build && cmake -GNinja .. && ninja"
 
 # for each arg, check if last character is a newline, if not, add one
 function addnewlines() {
