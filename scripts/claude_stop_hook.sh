@@ -17,42 +17,41 @@ init_debug_log "$debug_log"
 transcript_path=$(echo "$input" | jq -r '.transcript_path')
 log_debug "$debug_log" "Transcript path: $transcript_path"
 
-# Check if transcript path exists
-if [ ! -f "$transcript_path" ]; then
-  log_debug "$debug_log" "Error: Transcript file not found: $transcript_path"
-  icon=$(get_notification_icon "error")
-  notify-send "ClaudeCode Error" "Transcript file not found" --icon="$icon" --expire-time="$NOTIFICATION_EXPIRE_TIME"
-  exit 1
-fi
+# Extract summary from transcript if available
+if [ -f "$transcript_path" ]; then
+  # Get the content of the very first user prompt in the session
+  # Transcripts are JSONL, find the first line with "type":"user"
+  user_line=$(grep -m 1 '"type":"user"' "$transcript_path")
 
-# Get the content of the very first user prompt in the session
-# Transcripts are JSONL, find the first line with "type":"user"
-user_line=$(grep -m 1 '"type":"user"' "$transcript_path")
-
-# Extract the prompt content
-summary=$(echo "$user_line" | jq -r '.message.content' 2>/dev/null | cut -c 1-100)
-
-# If summary extraction fails, provide a fallback
-if [ -z "$summary" ] || [ "$summary" = "null" ]; then
-  summary="Unknown prompt"
-  log_debug "$debug_log" "Failed to extract summary from transcript"
+  # Extract the prompt content
+  summary=$(echo "$user_line" | jq -r '.message.content' 2>/dev/null | cut -c 1-100)
+  log_debug "$debug_log" "Extracted summary: $summary"
 else
-  log_debug "$debug_log" "Successfully extracted summary: $summary"
+  log_debug "$debug_log" "Transcript file not found: $transcript_path"
 fi
 
-# Check if the session ended with a 429 error
-# Look for either:
-# 1. An assistant message with isApiErrorMessage=true containing "429"
-# 2. A system api_error with status 429
-# Exclude the stop_hook_summary line
-last_lines=$(tail -n 10 "$transcript_path" | grep -v '"subtype":"stop_hook_summary"')
+# Fallback if transcript missing or summary extraction failed
+if [ -z "$summary" ] || [ "$summary" = "null" ]; then
+  summary="Session complete"
+  log_debug "$debug_log" "Using fallback summary"
+fi
 
-# Check for assistant API error message
-is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="assistant" and .isApiErrorMessage==true and (.message.content[0].text | contains("429"))) | "true"' 2>/dev/null)
+# Check if the session ended with a 429 error (only if transcript exists)
+is_429_error=""
+if [ -f "$transcript_path" ]; then
+  # Look for either:
+  # 1. An assistant message with isApiErrorMessage=true containing "429"
+  # 2. A system api_error with status 429
+  # Exclude the stop_hook_summary line
+  last_lines=$(tail -n 10 "$transcript_path" | grep -v '"subtype":"stop_hook_summary"')
 
-# If not found, check for system api_error
-if [ "$is_429_error" != "true" ]; then
-  is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="system" and .subtype=="api_error" and .error.status==429) | "true"' 2>/dev/null)
+  # Check for assistant API error message
+  is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="assistant" and .isApiErrorMessage==true and (.message.content[0].text | contains("429"))) | "true"' 2>/dev/null)
+
+  # If not found, check for system api_error
+  if [ "$is_429_error" != "true" ]; then
+    is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="system" and .subtype=="api_error" and .error.status==429) | "true"' 2>/dev/null)
+  fi
 fi
 
 if [ "$is_429_error" = "true" ]; then

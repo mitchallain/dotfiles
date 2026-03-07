@@ -391,6 +391,7 @@ null_ls.setup({
         -- null_ls.builtins.formatting.yapf,
 
         null_ls.builtins.diagnostics.cmake_lint,
+        -- TODO: filter out headers from cppcheck, not intended for use on headers
         null_ls.builtins.diagnostics.cppcheck.with({
             extra_args = { "--language=c++", "--inline-suppr" },
             temp_dir = "/tmp",

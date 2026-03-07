@@ -27,9 +27,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf.vim'
 
   " === File Navigation ===
-  Plug 'preservim/nerdtree'
+  " DISABLED: Replaced by nvim-tree for neovim
+  " Plug 'preservim/nerdtree'
   " Makes NERDTree independent of tabs
-  Plug 'jistr/vim-nerdtree-tabs'
+  " Plug 'jistr/vim-nerdtree-tabs'
 
   " === Git ===
   Plug 'tpope/vim-fugitive'
@@ -135,6 +136,8 @@ call plug#begin('~/.vim/plugged')
   " Plug 'nvim-telescope/telescope-fzf-native.nvim', Cond(has('nvim'), { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build', 'branch': 'main' })
   " Plug 'kkharji/sqlite.lua', Cond(has('nvim'))
   " Plug 'nvim-telescope/telescope-frecency.nvim', Cond(has('nvim'))
+  " File tree explorer (replaces NERDTree for neovim)
+  Plug 'nvim-tree/nvim-tree.lua', Cond(has('nvim'))
   Plug 'stevearc/oil.nvim', Cond(has('nvim'))
   Plug 'theprimeagen/harpoon', Cond(has('nvim'))
 
@@ -209,24 +212,24 @@ command! -bang -nargs=* Rga
 " nnoremap <leader>sa :Tags<cr>
 " nnoremap <leader>sm :Marks<cr>
 " nnoremap <leader>sb :Buffers<cr>
-" nnoremap <leader>sp :Maps<cr>
-" nnoremap <leader>sh :Helptags<cr>
+nnoremap <leader>fk :Maps<cr>
+nnoremap <leader>fh :Helptags<cr>
 
 
 """""""""""""""""""""""""""""""
-" => NERDTree - file browser
+" => NERDTree - file browser (DISABLED: replaced by nvim-tree)
 """"""""""""""""""""""""""""""
-nnoremap <C-t> :NERDTreeTabsToggle<CR>
-nnoremap <C-f> :NERDTreeTabsFind<CR> :NERDTreeTabsOpen<CR> 
+" nnoremap <C-t> :NERDTreeTabsToggle<CR>
+" nnoremap <C-f> :NERDTreeTabsFind<CR> :NERDTreeTabsOpen<CR> 
 
 " disable these default keymaps, since they
 " conflict with my vim/tmux navigation scheme
-let g:NERDTreeMapJumpNextSibling = ''
-let g:NERDTreeMapJumpPrevSibling = ''
+" let g:NERDTreeMapJumpNextSibling = ''
+" let g:NERDTreeMapJumpPrevSibling = ''
 
-let g:NERDTreeRespectWildIgnore = 1
-let g:NERDTreeShowHidden = 1
-let g:NERDTreeIgnore = ['\.ccls-cache$', '\.pytest_cache$', '__pycache__']
+" let g:NERDTreeRespectWildIgnore = 1
+" let g:NERDTreeShowHidden = 1
+" let g:NERDTreeIgnore = ['\.ccls-cache$', '\.pytest_cache$', '__pycache__']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

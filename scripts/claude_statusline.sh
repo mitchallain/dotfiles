@@ -2,24 +2,7 @@
 
 # Custom statusline combining PS1 prompt format with token tracking
 # Format: username@laptop shortened-path (git-branch) [model] | tokens | percentage%
-# Uses actual API token usage from transcript files for accurate context tracking
-
-# ============================================================================
-# Context Budget Configuration
-# ============================================================================
-# Claude Code manages a 200K token context window with auto-compact protection.
-# Auto-compact buffer is reserved space that:
-#   1. Prevents performance degradation as context fills
-#   2. Provides working space for the summarization/compaction operation
-#   3. Triggers auto-compact before hitting hard limits
-#
-# When usage reaches THRESHOLD (155K), auto-compact activates to condense
-# conversation history while preserving important information.
-# ============================================================================
-
-TOTAL_BUDGET=200000        # Total context window size
-AUTO_COMPACT_BUFFER=45000  # Reserved space for compaction operation and safety margin
-THRESHOLD=$((TOTAL_BUDGET - AUTO_COMPACT_BUFFER))  # Auto-compact triggers at 155K
+# Uses context_window fields provided by Claude Code
 
 # Read JSON input from stdin if available
 if [ ! -t 0 ]; then
@@ -71,86 +54,39 @@ if [ -n "$model_short" ]; then
 fi
 
 # ============================================================================
-# Token Calculation from Transcript
+# Token Calculation using context_window fields
 # ============================================================================
-# Each API response in the transcript contains usage data with four fields:
-#
-#   1. cache_read_input_tokens: System context (MCP tools, CLAUDE.md, instructions)
-#      These ARE in the context window, just cached for efficiency. Reused each turn.
-#
-#   2. cache_creation_input_tokens: New tokens added to cache when system context changes
-#      This is an amortized cost metric, not a direct context usage measure.
-#
-#   3. input_tokens: Fresh user input for this turn (not previously cached)
-#
-#   4. output_tokens: Assistant's response for this turn
-#
-# Context window at any point = cached system context + all conversation history
-#
-# Calculation approach:
-#   - Get most recent API call's cache_read (system context size)
-#   - Sum all output_tokens (entire conversation history)
-#   - Add most recent input_tokens (current user message)
-#   - Total = cache_read + sum(outputs) + latest_input
+# Claude Code now provides context_window data directly:
+#   - context_window.context_window_size: Total token capacity (e.g., 200000)
+#   - context_window.used_percentage: Current usage percentage (e.g., 24)
 # ============================================================================
 
-TOTAL_TOKENS=0
 TOKEN_DISPLAY=""
 PERCENTAGE_DISPLAY=""
 
 if [ -n "$input" ]; then
-    SESSION_ID=$(echo "$input" | jq -r '.session_id' 2>/dev/null)
-    if [ -n "$SESSION_ID" ] && [ "$SESSION_ID" != "null" ]; then
-        TRANSCRIPT_PATH=$(find ~/.claude/projects -name "${SESSION_ID}.jsonl" 2>/dev/null | head -1)
-        if [ -f "$TRANSCRIPT_PATH" ]; then
-            # Calculate total tokens using actual API usage data
-            TOTAL_TOKENS=$(cat "$TRANSCRIPT_PATH" | jq -s '
-                # Extract all API responses with usage data
-                map(select(.message.usage)) as $responses |
+    # Extract context window data from JSON input
+    WINDOW_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size' 2>/dev/null)
+    USED_PERCENTAGE=$(echo "$input" | jq -r '.context_window.used_percentage' 2>/dev/null)
 
-                # Get the most recent cached system context size
-                ($responses | last | .message.usage.cache_read_input_tokens // 0) as $system_context |
+    if [ -n "$WINDOW_SIZE" ] && [ "$WINDOW_SIZE" != "null" ] && [ -n "$USED_PERCENTAGE" ] && [ "$USED_PERCENTAGE" != "null" ]; then
+        # Calculate actual token usage from percentage
+        TOTAL_TOKENS=$((WINDOW_SIZE * USED_PERCENTAGE / 100))
 
-                # Sum all conversation outputs (assistant responses across all turns)
-                ($responses | map(.message.usage.output_tokens) | add // 0) as $conversation_history |
-
-                # Get the latest user input
-                ($responses | last | .message.usage.input_tokens // 0) as $latest_input |
-
-                # Total context = system + conversation + current input
-                $system_context + $conversation_history + $latest_input
-            ' 2>/dev/null || echo 0)
-
-            # ================================================================
-            # Format Display
-            # ================================================================
-            # Calculate percentage relative to auto-compact threshold (155K)
-            # When this reaches 100%, auto-compact will trigger
-            # ================================================================
-
-            PERCENTAGE=$((TOTAL_TOKENS * 100 / THRESHOLD))
-            if [ $PERCENTAGE -gt 100 ]; then
-                PERCENTAGE=100
-            fi
-
-            # Format current usage with K notation (e.g., "42.5K")
-            if [ $TOTAL_TOKENS -ge 1000 ]; then
-                CURRENT_DISPLAY=$(echo "scale=1; $TOTAL_TOKENS / 1000" | bc 2>/dev/null || echo "$((TOTAL_TOKENS / 1000))")"K"
-            else
-                CURRENT_DISPLAY="$TOTAL_TOKENS"
-            fi
-
-            # Format auto-compact threshold (155K)
-            THRESHOLD_DISPLAY=$(echo "scale=0; $THRESHOLD / 1000" | bc 2>/dev/null || echo "$((THRESHOLD / 1000))")"K"
-
-            # Format total budget (200K)
-            BUDGET_DISPLAY=$(echo "scale=0; $TOTAL_BUDGET / 1000" | bc 2>/dev/null || echo "$((TOTAL_BUDGET / 1000))")"K"
-
-            # Display format: Current/Threshold/Total | Percentage
-            # Example: 42.5K/155K/200K | 27%
-            TOKEN_DISPLAY="${CURRENT_DISPLAY}/${THRESHOLD_DISPLAY}/${BUDGET_DISPLAY}"
-            PERCENTAGE_DISPLAY="${PERCENTAGE}%"
+        # Format current usage with K notation (e.g., "42.5K")
+        if [ $TOTAL_TOKENS -ge 1000 ]; then
+            CURRENT_DISPLAY=$(echo "scale=1; $TOTAL_TOKENS / 1000" | bc 2>/dev/null || echo "$((TOTAL_TOKENS / 1000))")"K"
+        else
+            CURRENT_DISPLAY="$TOTAL_TOKENS"
         fi
+
+        # Format total budget (200K)
+        BUDGET_DISPLAY=$(echo "scale=0; $WINDOW_SIZE / 1000" | bc 2>/dev/null || echo "$((WINDOW_SIZE / 1000))")"K"
+
+        # Display format: Current/Total | Percentage
+        # Example: 42.5K/200K | 24%
+        TOKEN_DISPLAY="${CURRENT_DISPLAY}/${BUDGET_DISPLAY}"
+        PERCENTAGE_DISPLAY="${USED_PERCENTAGE}%"
     fi
 fi
 
