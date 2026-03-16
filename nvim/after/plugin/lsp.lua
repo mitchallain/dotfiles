@@ -266,6 +266,9 @@ vim.lsp.enable('yamlls')
 -- bashls uses all defaults
 vim.lsp.enable('bashls')
 
+-- tinymist uses all defaults (Typst language server)
+vim.lsp.enable('tinymist')
+
 -- TODO: 'enable_cody = false' currently throws errors
 -- require("sg").setup({
 --     enable_cody = false,

@@ -771,7 +771,8 @@ ginja() {
     ninja $ninja_args $targets
 }
 
-alias bb="rm -rf build && mkdir build && cd build && cmake -GNinja .. && ninja"
+bbb() { rm -rf build && mkdir build && cd build && cmake -GNinja .. && ninja "$@"; }
+alias bb="rm -rf build && mkdir build && cd build && cmake -GNinja .."
 
 # for each arg, check if last character is a newline, if not, add one
 function addnewlines() {
