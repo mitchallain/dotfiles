@@ -26,6 +26,9 @@ local function on_attach(bufnr)
   -- Remap refresh from R to r
   vim.keymap.del('n', 'R', { buffer = bufnr })
   vim.keymap.set('n', 'r', api.tree.reload, opts('Refresh'))
+
+  -- Override default <C-t> (open in new tab) to toggle the tree instead
+  vim.keymap.set('n', '<C-t>', api.tree.toggle, opts('Toggle'))
 end
 
 -- Setup nvim-tree

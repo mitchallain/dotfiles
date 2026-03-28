@@ -131,6 +131,7 @@ for i in - {0..9} ; do
 done
 
 # setup fzf before bash_aliases
+# On NixOS, fzf is managed by home-manager and ~/.fzf.bash won't exist - silent no-op
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # machine-id specific environment loaders
@@ -174,6 +175,7 @@ fi
 
 # OS-specific setup
 # TODO: path manipulation doesn't really belong in bashrc
+# On NixOS, conda is not installed - these blocks are silent no-ops
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # >>> conda initialize >>>
     # !! contents within this block are managed by 'conda init' !!
