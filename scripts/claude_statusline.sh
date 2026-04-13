@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Custom statusline combining PS1 prompt format with token tracking
 # Format: username@laptop shortened-path (git-branch) [model] | tokens | percentage%

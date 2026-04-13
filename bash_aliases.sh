@@ -490,6 +490,8 @@ if [ -f ~/.aliases/nix_aliases.sh ]; then
     . ~/.aliases/nix_aliases.sh
 fi
 
+alias nixrebuild='nixos-rebuild switch --flake /home/mallain/dev/nixos-config --use-remote-sudo'
+
 if [ -f ~/.aliases/llm_aliases.sh ]; then
     # shellcheck source=/home/mallain/.aliases/llm_aliases.sh
     . ~/.aliases/llm_aliases.sh
