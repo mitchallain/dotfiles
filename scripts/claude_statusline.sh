@@ -14,7 +14,8 @@ fi
 # Function from bashrc to shorten directory paths
 _dir_chomp () {
     local IFS=/ c=1 n d
-    local p=(${1/#$HOME/\\~}) r=${p[*]}
+    local tilde='~'
+    local p=(${1/#$HOME/$tilde}) r=${p[*]}
     local s=${#r}
     while ((s>$2&&c<${#p[*]}-1))
     do
@@ -50,7 +51,7 @@ fi
 # Shorten model name regardless of source
 if [ -n "$model_short" ]; then
     # Remove version numbers and "anthropic.", simplify model names
-    model_short=$(echo "$model_short" | sed 's/-[0-9]\{8\}.*//; s/anthropic\.//; s/claude-sonnet/sonnet/; s/claude-haiku/haiku/; s/claude-opus/opus/; s/Claude Sonnet/sonnet/; s/Claude Haiku/haiku/; s/Claude Opus/opus/')
+    model_short=$(echo "$model_short" | sed 's/-[0-9]\{8\}.*//; s/anthropic\.//; s/claude-sonnet/sonnet/; s/claude-haiku/haiku/; s/claude-opus/opus/; s/Claude Sonnet/sonnet/; s/Claude Haiku/haiku/; s/Claude Opus/opus/; s/ (1M context)/ 1M/')
 fi
 
 # ============================================================================
@@ -90,8 +91,14 @@ if [ -n "$input" ]; then
     fi
 fi
 
+# Nix shell indicator
+NIX_INDICATOR=""
+if [ -n "$IN_NIX_SHELL" ]; then
+    NIX_INDICATOR=" ❄"
+fi
+
 # Build the status line
-echo -n "$USER@laptop $(_dir_chomp "$(pwd)" 20)$(parse_git_branch)"
+echo -n "$USER@laptop $(_dir_chomp "$(pwd)" 20)$(parse_git_branch)${NIX_INDICATOR}"
 if [ -n "$model_short" ]; then
     echo -n " [$model_short]"
 fi

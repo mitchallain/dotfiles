@@ -588,6 +588,7 @@ extract () {
       *.tar)       extract_command="tar xf '$1' -C '$temp_dir'"      ;;
       *.tar.xz)    extract_command="tar xf '$1' -C '$temp_dir'"      ;;
       *.tar.zst)   extract_command="tar xaf '$1' -C '$temp_dir'"     ;;
+      *.zst)       extract_command="zstd -d '$1' -o '$temp_dir/$(get_basename "$1")'"     ;;
       *.tbz2)      extract_command="tar xjf '$1' -C '$temp_dir'"     ;;
       *.tgz)       extract_command="tar xzf '$1' -C '$temp_dir'"     ;;
       *.zip)       extract_command="unzip '$1' -d '$temp_dir'"       ;;
@@ -771,8 +772,51 @@ ginja() {
     ninja $ninja_args $targets
 }
 
+# fzgtest - interactively select and run googletest cases
+# Args:
+#    $1: path to gtest executable
+#    ${@:2}: additional arguments passed to the executable
+#
+# Example:
+#   'fzgtest ./build/my_tests'
+#   'fzgtest ./build/my_tests --gtest_repeat=3'
+fzgtest() {
+    if [ $# -eq 0 ] || [ ! -x "$1" ]; then
+        echo "Usage: fzgtest <gtest_executable> [extra args...]"
+        return 1
+    fi
+
+    local exe="$1"
+    shift
+
+    # Parse --gtest_list_tests output: suite lines end with '.', case lines are indented
+    local selected
+    selected=$("$exe" --gtest_list_tests 2>/dev/null | awk '/\.$/ {suite=$1} /^  / {print suite $1}' \
+        | fzf --multi --prompt="Select tests> ")
+
+    if [ -z "$selected" ]; then
+        echo "No tests selected."
+        return 0
+    fi
+
+    # Join selected tests with ':' for --gtest_filter
+    local filter
+    filter=$(echo "$selected" | paste -sd ':')
+
+    echo "Running: $exe --gtest_filter=$filter $*"
+    "$exe" --gtest_filter="$filter" "$@"
+}
+
 bbb() { rm -rf build && mkdir build && cd build && cmake -GNinja .. && ninja "$@"; }
 alias bb="rm -rf build && mkdir build && cd build && cmake -GNinja .."
+
+# clean_ccache_debug - recursively delete ccache debug files
+# Args:
+#    $1: (optional, default '.') directory to search
+clean_ccache_debug() {
+  local dir="${1:-.}"
+  find "$dir" -name '*.ccache-*' -type f -delete -print
+}
 
 # for each arg, check if last character is a newline, if not, add one
 function addnewlines() {

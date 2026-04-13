@@ -70,8 +70,6 @@ call plug#begin('~/.vim/plugged')
   " Solarized for vim (modern, actively maintained for vim 8+)
   Plug 'lifepillar/vim-solarized8'
 
-  " === AI Tools (vim-compatible) ===
-  Plug 'Exafunction/windsurf.vim'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SECTION 2: NEOVIM-ONLY PLUGINS (require neovim APIs)
@@ -264,6 +262,9 @@ let g:mkdp_browser = 'google-chrome'
 " leader mp open preview page
 nnoremap <leader>mp :MarkdownPreview<CR>
 
+" grip: standalone file-watching markdown preview (works with external edits)
+nnoremap <leader>mg :!pkill grip 2>/dev/null; grip --browser "%" &<CR>
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim surround
@@ -287,7 +288,6 @@ nnoremap <leader>mm :SignatureToggle<cr>
 " => vim-doge
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:doge_doc_standard_python = 'google'
-" These will override codeium completion
 " let g:doge_mapping_comment_jump_forward = '<Tab>'
 " let g:doge_mapping_comment_jump_backward = '<S-Tab>'
 let g:doge_comment_jump_modes = ['n', 's']
@@ -310,15 +310,6 @@ nnoremap  <leader>bl :BlamerToggle<CR>
 " imap <silent> <C-s> <Plug>(copilot-suggest)
 " imap <silent> <C-d> <Plug>(copilot-dismiss)
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => windsurf/codeium
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Pre-define highlight group to avoid loading order issues
-if &t_Co == 256
-  hi def CodeiumSuggestion guifg=#808080 ctermfg=244
-else
-  hi def CodeiumSuggestion guifg=#808080 ctermfg=8
-endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => undotree

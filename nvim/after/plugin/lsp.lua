@@ -395,8 +395,9 @@ null_ls.setup({
 
         null_ls.builtins.diagnostics.cmake_lint,
         -- TODO: filter out headers from cppcheck, not intended for use on headers
+        -- until the above TODO is completed, suppress unused members
         null_ls.builtins.diagnostics.cppcheck.with({
-            extra_args = { "--language=c++", "--inline-suppr" },
+            extra_args = { "--language=c++", "--inline-suppr", "--suppress=unusedStructMember" },
             temp_dir = "/tmp",
         }),
         null_ls.builtins.formatting.cmake_format,
