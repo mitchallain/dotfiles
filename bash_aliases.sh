@@ -829,4 +829,4 @@ function addnewlines() {
     done
 }
 
-
+alias nvimsock='nvim --listen $(pwd)/.nvim.sock'

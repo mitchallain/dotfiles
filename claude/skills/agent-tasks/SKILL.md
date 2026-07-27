@@ -79,6 +79,11 @@ Related:: [[redis-sliding-window]], [[api-auth-middleware]]
 Token bucket algorithm backed by Redis. Configurable per-endpoint limits
 via config file. See [[sliding-window-vs-fixed-window]] for algorithm research.
 
+## PRs
+
+- [ ] https://github.com/example/repo/pull/42 — Implement token bucket core
+- [x] https://github.com/example/repo/pull/38 — Add rate limit config schema
+
 ## Tasks
 
 - [x] HL-API-003-001 Design rate limit configuration schema
@@ -171,6 +176,13 @@ When creating or modifying any note, search for related notes and add
 4. Update the `updated` frontmatter field.
 5. **Log** — append to `log.md`: `## [{date}] add-task | {TASK-ID} Description`
 
+### Link a PR to a project
+
+1. Add or update a `## PRs` section in the project note (between Plan and Tasks).
+2. Append a line: `- [ ] {PR-URL} — {short description}`
+3. Update the `updated` frontmatter field.
+4. **Log** — append to `log.md`: `## [{date}] link-pr | {ID} {PR-URL}`
+
 ### Complete a task
 
 1. Change `- [ ]` to `- [x]` for the task line (and any subtasks).
@@ -180,10 +192,21 @@ When creating or modifying any note, search for related notes and add
 
 ### Archive a project
 
-1. Set frontmatter `status: complete` (or `abandoned`).
-2. Move the project directory to the mirror path under `02-archive/`.
+Before archiving, verify PR status for development projects:
+
+1. If the project has a `## PRs` section with any PR links:
+   a. For each PR URL, run `gh pr view {URL} --json state,mergedAt,title` to check status.
+   b. Mark merged PRs as `- [x]` in the PRs section.
+   c. If any linked PRs are still open, **warn the user** and list them.
+      Do not proceed with archiving unless the user explicitly confirms.
+   d. If the project looks like a development project (has code tasks, mentions
+      implementation, PRs, repos) but has **no PRs linked**, ask the user:
+      "This looks like a development project with no linked PRs. Are there PRs
+      to track, or is it ready to archive?"
+2. Set frontmatter `status: complete` (or `abandoned`).
+3. Move the project directory to the mirror path under `02-archive/`.
    Create intermediate directories in `02-archive/` as needed.
-3. **Log** — append to `log.md`: `## [{date}] archive | {ID} {Title} ({status})`
+4. **Log** — append to `log.md`: `## [{date}] archive | {ID} {Title} ({status})`
 
 ### Add a research note
 
