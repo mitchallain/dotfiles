@@ -36,53 +36,6 @@ if [ -z "$summary" ] || [ "$summary" = "null" ]; then
   log_debug "$debug_log" "Using fallback summary"
 fi
 
-# Check if the session ended with a 429 error (only if transcript exists)
-is_429_error=""
-if [ -f "$transcript_path" ]; then
-  # Look for either:
-  # 1. An assistant message with isApiErrorMessage=true containing "429"
-  # 2. A system api_error with status 429
-  # Exclude the stop_hook_summary line
-  last_lines=$(tail -n 10 "$transcript_path" | grep -v '"subtype":"stop_hook_summary"')
-
-  # Check for assistant API error message
-  is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="assistant" and .isApiErrorMessage==true and (.message.content[0].text | contains("429"))) | "true"' 2>/dev/null)
-
-  # If not found, check for system api_error
-  if [ "$is_429_error" != "true" ]; then
-    is_429_error=$(echo "$last_lines" | tail -n 1 | jq -r 'select(.type=="system" and .subtype=="api_error" and .error.status==429) | "true"' 2>/dev/null)
-  fi
-fi
-
-if [ "$is_429_error" = "true" ]; then
-  log_debug "$debug_log" "Session ended with 429 error - blocking stop and continuing"
-
-  # Get tmux pane info for notification
-  tmux_info=$(get_tmux_info)
-  notification_message="Rate limit hit, automatically retrying..."
-  if [ -n "$tmux_info" ]; then
-    notification_message="$notification_message ($tmux_info)"
-  fi
-
-  # Send notification to user
-  icon=$(get_notification_icon "warning")
-  notify-send "ClaudeCode Rate Limited (429)" "$notification_message" --icon="$icon" --expire-time="$NOTIFICATION_EXPIRE_TIME"
-
-  # Block the stop and tell Claude to continue
-  # Output JSON to prevent Claude from stopping
-  jq -n \
-    --arg reason "Continue" \
-    --arg sysmsg "🔄 Rate limit encountered (429). Automatically continuing..." \
-    '{
-      "decision": "block",
-      "reason": $reason,
-      "systemMessage": $sysmsg
-    }'
-
-  log_debug "$debug_log" "Sent block decision with Continue prompt"
-  exit 0
-fi
-
 # Get tmux pane info if running in tmux
 tmux_info=$(get_tmux_info)
 if [ -n "$tmux_info" ]; then

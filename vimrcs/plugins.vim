@@ -119,7 +119,7 @@ call plug#begin('~/.vim/plugged')
 
   " === UI/Diagnostics ===
   Plug 'kyazdani42/nvim-web-devicons', Cond(has('nvim'))
-  Plug 'folke/trouble.nvim', Cond(has('nvim'), { 'tag': 'v3.6.0' })
+  Plug 'folke/trouble.nvim', Cond(has('nvim'), { 'commit': '3fb3bd7' })
   Plug 'folke/todo-comments.nvim', Cond(has('nvim'), { 'branch': 'main' })
 
   " === Git ===
@@ -192,7 +192,8 @@ set rtp+=~/.fzf
 " Custom fzf command always shows basename, does not care about case,
 " and searches basename first, before falling back to complete pathname
 " see FZF_DEFAULT_COMMAND for rg default options
-nnoremap <c-p> :FZF --keep-right -i --delimiter / --nth -1,..<cr>
+" --style=default disables fzf's new border/status UI which breaks in nvim's terminal buffer
+nnoremap <c-p> :FZF --style=default --keep-right -i --delimiter / --nth -1,..<cr>
 " Do not respect ignored files, --no-ignore implies --no-ignore-dot, --no-ignore-exclude, --no-ignore-global, no-ignore-parent and --no-ignore-vcs
 nnoremap <c-[> :call fzf#run(fzf#wrap({'source': 'rg -i --files --no-ignore --hidden'}))<cr>
 inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')

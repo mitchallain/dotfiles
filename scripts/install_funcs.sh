@@ -158,7 +158,7 @@ install_whitesur_theme () {
 # nvim setup
 # requires setup_python
 install_nvim () {
-    nvim_version="0.11.6"
+    nvim_version="0.12.4"
     fname="nvim-linux-x86_64.tar.gz"
 
     # remove symlink if already existing

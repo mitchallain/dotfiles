@@ -213,6 +213,12 @@ vim.lsp.config.nil_ls = {
             formatting = {
                 command = { "nixfmt" },
             },
+            nix = {
+                flake = {
+                    -- disable this annoying pop-up
+                    autoArchive = true,
+                },
+            },
         },
     },
 }

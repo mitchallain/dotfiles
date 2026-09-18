@@ -129,3 +129,24 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 -- Also set it immediately
 vim.api.nvim_set_hl(0, 'NvimTreeGitNew', { fg = '#cb4b16' })  -- Solarized orange (brighter red)
 vim.api.nvim_set_hl(0, 'NvimTreeGitNewIcon', { fg = '#cb4b16' })
+
+-- Patch Explorer:reload to re-resolve symlink targets on refresh.
+-- Upstream only updates fs_stat but never re-calls fs_realpath, so stale
+-- link_to values persist (common with nix store symlinks after rebuilds).
+local Explorer = require("nvim-tree.explorer")
+local orig_reload = Explorer.reload
+function Explorer:reload(node, project)
+  local result = orig_reload(self, node, project)
+  if result then
+    for _, n in ipairs(result) do
+      if n.link_to and n.fs_stat and n.fs_stat.type == "link" then
+        local new_target = vim.uv.fs_realpath(n.absolute_path)
+        if new_target and new_target ~= n.link_to then
+          n.link_to = new_target
+          n.fs_stat_target = vim.uv.fs_stat(new_target)
+        end
+      end
+    end
+  end
+  return result
+end
