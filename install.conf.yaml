@@ -3,7 +3,7 @@
       create: true
       relink: true
 
-- clean: ["~", "~/.config"]
+- clean: ["~", "~/.config", "~/.pi/agent"]
 
 - link:
     ~/.albertignore: albert/albertignore
@@ -11,15 +11,12 @@
     ~/.aliases/fzf_functions.sh: fzf_functions.sh
     ~/.aliases/nix_aliases.sh: aliases/nix_aliases.sh
     ~/.aliases/llm_aliases.sh: aliases/llm_aliases.sh
-    ~/.andurilrc: anduril-private-dotfiles/andurilrc.sh
     ~/.bash_aliases: bash_aliases.sh
     ~/.bash_logout: bash_logout
     ~/.bash_profile: bash_profile.sh
     ~/.bashrc: bashrc
     ~/.bastianrc: private/bastianrc.sh
     ~/.clang-format: clang/.clang-format
-    ~/.claude: anduril-private-dotfiles/claude
-    ~/.claude.json: anduril-private-dotfiles/claude.json
     ~/.cmake-format.py: cmake/.cmake-format.py
     ~/.colcon: colcon
     ~/.config/.rgignore: rgignore
@@ -44,6 +41,13 @@
     ~/.machines: private/machines
     ~/.mermaid.json: mermaid.json
     ~/.pandoc: pandoc
+    ~/.pi/agent/APPEND_SYSTEM.md: pi/APPEND_SYSTEM.md
+    ~/.pi/agent/CLAUDE.md: claude/CLAUDE.md
+    ~/.pi/agent/extensions: pi/extensions
+    ~/.pi/agent/keybindings.json: pi/keybindings.json
+    ~/.pi/agent/settings.json: pi/settings.json
+    ~/.pi/agent/skills: pi/skills
+    ~/.pi/agent/themes: pi/themes
     ~/.profile: profile
     ~/.projects: private/projects
     ~/.pylintrc: pylintrc

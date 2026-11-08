@@ -244,6 +244,12 @@ if [ -x "$(command -v direnv)" ]; then
     eval "$(direnv hook bash)"
 fi
 
+# Go
+export GOPATH="$HOME/go"
+if [ -d "$GOPATH/bin" ]; then
+    export PATH="$GOPATH/bin:$PATH"
+fi
+
 if [ -r "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi

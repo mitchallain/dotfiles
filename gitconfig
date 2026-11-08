@@ -28,3 +28,6 @@
     desc = describe --tag --always
     rpo = remote prune origin
     root = rev-parse --show-toplevel
+    sha = rev-parse --short HEAD
+    shlong = rev-parse HEAD
+    wt = worktree

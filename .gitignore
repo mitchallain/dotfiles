@@ -1,5 +1,37 @@
 secrets.sh
 lnav/formats/
+
+# Claude Code / agent runtime state
+.claude/
+CLAUDE.local.md
+claude/.credentials.json
+claude/.last-cleanup
+claude/backups
+claude/cache
+claude/daemon
+claude/daemon.lock
+claude/daemon.status.json
+claude/debug
+claude/file-history
+claude/history.jsonl
+claude/hooks/herdr-agent-state.sh
+claude/ide
+claude/jobs
+claude/paste-cache
+claude/plans
+claude/plugins
+claude/projects
+claude/session-env
+claude/sessions
+claude/settings.backup*
+claude/shell-snapshots
+claude/state
+claude/stats-cache.json
+claude/statsig
+claude/tasks
+claude/telemetry
+claude/todos
+claude/usage-data
 pi/extensions/herdr-agent-state.ts
 
 # Created by https://www.toptal.com/developers/gitignore/api/vim,python
