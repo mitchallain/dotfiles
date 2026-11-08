@@ -24,6 +24,7 @@ local parsers_to_install = {
   "lua",
   "markdown",
   "markdown_inline",
+  "nix",
   "rust",
   "python",
   "vim",

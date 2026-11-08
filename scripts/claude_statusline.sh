@@ -34,7 +34,20 @@ parse_git_branch() {
 
 # Extract short model name from input JSON or ANTHROPIC_MODEL env var
 model_short=""
+
+# Prefer building the name from the model id, which carries the full version
+# (e.g. "claude-opus-5-5[1m]" -> "Opus 5.5 1M"), unlike display_name ("Opus 5")
+MODEL_ID=""
 if [ -n "$input" ]; then
+    MODEL_ID=$(echo "$input" | jq -r '.model.id // empty' 2>/dev/null)
+fi
+[ -z "$MODEL_ID" ] && MODEL_ID="$ANTHROPIC_MODEL"
+if [[ $MODEL_ID =~ claude-([a-z]+)-([0-9]+)(-([0-9]{1,2}))?([^0-9]|$) ]]; then
+    model_short="${BASH_REMATCH[1]^} ${BASH_REMATCH[2]}${BASH_REMATCH[4]:+.${BASH_REMATCH[4]}}"
+    [[ $MODEL_ID == *"[1m]"* ]] && model_short+=" 1M"
+fi
+
+if [ -z "$model_short" ] && [ -n "$input" ]; then
     # Try to get model from JSON input
     MODEL_DISPLAY=$(echo "$input" | jq -r '.model.display_name' 2>/dev/null)
     if [ -n "$MODEL_DISPLAY" ] && [ "$MODEL_DISPLAY" != "null" ]; then
@@ -52,6 +65,12 @@ fi
 if [ -n "$model_short" ]; then
     # Remove version numbers and "anthropic.", simplify model names
     model_short=$(echo "$model_short" | sed 's/-[0-9]\{8\}.*//; s/anthropic\.//; s/claude-sonnet/sonnet/; s/claude-haiku/haiku/; s/claude-opus/opus/; s/Claude Sonnet/sonnet/; s/Claude Haiku/haiku/; s/Claude Opus/opus/; s/ (1M context)/ 1M/')
+fi
+
+# Append effort level (e.g. "Opus 5.5 1M · high")
+if [ -n "$model_short" ] && [ -n "$input" ]; then
+    EFFORT=$(echo "$input" | jq -r '.effort.level // empty' 2>/dev/null)
+    [ -n "$EFFORT" ] && model_short+=" · $EFFORT"
 fi
 
 # ============================================================================

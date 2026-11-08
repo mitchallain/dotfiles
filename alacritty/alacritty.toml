@@ -33,3 +33,21 @@ blue    = "#839496"
 magenta = "#6c71c4"
 cyan    = "#93a1a1"
 white   = "#fdf6e3"
+
+[hints]
+alphabet = "jfkdls;ahgurieowpq"
+
+[[hints.enabled]]
+command = "xdg-open"
+hyperlinks = true
+post_processing = true
+persist = false
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh://|ftp://)[^\\u0000-\\u001F\\u007F-\\u009F<>\"\\s{-}\\^`]+"
+
+[hints.enabled.binding]
+key = "U"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Control"

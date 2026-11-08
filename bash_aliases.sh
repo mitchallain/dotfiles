@@ -67,9 +67,15 @@ alias fix_stty='stty sane'             # fix_stty:     Restore terminal settings
 mcd () { mkdir -p "$1" && cd "$1"; }   # mcd:          Makes new Dir and jumps inside
 alias DT='tee /tmp/termout.txt'        # DT:           Pipe content to temporary file
 
-alias xclipc="xclip -selection c"
-alias xclipcr="tr -d '\n' | xclip -selection c"
-alias xclipv="xclip -selection clipboard -o"
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    alias xclipc="wl-copy"
+    alias xclipcr="tr -d '\n' | wl-copy"
+    alias xclipv="wl-paste"
+else
+    alias xclipc="xclip -selection c"
+    alias xclipcr="tr -d '\n' | xclip -selection c"
+    alias xclipv="xclip -selection clipboard -o"
+fi
 
 ## Git aliases
 # note git <alias> type commands can be defined in .gitconfig

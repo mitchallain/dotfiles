@@ -1,0 +1,35 @@
+{
+  "lastChangelogVersion": "1.5.0",
+  "enableInstallTelemetry": false,
+  "npmCommand": [
+    "nix",
+    "shell",
+    "nixpkgs#nodejs",
+    "--command",
+    "npm"
+  ],
+  "skills": [
+    "~/.claude/skills"
+  ],
+  "theme": "solarized-dark",
+  "tuiMode": "regular",
+  "editorPaddingX": 2,
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-subagents",
+    "npm:pi-btw",
+    "npm:@fitchmultz/pi-stash",
+    "npm:pi-clear",
+    "npm:@plannotator/pi-extension",
+    "npm:pi-scheduler"
+  ],
+  "hideThinkingBlock": false,
+  "httpIdleTimeoutMs": 960000,
+  "retry": {
+    "provider": {
+      "timeoutMs": 3600000,
+      "maxRetries": 0
+    }
+  }
+}

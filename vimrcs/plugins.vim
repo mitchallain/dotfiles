@@ -50,6 +50,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'mitchallain/IEC.vim'
   Plug 'vimjas/vim-python-pep8-indent'
   " vim-compatible despite .nvim suffix (requires vim 8+)
+  " NixOS: pre-built binary won't run. After :PlugInstall, run:
+  "   rm ~/.vim/plugged/markdown-preview.nvim/app/bin/markdown-preview-linux
+  "   cd ~/.vim/plugged/markdown-preview.nvim/app && yarn install
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'], 'tag': 'v0.0.10'}
   Plug 'mzlogin/vim-markdown-toc'
   " Re-execute :call mkdp#util#install() if the above fails to install
@@ -152,13 +155,15 @@ call plug#begin('~/.vim/plugged')
   Plug 'jbyuki/nabla.nvim', Cond(has('nvim'))
 
   " === AI/Workflow ===
-  Plug 'olimorris/codecompanion.nvim', Cond(has('nvim'))
   Plug 'sourcegraph/sg.nvim', Cond(has('nvim'), { 'do': 'nvim -l build/init.lua' })
   Plug 'jamestthompson3/nvim-remote-containers', Cond(has('nvim'))
   Plug 'epwalsh/obsidian.nvim', Cond(has('nvim'))
 
   " === Editing ===
   Plug 'numToStr/Comment.nvim', Cond(has('nvim'))
+
+  " === Session Management ===
+  Plug 'folke/persistence.nvim', Cond(has('nvim'))
 
 call plug#end()
 
